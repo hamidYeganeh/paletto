@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Artworks Service Demo</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1220;
+        --panel: #121a2a;
+        --muted: #9aa4b2;
+        --text: #e5e7eb;
+        --border: #24314b;
+        --accent: #60a5fa;
+        --danger: #fb7185;
+      }
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+        background: radial-gradient(900px 600px at 30% 10%, #18264a, var(--bg));
+        color: var(--text);
+      }
+      .container {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        gap: 16px;
+      }
+      header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: color-mix(in oklab, var(--panel) 92%, black 8%);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      .card h2 {
+        margin: 0 0 10px 0;
+        font-size: 14px;
+      }
+      label {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      input,
+      select,
+      button,
+      textarea {
+        font: inherit;
+      }
+      input,
+      select,
+      textarea {
+        background: #0d1526;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        color: var(--text);
+        outline: none;
+      }
+      textarea {
+        min-height: 96px;
+        resize: vertical;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: color-mix(in oklab, var(--accent) 60%, var(--border));
+        box-shadow: 0 0 0 3px
+          color-mix(in oklab, var(--accent) 25%, transparent);
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+      button {
+        border: 1px solid var(--border);
+        background: #101b32;
+        color: var(--text);
+        border-radius: 10px;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+      button.primary {
+        border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+        background: color-mix(in oklab, var(--accent) 16%, #0d1526);
+      }
+      button.danger {
+        border-color: color-mix(in oklab, var(--danger) 55%, var(--border));
+        background: color-mix(in oklab, var(--danger) 14%, #0d1526);
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      pre {
+        margin: 0;
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: #0a1020;
+        overflow: auto;
+        max-height: 520px;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+      .status {
+        font-size: 12px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div>
+          <h1>Artworks Service Demo</h1>
+          <div class="hint">
+            Endpoints:
+            <code>GET /artworks/list</code>,
+            <code>POST /artworks/create</code> (JWT),
+            <code>PATCH /artworks/update</code> (JWT).
+          </div>
+        </div>
+        <div class="status" id="status"></div>
+      </header>
+
+      <div class="card">
+        <h2>Server</h2>
+        <label>
+          Base URL
+          <input
+            id="baseUrl"
+            placeholder="http://localhost:5000"
+            inputmode="url"
+            autocomplete="off"
+          />
+        </label>
+        <label style="margin-top: 10px">
+          Bearer token (required for create/update)
+          <input
+            id="token"
+            placeholder="paste JWT token here"
+            autocomplete="off"
+          />
+        </label>
+        <div class="hint" style="margin-top: 8px">
+          Use a token for an <code>artist</code> or <code>admin</code> user. Artist tokens can create/update their own artworks without setting Artist ID.
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Create Artwork</h2>
+
+          <label>
+            Title
+            <input id="createTitle" placeholder="e.g. sunset" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Description
+            <textarea
+              id="createDescription"
+              placeholder="Artwork description"
+            ></textarea>
+          </label>
+
+          <label style="margin-top: 10px">
+            Artist ID
+            <input id="createArtistId" placeholder="Mongo ObjectId" />
+          </label>
+          <div class="hint" style="margin-top: 6px">
+            Only needed if your token is <code>admin</code>. For <code>artist</code> tokens leave it empty.
+          </div>
+
+          <div class="row">
+            <label>
+              Price
+              <input id="createPrice" placeholder="0" inputmode="decimal" />
+            </label>
+            <label>
+              Status
+              <select id="createStatus">
+                <option value="">(optional)</option>
+                <option value="draft">draft</option>
+                <option value="active">active</option>
+                <option value="deactive">deactive</option>
+                <option value="sold">sold</option>
+                <option value="archived">archived</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row">
+            <label>
+              Year (optional)
+              <input id="createYear" placeholder="2024" inputmode="numeric" />
+            </label>
+            <label>
+              Tags (optional, comma)
+              <input id="createTags" placeholder="abstract,oil" />
+            </label>
+          </div>
+
+          <div class="row" style="margin-top: 10px">
+            <label>
+              Currency (optional)
+              <input id="createCurrency" placeholder="USD" />
+            </label>
+            <label>
+              Negotiable
+              <select id="createNegotiable">
+                <option value="">(optional)</option>
+                <option value="true">true</option>
+                <option value="false">false</option>
+              </select>
+            </label>
+          </div>
+
+          <label style="margin-top: 10px">
+            Categories (optional, comma ids)
+            <input id="createCategories" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Techniques (optional, comma ids)
+            <input id="createTechniques" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Mediums (optional, comma ids)
+            <input id="createMediums" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Materials (optional, comma ids)
+            <input id="createMaterials" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Images (optional, comma urls)
+            <input id="createImages" placeholder="https://...,https://..." />
+          </label>
+
+          <div class="actions">
+            <button class="primary" id="createBtn">POST /artworks/create</button>
+            <button class="danger" id="clearOutBtn">Clear output</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>List Artworks</h2>
+          <div class="row">
+            <label>
+              Page
+              <input id="listPage" placeholder="1" inputmode="numeric" />
+            </label>
+            <label>
+              Limit
+              <input id="listLimit" placeholder="10" inputmode="numeric" />
+            </label>
+          </div>
+
+          <label style="margin-top: 10px">
+            Search (title/description)
+            <input id="listSearch" placeholder="e.g. sunset" />
+          </label>
+
+          <div class="row">
+            <label>
+              Status (optional)
+              <select id="listStatus">
+                <option value="">(any)</option>
+                <option value="active">active</option>
+                <option value="deactive">deactive</option>
+              </select>
+            </label>
+            <label>
+              Artist ID (optional)
+              <input id="listArtistId" placeholder="Mongo ObjectId" />
+            </label>
+          </div>
+
+          <div class="row">
+            <label>
+              Min price
+              <input id="listMinPrice" placeholder="0" inputmode="decimal" />
+            </label>
+            <label>
+              Max price
+              <input id="listMaxPrice" placeholder="1000" inputmode="decimal" />
+            </label>
+          </div>
+
+          <div class="row">
+            <label>
+              Min year
+              <input id="listMinYear" placeholder="1900" inputmode="numeric" />
+            </label>
+            <label>
+              Max year
+              <input id="listMaxYear" placeholder="2025" inputmode="numeric" />
+            </label>
+          </div>
+
+          <label style="margin-top: 10px">
+            Categories (comma ids)
+            <input id="listCategories" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Techniques (comma ids)
+            <input id="listTechniques" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Mediums (comma ids)
+            <input id="listMediums" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Materials (comma ids)
+            <input id="listMaterials" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Tags (comma)
+            <input id="listTags" placeholder="abstract,oil" />
+          </label>
+
+          <div class="actions">
+            <button class="primary" id="listBtn">GET /artworks/list</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Update Artwork</h2>
+
+          <label>
+            Artwork ID
+            <input id="updateArtworkId" placeholder="Mongo ObjectId" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Title (optional)
+            <input id="updateTitle" placeholder="new title" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Description (optional)
+            <textarea
+              id="updateDescription"
+              placeholder="new description"
+            ></textarea>
+          </label>
+
+          <label style="margin-top: 10px">
+            Tags (optional, comma)
+            <input id="updateTags" placeholder="abstract,oil" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Images (optional, comma urls)
+            <input id="updateImages" placeholder="https://...,https://..." />
+          </label>
+
+          <label style="margin-top: 10px">
+            Categories (optional, comma ids)
+            <input id="updateCategories" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Techniques (optional, comma ids)
+            <input id="updateTechniques" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Mediums (optional, comma ids)
+            <input id="updateMediums" placeholder="id1,id2" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Materials (optional, comma ids)
+            <input id="updateMaterials" placeholder="id1,id2" />
+          </label>
+
+          <div class="row">
+            <label>
+              Price (optional)
+              <input id="updatePrice" placeholder="0" inputmode="decimal" />
+            </label>
+            <label>
+              Status (optional)
+              <select id="updateStatus">
+                <option value="">(optional)</option>
+                <option value="draft">draft</option>
+                <option value="active">active</option>
+                <option value="deactive">deactive</option>
+                <option value="sold">sold</option>
+                <option value="archived">archived</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row" style="margin-top: 10px">
+            <label>
+              Currency (optional)
+              <input id="updateCurrency" placeholder="USD" />
+            </label>
+            <label>
+              Negotiable
+              <select id="updateNegotiable">
+                <option value="">(optional)</option>
+                <option value="true">true</option>
+                <option value="false">false</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="updateBtn">PATCH /artworks/update</button>
+          </div>
+        </div>
+      </div>
+
+      <pre id="out">{}</pre>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      const statusEl = $("status");
+      const outEl = $("out");
+
+      const baseUrlEl = $("baseUrl");
+      const tokenEl = $("token");
+
+      const createTitleEl = $("createTitle");
+      const createDescriptionEl = $("createDescription");
+      const createArtistIdEl = $("createArtistId");
+      const createPriceEl = $("createPrice");
+      const createStatusEl = $("createStatus");
+      const createYearEl = $("createYear");
+      const createTagsEl = $("createTags");
+      const createCurrencyEl = $("createCurrency");
+      const createNegotiableEl = $("createNegotiable");
+      const createCategoriesEl = $("createCategories");
+      const createTechniquesEl = $("createTechniques");
+      const createMediumsEl = $("createMediums");
+      const createMaterialsEl = $("createMaterials");
+      const createImagesEl = $("createImages");
+      const createBtn = $("createBtn");
+
+      const listPageEl = $("listPage");
+      const listLimitEl = $("listLimit");
+      const listSearchEl = $("listSearch");
+      const listStatusEl = $("listStatus");
+      const listArtistIdEl = $("listArtistId");
+      const listMinPriceEl = $("listMinPrice");
+      const listMaxPriceEl = $("listMaxPrice");
+      const listMinYearEl = $("listMinYear");
+      const listMaxYearEl = $("listMaxYear");
+      const listCategoriesEl = $("listCategories");
+      const listTechniquesEl = $("listTechniques");
+      const listMediumsEl = $("listMediums");
+      const listMaterialsEl = $("listMaterials");
+      const listTagsEl = $("listTags");
+      const listBtn = $("listBtn");
+
+      const updateArtworkIdEl = $("updateArtworkId");
+      const updateTitleEl = $("updateTitle");
+      const updateDescriptionEl = $("updateDescription");
+      const updateTagsEl = $("updateTags");
+      const updateImagesEl = $("updateImages");
+      const updateCategoriesEl = $("updateCategories");
+      const updateTechniquesEl = $("updateTechniques");
+      const updateMediumsEl = $("updateMediums");
+      const updateMaterialsEl = $("updateMaterials");
+      const updatePriceEl = $("updatePrice");
+      const updateStatusEl = $("updateStatus");
+      const updateCurrencyEl = $("updateCurrency");
+      const updateNegotiableEl = $("updateNegotiable");
+      const updateBtn = $("updateBtn");
+
+      const clearOutBtn = $("clearOutBtn");
+
+      function setStatus(text) {
+        statusEl.textContent = text ?? "";
+      }
+
+      function setOut(value) {
+        outEl.textContent =
+          typeof value === "string" ? value : JSON.stringify(value, null, 2);
+      }
+
+      function getBaseUrl() {
+        const v = (baseUrlEl.value || "").trim();
+        return v || "http://localhost:5000";
+      }
+
+      function setLoading(isLoading) {
+        createBtn.disabled = isLoading;
+        listBtn.disabled = isLoading;
+        updateBtn.disabled = isLoading;
+        setStatus(isLoading ? "Loading..." : "");
+      }
+
+      async function safeJson(res) {
+        const text = await res.text();
+        try {
+          return JSON.parse(text);
+        } catch {
+          return text;
+        }
+      }
+
+      async function request(path, options) {
+        const url = new URL(path, getBaseUrl());
+        const res = await fetch(url.toString(), {
+          ...options,
+          headers: {
+            "content-type": "application/json",
+            ...(options && options.headers ? options.headers : {}),
+          },
+        });
+
+        const body = await safeJson(res);
+        if (!res.ok) {
+          const message =
+            typeof body === "object" && body && body.message
+              ? body.message
+              : `HTTP ${res.status}`;
+          const err = new Error(message);
+          err.body = body;
+          err.status = res.status;
+          throw err;
+        }
+
+        return body;
+      }
+
+      function splitComma(value) {
+        const text = (value || "").trim();
+        if (!text) return undefined;
+        return text
+          .split(",")
+          .map((v) => v.trim())
+          .filter(Boolean);
+      }
+
+      function saveDefaults() {
+        localStorage.setItem("artworks-demo.baseUrl", baseUrlEl.value.trim());
+        localStorage.setItem("artworks-demo.token", tokenEl.value.trim());
+        localStorage.setItem("artworks-demo.listPage", listPageEl.value.trim());
+        localStorage.setItem(
+          "artworks-demo.listLimit",
+          listLimitEl.value.trim()
+        );
+      }
+
+      function loadDefaults() {
+        baseUrlEl.value =
+          localStorage.getItem("artworks-demo.baseUrl") ||
+          "http://localhost:5000";
+        tokenEl.value = localStorage.getItem("artworks-demo.token") || "";
+        listPageEl.value =
+          localStorage.getItem("artworks-demo.listPage") || "1";
+        listLimitEl.value =
+          localStorage.getItem("artworks-demo.listLimit") || "10";
+      }
+
+      loadDefaults();
+      setOut({ ok: true, hint: "Create/List/Update artworks." });
+
+      baseUrlEl.addEventListener("change", saveDefaults);
+      tokenEl.addEventListener("change", saveDefaults);
+      listPageEl.addEventListener("change", saveDefaults);
+      listLimitEl.addEventListener("change", saveDefaults);
+      clearOutBtn.addEventListener("click", () => setOut({}));
+
+      createBtn.addEventListener("click", async () => {
+        saveDefaults();
+        setLoading(true);
+        try {
+          const payload = {
+            title: createTitleEl.value.trim(),
+            description: createDescriptionEl.value.trim(),
+            ...(createArtistIdEl.value.trim()
+              ? { artistID: createArtistIdEl.value.trim() }
+              : {}),
+            price: Number(createPriceEl.value.trim() || "0"),
+            ...(createCurrencyEl.value.trim()
+              ? { currency: createCurrencyEl.value.trim() }
+              : {}),
+            ...(createNegotiableEl.value.trim()
+              ? { isNegotiable: createNegotiableEl.value.trim() === "true" }
+              : {}),
+            ...(createStatusEl.value.trim()
+              ? { status: createStatusEl.value.trim() }
+              : {}),
+            ...(createYearEl.value.trim()
+              ? { year: Number(createYearEl.value.trim()) }
+              : {}),
+            ...(splitComma(createTagsEl.value)
+              ? { tags: splitComma(createTagsEl.value) }
+              : {}),
+            ...(splitComma(createCategoriesEl.value)
+              ? { categories: splitComma(createCategoriesEl.value) }
+              : {}),
+            ...(splitComma(createTechniquesEl.value)
+              ? { techniques: splitComma(createTechniquesEl.value) }
+              : {}),
+            ...(splitComma(createMediumsEl.value)
+              ? { mediums: splitComma(createMediumsEl.value) }
+              : {}),
+            ...(splitComma(createMaterialsEl.value)
+              ? { materials: splitComma(createMaterialsEl.value) }
+              : {}),
+            ...(splitComma(createImagesEl.value)
+              ? { images: splitComma(createImagesEl.value) }
+              : {}),
+          };
+
+          const token = tokenEl.value.trim();
+          const data = await request("/artworks/create", {
+            method: "POST",
+            body: JSON.stringify(payload),
+            headers: token ? { authorization: `Bearer ${token}` } : {},
+          });
+          setOut({ action: "create", payload, response: data });
+        } catch (e) {
+          setOut({
+            action: "create",
+            error: String(e && e.message ? e.message : e),
+            details: e && e.body ? e.body : undefined,
+          });
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      listBtn.addEventListener("click", async () => {
+        saveDefaults();
+        setLoading(true);
+        try {
+          const params = new URLSearchParams();
+          const page = listPageEl.value.trim();
+          const limit = listLimitEl.value.trim();
+          const search = listSearchEl.value.trim();
+          const status = listStatusEl.value.trim();
+          const artistID = listArtistIdEl.value.trim();
+          const minPrice = listMinPriceEl.value.trim();
+          const maxPrice = listMaxPriceEl.value.trim();
+          const minYear = listMinYearEl.value.trim();
+          const maxYear = listMaxYearEl.value.trim();
+          const categories = listCategoriesEl.value.trim();
+          const techniques = listTechniquesEl.value.trim();
+          const mediums = listMediumsEl.value.trim();
+          const materials = listMaterialsEl.value.trim();
+          const tags = listTagsEl.value.trim();
+
+          if (page) params.set("page", page);
+          if (limit) params.set("limit", limit);
+          if (search) params.set("search", search);
+          if (status) params.set("status", status);
+          if (artistID) params.set("artistID", artistID);
+          if (minPrice) params.set("minPrice", minPrice);
+          if (maxPrice) params.set("maxPrice", maxPrice);
+          if (minYear) params.set("minYear", minYear);
+          if (maxYear) params.set("maxYear", maxYear);
+          if (categories) params.set("categories", categories);
+          if (techniques) params.set("techniques", techniques);
+          if (mediums) params.set("mediums", mediums);
+          if (materials) params.set("materials", materials);
+          if (tags) params.set("tags", tags);
+
+          const data = await request(`/artworks/list?${params.toString()}`, {
+            method: "GET",
+          });
+          setOut({
+            action: "list",
+            query: Object.fromEntries(params),
+            response: data,
+          });
+        } catch (e) {
+          setOut({
+            action: "list",
+            error: String(e && e.message ? e.message : e),
+            details: e && e.body ? e.body : undefined,
+          });
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      updateBtn.addEventListener("click", async () => {
+        saveDefaults();
+        setLoading(true);
+        try {
+          const artworkID = updateArtworkIdEl.value.trim();
+          const title = updateTitleEl.value.trim();
+          const description = updateDescriptionEl.value.trim();
+          const tags = updateTagsEl.value.trim();
+          const images = updateImagesEl.value.trim();
+          const categories = updateCategoriesEl.value.trim();
+          const techniques = updateTechniquesEl.value.trim();
+          const mediums = updateMediumsEl.value.trim();
+          const materials = updateMaterialsEl.value.trim();
+          const status = updateStatusEl.value.trim();
+          const price = updatePriceEl.value.trim();
+          const currency = updateCurrencyEl.value.trim();
+          const isNegotiable = updateNegotiableEl.value.trim();
+
+          const payload = {
+            artworkID,
+            ...(title ? { title } : {}),
+            ...(description ? { description } : {}),
+            ...(splitComma(tags) ? { tags: splitComma(tags) } : {}),
+            ...(splitComma(images) ? { images: splitComma(images) } : {}),
+            ...(splitComma(categories) ? { categories: splitComma(categories) } : {}),
+            ...(splitComma(techniques) ? { techniques: splitComma(techniques) } : {}),
+            ...(splitComma(mediums) ? { mediums: splitComma(mediums) } : {}),
+            ...(splitComma(materials) ? { materials: splitComma(materials) } : {}),
+            ...(status ? { status } : {}),
+            ...(price ? { price: Number(price) } : {}),
+            ...(currency ? { currency } : {}),
+            ...(isNegotiable ? { isNegotiable: isNegotiable === "true" } : {}),
+          };
+
+          const token = tokenEl.value.trim();
+          const data = await request("/artworks/update", {
+            method: "PATCH",
+            body: JSON.stringify(payload),
+            headers: token ? { authorization: `Bearer ${token}` } : {},
+          });
+          setOut({ action: "update", payload, response: data });
+        } catch (e) {
+          setOut({
+            action: "update",
+            error: String(e && e.message ? e.message : e),
+            details: e && e.body ? e.body : undefined,
+          });
+        } finally {
+          setLoading(false);
+        }
+      });
+
+    </script>
+  </body>
+</html>

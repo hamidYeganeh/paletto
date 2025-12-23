@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users Service Demo</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1220;
+        --panel: #121a2a;
+        --muted: #9aa4b2;
+        --text: #e5e7eb;
+        --border: #24314b;
+        --accent: #60a5fa;
+        --danger: #fb7185;
+      }
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+        background: radial-gradient(900px 600px at 30% 10%, #18264a, var(--bg));
+        color: var(--text);
+      }
+      .container {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        gap: 16px;
+      }
+      header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: color-mix(in oklab, var(--panel) 92%, black 8%);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      .card h2 {
+        margin: 0 0 10px 0;
+        font-size: 14px;
+      }
+      label {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      input,
+      select,
+      button,
+      textarea {
+        font: inherit;
+      }
+      input,
+      select,
+      textarea {
+        background: #0d1526;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        color: var(--text);
+        outline: none;
+      }
+      textarea {
+        min-height: 96px;
+        resize: vertical;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: color-mix(in oklab, var(--accent) 60%, var(--border));
+        box-shadow: 0 0 0 3px
+          color-mix(in oklab, var(--accent) 25%, transparent);
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+      button {
+        border: 1px solid var(--border);
+        background: #101b32;
+        color: var(--text);
+        border-radius: 10px;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+      button.primary {
+        border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+        background: color-mix(in oklab, var(--accent) 16%, #0d1526);
+      }
+      button.danger {
+        border-color: color-mix(in oklab, var(--danger) 55%, var(--border));
+        background: color-mix(in oklab, var(--danger) 14%, #0d1526);
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      pre {
+        margin: 0;
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: #0a1020;
+        overflow: auto;
+        max-height: 520px;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+      .status {
+        font-size: 12px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div>
+          <h1>Users Service Demo</h1>
+          <div class="hint">
+            Endpoints:
+            <code>GET /users/list</code>,
+            <code>POST /users/create</code>,
+            <code>PATCH /users/update</code> (requires Bearer token).
+          </div>
+        </div>
+        <div class="status" id="status"></div>
+      </header>
+
+      <div class="card">
+        <h2>Server</h2>
+        <label>
+          Base URL
+          <input
+            id="baseUrl"
+            placeholder="http://localhost:5000"
+            inputmode="url"
+            autocomplete="off"
+          />
+        </label>
+        <label style="margin-top: 10px">
+          Bearer token (optional)
+          <input id="token" placeholder="paste jwt token for /users/update" />
+        </label>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Create User</h2>
+
+          <label>
+            Name
+            <input id="createName" placeholder="e.g. Jane Doe" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Email
+            <input id="createEmail" placeholder="user@example.com" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Password
+            <input
+              id="createPassword"
+              type="password"
+              placeholder="min 8 chars"
+            />
+          </label>
+
+          <label style="margin-top: 10px">
+            Role
+            <select id="createRole">
+              <option value="user">user</option>
+              <option value="artist">artist</option>
+              <option value="admin">admin</option>
+            </select>
+          </label>
+
+          <div class="actions">
+            <button class="primary" id="createBtn">POST /users/create</button>
+            <button class="danger" id="clearOutBtn">Clear output</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>List Users</h2>
+          <div class="row">
+            <label>
+              Page
+              <input id="listPage" placeholder="1" inputmode="numeric" />
+            </label>
+            <label>
+              Limit
+              <input id="listLimit" placeholder="10" inputmode="numeric" />
+            </label>
+          </div>
+          <label style="margin-top: 10px">
+            Search (optional)
+            <input id="listSearch" placeholder="name/email search" />
+          </label>
+          <div class="actions">
+            <button class="primary" id="listBtn">GET /users/list</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Update Current User</h2>
+          <div class="hint">
+            Uses <code>PATCH /users/update</code> and reads user id from JWT
+            (no id field needed). Provide a token above.
+          </div>
+
+          <label style="margin-top: 10px">
+            Name (optional)
+            <input id="updateName" placeholder="new name" />
+          </label>
+
+          <label style="margin-top: 10px">
+            Email (optional)
+            <input id="updateEmail" placeholder="new email" />
+          </label>
+
+          <label style="margin-top: 10px">
+            userProfile JSON (optional)
+            <textarea
+              id="updateUserProfile"
+              placeholder='{"bio":"..."}'
+            ></textarea>
+          </label>
+
+          <label style="margin-top: 10px">
+            artistProfile JSON (optional)
+            <textarea
+              id="updateArtistProfile"
+              placeholder='{"instagram":"..."}'
+            ></textarea>
+          </label>
+
+          <div class="actions">
+            <button class="primary" id="updateBtn">PATCH /users/update</button>
+          </div>
+        </div>
+      </div>
+
+      <pre id="out">{}</pre>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      const statusEl = $("status");
+      const outEl = $("out");
+
+      const baseUrlEl = $("baseUrl");
+      const tokenEl = $("token");
+
+      const createNameEl = $("createName");
+      const createEmailEl = $("createEmail");
+      const createPasswordEl = $("createPassword");
+      const createRoleEl = $("createRole");
+      const createBtn = $("createBtn");
+
+      const listPageEl = $("listPage");
+      const listLimitEl = $("listLimit");
+      const listSearchEl = $("listSearch");
+      const listBtn = $("listBtn");
+
+      const updateNameEl = $("updateName");
+      const updateEmailEl = $("updateEmail");
+      const updateUserProfileEl = $("updateUserProfile");
+      const updateArtistProfileEl = $("updateArtistProfile");
+      const updateBtn = $("updateBtn");
+
+      const clearOutBtn = $("clearOutBtn");
+
+      function setStatus(text) {
+        statusEl.textContent = text ?? "";
+      }
+
+      function setOut(value) {
+        outEl.textContent =
+          typeof value === "string" ? value : JSON.stringify(value, null, 2);
+      }
+
+      function getBaseUrl() {
+        const v = (baseUrlEl.value || "").trim();
+        return v || "http://localhost:5000";
+      }
+
+      function getToken() {
+        return (tokenEl.value || "").trim();
+      }
+
+      function setLoading(isLoading) {
+        createBtn.disabled = isLoading;
+        listBtn.disabled = isLoading;
+        updateBtn.disabled = isLoading;
+        setStatus(isLoading ? "Loading..." : "");
+      }
+
+      async function safeJson(res) {
+        const text = await res.text();
+        try {
+          return JSON.parse(text);
+        } catch {
+          return text;
+        }
+      }
+
+      async function request(path, options) {
+        const url = new URL(path, getBaseUrl());
+        const token = getToken();
+        const res = await fetch(url.toString(), {
+          ...options,
+          headers: {
+            "content-type": "application/json",
+            ...(token ? { authorization: `Bearer ${token}` } : {}),
+            ...(options && options.headers ? options.headers : {}),
+          },
+        });
+
+        const body = await safeJson(res);
+        if (!res.ok) {
+          const message =
+            typeof body === "object" && body && body.message
+              ? body.message
+              : `HTTP ${res.status}`;
+          const err = new Error(message);
+          err.body = body;
+          err.status = res.status;
+          throw err;
+        }
+
+        return body;
+      }
+
+      function saveDefaults() {
+        localStorage.setItem("users-demo.baseUrl", baseUrlEl.value.trim());
+        localStorage.setItem("users-demo.token", tokenEl.value.trim());
+        localStorage.setItem("users-demo.listPage", listPageEl.value.trim());
+        localStorage.setItem("users-demo.listLimit", listLimitEl.value.trim());
+      }
+
+      function loadDefaults() {
+        baseUrlEl.value =
+          localStorage.getItem("users-demo.baseUrl") || "http://localhost:5000";
+        tokenEl.value = localStorage.getItem("users-demo.token") || "";
+        listPageEl.value = localStorage.getItem("users-demo.listPage") || "1";
+        listLimitEl.value =
+          localStorage.getItem("users-demo.listLimit") || "10";
+      }
+
+      function parseOptionalJson(value) {
+        const text = (value || "").trim();
+        if (!text) return undefined;
+        return JSON.parse(text);
+      }
+
+      loadDefaults();
+      setOut({ ok: true, hint: "Create/List users, then update with a token." });
+
+      baseUrlEl.addEventListener("change", saveDefaults);
+      tokenEl.addEventListener("change", saveDefaults);
+      listPageEl.addEventListener("change", saveDefaults);
+      listLimitEl.addEventListener("change", saveDefaults);
+      clearOutBtn.addEventListener("click", () => setOut({}));
+
+      createBtn.addEventListener("click", async () => {
+        saveDefaults();
+        setLoading(true);
+        try {
+          const payload = {
+            name: createNameEl.value.trim(),
+            email: createEmailEl.value.trim(),
+            password: createPasswordEl.value.trim(),
+            role: createRoleEl.value.trim(),
+          };
+
+          const data = await request("/users/create", {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          setOut({
+            action: "create",
+            payload: { ...payload, password: "***" },
+            response: data,
+          });
+        } catch (e) {
+          setOut({
+            action: "create",
+            error: String(e && e.message ? e.message : e),
+            details: e && e.body ? e.body : undefined,
+          });
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      listBtn.addEventListener("click", async () => {
+        saveDefaults();
+        setLoading(true);
+        try {
+          const params = new URLSearchParams();
+          const page = listPageEl.value.trim();
+          const limit = listLimitEl.value.trim();
+          const search = listSearchEl.value.trim();
+          if (page) params.set("page", page);
+          if (limit) params.set("limit", limit);
+          if (search) params.set("search", search);
+
+          const data = await request(`/users/list?${params.toString()}`, {
+            method: "GET",
+          });
+          setOut({
+            action: "list",
+            query: Object.fromEntries(params),
+            response: data,
+          });
+        } catch (e) {
+          setOut({
+            action: "list",
+            error: String(e && e.message ? e.message : e),
+            details: e && e.body ? e.body : undefined,
+          });
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      updateBtn.addEventListener("click", async () => {
+        saveDefaults();
+        setLoading(true);
+        try {
+          const name = updateNameEl.value.trim();
+          const email = updateEmailEl.value.trim();
+          const userProfile = parseOptionalJson(updateUserProfileEl.value);
+          const artistProfile = parseOptionalJson(updateArtistProfileEl.value);
+
+          const payload = {
+            ...(name ? { name } : {}),
+            ...(email ? { email } : {}),
+            ...(userProfile ? { userProfile } : {}),
+            ...(artistProfile ? { artistProfile } : {}),
+          };
+
+          const data = await request("/users/update", {
+            method: "PATCH",
+            body: JSON.stringify(payload),
+          });
+          setOut({ action: "update", payload, response: data });
+        } catch (e) {
+          setOut({
+            action: "update",
+            error: String(e && e.message ? e.message : e),
+            details: e && e.body ? e.body : undefined,
+          });
+        } finally {
+          setLoading(false);
+        }
+      });
+    </script>
+  </body>
+</html>
+

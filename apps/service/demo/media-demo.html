@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Media Service Demo</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1220;
+        --panel: #121a2a;
+        --muted: #9aa4b2;
+        --text: #e5e7eb;
+        --border: #24314b;
+        --accent: #60a5fa;
+        --danger: #fb7185;
+      }
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+        background: radial-gradient(900px 600px at 30% 10%, #18264a, var(--bg));
+        color: var(--text);
+      }
+      .container {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        gap: 16px;
+      }
+      header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: color-mix(in oklab, var(--panel) 92%, black 8%);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      .card h2 {
+        margin: 0 0 10px 0;
+        font-size: 14px;
+      }
+      label {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      input,
+      button,
+      textarea {
+        font: inherit;
+      }
+      input,
+      textarea {
+        background: #0d1526;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        color: var(--text);
+        outline: none;
+      }
+      textarea {
+        min-height: 88px;
+        resize: vertical;
+      }
+      input:focus,
+      textarea:focus {
+        border-color: color-mix(in oklab, var(--accent) 60%, var(--border));
+        box-shadow: 0 0 0 3px
+          color-mix(in oklab, var(--accent) 25%, transparent);
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+      button {
+        border: 1px solid var(--border);
+        background: #101b32;
+        color: var(--text);
+        border-radius: 10px;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+      button.primary {
+        border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+        background: color-mix(in oklab, var(--accent) 16%, #0d1526);
+      }
+      button.danger {
+        border-color: color-mix(in oklab, var(--danger) 55%, var(--border));
+        background: color-mix(in oklab, var(--danger) 14%, #0d1526);
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      pre {
+        margin: 0;
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: #0a1020;
+        overflow: auto;
+        max-height: 520px;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+      .status {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .preview {
+        margin-top: 10px;
+        display: grid;
+        gap: 8px;
+      }
+      img {
+        max-width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div>
+          <h1>Media Service Demo</h1>
+          <div class="hint">
+            Endpoints:
+            <code>POST /media/upload</code>,
+            <code>GET /media/:mediaId</code>,
+            <code>GET /media/hash/:hash</code>,
+            <code>GET /media/file/:hash</code>.
+          </div>
+        </div>
+        <div class="status" id="status"></div>
+      </header>
+
+      <div class="card">
+        <h2>Server</h2>
+        <label>
+          Base URL
+          <input
+            id="baseUrl"
+            placeholder="http://localhost:5000"
+            inputmode="url"
+            autocomplete="off"
+          />
+        </label>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Upload</h2>
+          <label>
+            File
+            <input id="file" type="file" />
+          </label>
+          <div class="actions">
+            <button class="primary" id="uploadBtn">POST /media/upload</button>
+            <button class="danger" id="clearOutBtn">Clear output</button>
+          </div>
+
+          <div class="preview">
+            <div class="hint" id="uploadedHint"></div>
+            <img id="imgPreview" style="display: none" alt="preview" />
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Lookup</h2>
+
+          <label>
+            Media ID
+            <input id="mediaId" placeholder="Mongo ObjectId" />
+          </label>
+          <div class="actions">
+            <button class="primary" id="getByIdBtn">GET /media/:mediaId</button>
+          </div>
+
+          <label style="margin-top: 10px">
+            Hash
+            <input id="hash" placeholder="sha256 hash" />
+          </label>
+          <div class="actions">
+            <button class="primary" id="getByHashBtn">GET /media/hash/:hash</button>
+            <button class="primary" id="openFileBtn">Open /media/file/:hash</button>
+          </div>
+        </div>
+      </div>
+
+      <pre id="out">{}</pre>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      const statusEl = $("status");
+      const outEl = $("out");
+
+      const baseUrlEl = $("baseUrl");
+      const fileEl = $("file");
+      const uploadBtn = $("uploadBtn");
+      const clearOutBtn = $("clearOutBtn");
+      const uploadedHintEl = $("uploadedHint");
+      const imgPreviewEl = $("imgPreview");
+
+      const mediaIdEl = $("mediaId");
+      const hashEl = $("hash");
+      const getByIdBtn = $("getByIdBtn");
+      const getByHashBtn = $("getByHashBtn");
+      const openFileBtn = $("openFileBtn");
+
+      function setStatus(text) {
+        statusEl.textContent = text ?? "";
+      }
+
+      function setOut(value) {
+        outEl.textContent =
+          typeof value === "string" ? value : JSON.stringify(value, null, 2);
+      }
+
+      function getBaseUrl() {
+        const v = (baseUrlEl.value || "").trim();
+        return v || "http://localhost:5000";
+      }
+
+      function setLoading(isLoading) {
+        uploadBtn.disabled = isLoading;
+        getByIdBtn.disabled = isLoading;
+        getByHashBtn.disabled = isLoading;
+        openFileBtn.disabled = isLoading;
+        setStatus(isLoading ? "Loading..." : "");
+      }
+
+      async function safeJson(res) {
+        const text = await res.text();
+        try {
+          return JSON.parse(text);
+        } catch {
+          return text;
+        }
+      }
+
+      async function request(path, options) {
+        const url = new URL(path, getBaseUrl());
+        const res = await fetch(url.toString(), options);
+        const body = await safeJson(res);
+        if (!res.ok) {
+          const message =
+            typeof body === "object" && body && body.message
+              ? body.message
+              : `HTTP ${res.status}`;
+          const err = new Error(message);
+          err.body = body;
+          err.status = res.status;
+          throw err;
+        }
+        return body;
+      }
+
+      function saveDefaults() {
+        localStorage.setItem("media-demo.baseUrl", baseUrlEl.value.trim());
+      }
+
+      function loadDefaults() {
+        baseUrlEl.value =
+          localStorage.getItem("media-demo.baseUrl") || "http://localhost:5000";
+      }
+
+      loadDefaults();
+      setOut({ ok: true, hint: "Upload a file to see its hash and id." });
+
+      baseUrlEl.addEventListener("change", saveDefaults);
+      clearOutBtn.addEventListener("click", () => setOut({}));
+
+      uploadBtn.addEventListener("click", async () => {
+        saveDefaults();
+        setLoading(true);
+        uploadedHintEl.textContent = "";
+        imgPreviewEl.style.display = "none";
+        imgPreviewEl.src = "";
+        try {
+          const file = fileEl.files && fileEl.files[0] ? fileEl.files[0] : null;
+          if (!file) throw new Error("Pick a file first");
+
+          const form = new FormData();
+          form.append("file", file);
+
+          const data = await request("/media/upload", {
+            method: "POST",
+            body: form,
+          });
+
+          if (data && data.id) mediaIdEl.value = String(data.id);
+          if (data && data.hash) hashEl.value = String(data.hash);
+
+          const fileUrl = new URL(data.url, getBaseUrl()).toString();
+          uploadedHintEl.textContent = `Saved as hash=${data.hash} (open: ${fileUrl})`;
+
+          if (String(data.mimeType || "").startsWith("image/")) {
+            imgPreviewEl.src = fileUrl;
+            imgPreviewEl.style.display = "block";
+          }
+
+          setOut({ action: "upload", response: data });
+        } catch (e) {
+          setOut({
+            action: "upload",
+            error: String(e && e.message ? e.message : e),
+            details: e && e.body ? e.body : undefined,
+          });
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      getByIdBtn.addEventListener("click", async () => {
+        saveDefaults();
+        setLoading(true);
+        try {
+          const id = (mediaIdEl.value || "").trim();
+          const data = await request(`/media/${encodeURIComponent(id)}`, {
+            method: "GET",
+          });
+          setOut({ action: "getById", id, response: data });
+        } catch (e) {
+          setOut({
+            action: "getById",
+            error: String(e && e.message ? e.message : e),
+            details: e && e.body ? e.body : undefined,
+          });
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      getByHashBtn.addEventListener("click", async () => {
+        saveDefaults();
+        setLoading(true);
+        try {
+          const hash = (hashEl.value || "").trim();
+          const data = await request(`/media/hash/${encodeURIComponent(hash)}`, {
+            method: "GET",
+          });
+          setOut({ action: "getByHash", hash, response: data });
+        } catch (e) {
+          setOut({
+            action: "getByHash",
+            error: String(e && e.message ? e.message : e),
+            details: e && e.body ? e.body : undefined,
+          });
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      openFileBtn.addEventListener("click", () => {
+        const hash = (hashEl.value || "").trim();
+        if (!hash) {
+          setOut({ action: "openFile", error: "Enter a hash first" });
+          return;
+        }
+        const url = new URL(`/media/file/${encodeURIComponent(hash)}`, getBaseUrl());
+        window.open(url.toString(), "_blank");
+      });
+    </script>
+  </body>
+</html>
+

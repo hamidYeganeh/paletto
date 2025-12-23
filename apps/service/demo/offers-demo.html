@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offers Service Demo</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1220;
+        --panel: #121a2a;
+        --muted: #9aa4b2;
+        --text: #e5e7eb;
+        --border: #24314b;
+      }
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial;
+        background: radial-gradient(900px 600px at 30% 10%, #18264a, var(--bg));
+        color: var(--text);
+      }
+      .container {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        gap: 16px;
+      }
+      .card {
+        background: color-mix(in oklab, var(--panel) 92%, black 8%);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+        margin-top: 6px;
+      }
+      label {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      input {
+        font: inherit;
+        background: #0d1526;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        color: var(--text);
+        outline: none;
+      }
+      pre {
+        margin: 0;
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: #0a1020;
+        overflow: auto;
+        max-height: 520px;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <h1>Offers Service Demo</h1>
+        <div class="hint">
+          The <code>offers</code> module controller is currently empty in this
+          repo. Implement endpoints first, then update this demo to call them.
+        </div>
+      </div>
+
+      <div class="card">
+        <label>
+          Base URL
+          <input
+            id="baseUrl"
+            placeholder="http://localhost:5000"
+            inputmode="url"
+            autocomplete="off"
+          />
+        </label>
+      </div>
+
+      <pre id="out">{ "note": "No offers endpoints wired yet." }</pre>
+    </div>
+  </body>
+</html>
+

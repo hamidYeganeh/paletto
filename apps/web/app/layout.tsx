@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { NextIntlClientProvider } from "@repo/i18n/client";
 import { getLocale, getMessages } from "@repo/i18n/server";
+import { ThemeProvider } from "@repo/theme";
+import { ApiProvider } from "@repo/api";
 // import "@repo/theme/theme";
 
 // const geistSans = localFont({
@@ -28,10 +30,11 @@ export default async function RootLayout({
   const messages = await getMessages(locale);
   return (
     <html lang={locale}>
-      {/* <body className={`${geistSans.variable} ${geistMono.variable}`}> */}
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+          <ApiProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </ApiProvider>
         </NextIntlClientProvider>
       </body>
     </html>
