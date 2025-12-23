@@ -16,6 +16,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     children,
     isLoading,
     disabled,
+    radius,
     onClick,
     disabledRipples,
     ...otherProps
@@ -25,7 +26,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const isDisabled = Boolean(disabled || isLoading);
 
   const buttonClassName = cn(
-    ButtonStyles.base({ variant, color, size, isLoading }),
+    ButtonStyles.base({ variant, color, size, isLoading, radius }),
     className
   );
 

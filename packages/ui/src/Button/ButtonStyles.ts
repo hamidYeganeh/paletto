@@ -4,7 +4,7 @@ const ButtonBaseStyles = cva(
   cn(
     // Layout
     "inline-flex items-center justify-center gap-2",
-    "relative overflow-hidden rounded-theme-md outline-none",
+    "relative overflow-hidden outline-none",
 
     // Motion
     "transition-colors duration-200"
@@ -32,6 +32,15 @@ const ButtonBaseStyles = cva(
         lg: "h-13 px-6 text-base",
         xl: "h-14 px-8 text-lg",
       },
+      radius: {
+        xs: "rounded-theme-xs",
+        sm: "rounded-theme-sm",
+        md: "rounded-theme-md",
+        lg: "rounded-theme-lg",
+        xl: "rounded-theme-xl",
+        full: "rounded-full",
+        none: "rounded-none",
+      },
       isLoading: {
         true: "opacity-70 pointer-events-none",
         false: "",
@@ -41,6 +50,8 @@ const ButtonBaseStyles = cva(
       variant: "contained",
       color: "primary",
       size: "md",
+      radius: "md",
+      isLoading: false,
     },
   }
 );

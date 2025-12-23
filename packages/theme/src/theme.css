@@ -76,4 +76,10 @@
   --color-info-800: var(--info-800);
   --color-info-900: var(--info-900);
   --color-info-950: var(--info-950);
+
+  --radius-theme-xs: 10px;
+  --radius-theme-sm: 10px;
+  --radius-theme-md: 10px;
+  --radius-theme-lg: 10px;
+  --radius-theme-xl: 10px;
 }
