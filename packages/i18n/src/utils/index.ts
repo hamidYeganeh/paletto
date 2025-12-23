@@ -1,0 +1,2 @@
+export { resolveLocale } from "./resolveLocale";
+
