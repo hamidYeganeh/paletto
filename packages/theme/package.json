@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "exports": {
     "./theme.css": "./src/theme.css",
-    "./postcss.mjs": "./src/postcss.config.mjs"
+    "./postcss": "./src/postcss.config.mjs"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
