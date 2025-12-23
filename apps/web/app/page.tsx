@@ -7,8 +7,8 @@ export default async function Home() {
   const t = await getTranslations();
 
   return (
-    <main className="bg-primary-100 h-dvh p-12">
-      <div className="size-full flex items-center justify-center bg-secondary-200">
+    <main className="bg-primary-100 min-h-dvh p-4">
+      <div className="size-full flex items-center justify-center bg-secondary-200 p-4">
         <div className="max-w-6xl space-y-8">
           <section className="rounded-2xl border border-black/10 bg-white/80 p-6 shadow-[0_12px_40px_-24px_rgba(0,0,0,0.45)]">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-black/50">
@@ -24,7 +24,6 @@ export default async function Home() {
               <Button>{t("general.or")}</Button>
             </div>
           </section>
-
           <I18nDemo />
           <ApiDemo />
         </div>
