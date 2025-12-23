@@ -1,0 +1,13 @@
+{
+  "name": "@repo/theme",
+  "version": "0.0.0",
+  "exports": {
+    "./theme.css": "./src/theme.css",
+    "./postcss.mjs": "./src/postcss.config.mjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18"
+  }
+}
