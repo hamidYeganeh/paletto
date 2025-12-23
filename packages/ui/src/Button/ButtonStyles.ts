@@ -6,8 +6,13 @@ const ButtonBaseStyles = cva(
     "inline-flex items-center justify-center gap-2",
     "relative overflow-hidden outline-none",
 
+    // Focus
+    "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-(--main-color)",
+
     // Motion
-    "transition-colors duration-200"
+    "transition-colors duration-200",
+    "disabled:opacity-60 disabled:cursor-not-allowed",
+    "data-[disabled=true]:opacity-60 data-[disabled=true]:cursor-not-allowed"
   ),
   {
     variants: {
