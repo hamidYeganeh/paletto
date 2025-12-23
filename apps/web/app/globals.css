@@ -25,3 +25,29 @@
   --secondary-900: #05362e;
   --secondary-950: #03241e;
 }
+
+.dark {
+  --primary-50: #0f1414;
+  --primary-100: #161c1b;
+  --primary-200: #1d2524;
+  --primary-300: #222d2c;
+  --primary-400: #293735;
+  --primary-500: #324340;
+  --primary-600: #3a4d49;
+  --primary-700: #445753;
+  --primary-800: #4f625e;
+  --primary-900: #5a6e69;
+  --primary-950: #657974;
+
+  --secondary-50: #051512;
+  --secondary-100: #0a241f;
+  --secondary-200: #10322c;
+  --secondary-300: #15413a;
+  --secondary-400: #1b4f47;
+  --secondary-500: #225d55;
+  --secondary-600: #2a6c63;
+  --secondary-700: #337a71;
+  --secondary-800: #3c8980;
+  --secondary-900: #46978e;
+  --secondary-950: #51a59d;
+}

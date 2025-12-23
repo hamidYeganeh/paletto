@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "@repo/i18n/client";
 import { getLocale, getMessages } from "@repo/i18n/server";
 import { ThemeProvider } from "@repo/theme";
 import { ApiProvider } from "@repo/api";
+import { ThemeSwitch } from "./theme-switch";
 // import "@repo/theme/theme";
 
 // const geistSans = localFont({
@@ -30,10 +31,15 @@ export default async function RootLayout({
   const messages = await getMessages(locale);
   return (
     <html lang={locale}>
-      <body>
+      <body className="bg-white text-neutral-900 transition-colors duration-200 dark:bg-neutral-950 dark:text-neutral-50">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ApiProvider>
-            <ThemeProvider>{children}</ThemeProvider>
+            <ThemeProvider>
+              <div className="fixed right-6 top-6 z-50">
+                <ThemeSwitch />
+              </div>
+              {children}
+            </ThemeProvider>
           </ApiProvider>
         </NextIntlClientProvider>
       </body>
