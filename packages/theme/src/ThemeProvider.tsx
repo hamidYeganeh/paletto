@@ -1,36 +1,39 @@
 "use client";
 
 import type { ReactNode } from "react";
-import {
-  ThemeProvider as NextThemeProvider,
-  type ThemeProviderProps,
-} from "next-themes";
+import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 
-type Props = Omit<ThemeProviderProps, "children"> & {
-  children: ReactNode;
-};
+export type ThemeMode = "light" | "dark" | "system";
 
 export function ThemeProvider({
   children,
-  attribute = "class",
-  defaultTheme = "system",
-  enableSystem = true,
-  disableTransitionOnChange = true,
-  enableColorScheme = true,
-  storageKey = "paletto-theme",
-  ...rest
-}: Props) {
+  defaultMode = "system",
+}: {
+  children: ReactNode;
+  defaultMode?: ThemeMode;
+}) {
   return (
-    <NextThemeProvider
-      attribute={attribute}
-      defaultTheme={defaultTheme}
-      enableSystem={enableSystem}
-      disableTransitionOnChange={disableTransitionOnChange}
-      enableColorScheme={enableColorScheme}
-      storageKey={storageKey}
-      {...rest}
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme={defaultMode}
+      enableSystem
+      disableTransitionOnChange
+      enableColorScheme
     >
       {children}
-    </NextThemeProvider>
+    </NextThemesProvider>
   );
+}
+
+export function useThemeMode() {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const mode = (theme ?? "system") as ThemeMode;
+  const resolvedMode = (resolvedTheme ?? "light") as "light" | "dark";
+
+  return {
+    mode,
+    resolvedMode,
+    setMode: (next: ThemeMode) => setTheme(next),
+    toggleMode: () => setTheme(resolvedMode === "dark" ? "light" : "dark"),
+  };
 }

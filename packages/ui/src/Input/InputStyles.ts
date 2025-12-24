@@ -28,16 +28,15 @@ export const InputStyles = {
     },
   }),
   inputWrapper: cva(
-    "relative w-full inline-flex items-center gap-2 rounded-lg border bg-white text-neutral-900 shadow-sm transition-all duration-150 ease-in-out focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-200 data-[invalid=true]:border-red-400 data-[invalid=true]:focus-within:ring-red-200",
+    "relative w-full inline-flex items-center gap-2 rounded-lg transition-all duration-500 ease-in-out data-[invalid=true]:border-red-400 data-[invalid=true]:focus-within:ring-red-200",
     {
       variants: {
         variant: {
-          bordered: "",
-          ghost:
-            "border-transparent bg-transparent shadow-none focus-within:border-primary-400 focus-within:ring-0",
+          outlined:
+            "ring ring-white/40 input-border-b-glow focus-within:bg-white/5 origin-bottom-left text-white bg-black/10",
         },
         color: {
-          default: "",
+          default: "text-white",
         },
         size: {
           xs: "h-9 px-3 text-xs",
@@ -63,7 +62,7 @@ export const InputStyles = {
         },
       },
       defaultVariants: {
-        variant: "bordered",
+        variant: "outlined",
         color: "default",
         size: "md",
         radius: "md",
@@ -73,13 +72,15 @@ export const InputStyles = {
     }
   ),
   input: cva(
-    "w-full h-full font-normal bg-transparent outline-none placeholder:text-neutral-400 focus-visible:outline-none data-[has-start-content=true]:ps-1 data-[has-end-content=true]:pe-1 file:bg-transparent file:border-0 file:bg-none file:text-sm file:font-medium",
+    "w-full h-full font-semibold bg-transparent outline-none focus-visible:outline-none data-[has-start-content=true]:ps-1 data-[has-end-content=true]:pe-1 file:bg-transparent file:border-0 file:bg-none file:text-sm file:font-medium",
     {
       variants: {
         size: {
-          sm: "text-xs",
-          md: "text-sm",
+          xs: "text-xs",
+          sm: "text-sm",
+          md: "text-base",
           lg: "text-base",
+          xl: "text-base",
         },
       },
       defaultVariants: {
@@ -90,7 +91,7 @@ export const InputStyles = {
   description: cva("text-xs text-zinc-500 mt-1"),
   errorMessage: cva("text-xs text-red-500 mt-1"),
   clearButton: cva(
-    "p-1 rounded-full hover:bg-zinc-200 text-zinc-500 cursor-pointer transition-colors"
+    "aspect-square p-1 rounded-full hover:bg-zinc-200 text-zinc-500 cursor-pointer transition-colors"
   ),
 };
 

@@ -1,21 +1,9 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
-import { NextIntlClientProvider } from "@repo/i18n/client";
-import { getLocale, getMessages } from "@repo/i18n/server";
-import { ThemeProvider } from "@repo/theme";
-import { ApiProvider } from "@repo/api";
-import { ThemeSwitch } from "./theme-switch";
-// import "@repo/theme/theme";
-
-// const geistSans = localFont({
-//   src: "./fonts/GeistVF.woff",
-//   variable: "--font-geist-sans",
-// });
-// const geistMono = localFont({
-//   src: "./fonts/GeistMonoVF.woff",
-//   variable: "--font-geist-mono",
-// });
+import { cookies, headers } from "next/headers";
+import { Locale, resolveLocale } from "@repo/i18n";
+import { getMessages } from "@repo/i18n/server";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,21 +15,21 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
+  const cookieStore = await cookies();
+  const headerStore = await headers();
+  const locale: Locale = resolveLocale({
+    locale:
+      cookieStore.get("NEXT_LOCALE")?.value ?? cookieStore.get("locale")?.value,
+    acceptLanguage: headerStore.get("accept-language"),
+  });
   const messages = await getMessages(locale);
+
   return (
-    <html lang={locale}>
-      <body className="bg-white text-neutral-900 transition-colors duration-200 dark:bg-neutral-950 dark:text-neutral-50">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <ApiProvider>
-            <ThemeProvider>
-              <div className="fixed right-6 top-6 z-50">
-                <ThemeSwitch />
-              </div>
-              {children}
-            </ThemeProvider>
-          </ApiProvider>
-        </NextIntlClientProvider>
+    <html lang={locale} dir="rtl" suppressHydrationWarning>
+      <body>
+        <Providers locale={locale} messages={messages}>
+          {children}
+        </Providers>
       </body>
     </html>
   );

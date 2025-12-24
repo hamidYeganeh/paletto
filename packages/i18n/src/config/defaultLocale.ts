@@ -1,3 +1,3 @@
 import type { Locale } from "./locales";
 
-export const defaultLocale: Locale = "en";
+export const defaultLocale: Locale = "fa";

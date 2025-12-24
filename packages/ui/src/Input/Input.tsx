@@ -44,8 +44,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     // Simple controlled/uncontrolled handling for clear button visibility
     const isControlled = value !== undefined;
-    const currentValue = isControlled ? value ?? "" : internalValue;
-    const hasValue = currentValue !== "" && currentValue !== undefined && currentValue !== null;
+    const currentValue = isControlled ? (value ?? "") : internalValue;
+    const hasValue =
+      currentValue !== "" &&
+      currentValue !== undefined &&
+      currentValue !== null;
 
     const describedBy = useMemo(() => {
       const ids: string[] = [];
@@ -114,11 +117,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               isInvalid,
               isDisabled,
             }),
-            labelPlacement === "outside-left" ? "flex-row-reverse justify-end gap-2" : ""
+            labelPlacement === "outside-left"
+              ? "flex-row-reverse justify-end gap-2"
+              : ""
           )}
           data-invalid={isInvalid}
         >
-          {startContent}
+          {startContent && <span className="select-none">{startContent}</span>}
+
           <div className="relative flex h-full w-full items-center">
             {labelPlacement === "inside" && label && (
               <label
@@ -163,7 +169,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               <span aria-hidden="true">{"\u00d7"}</span>
             </button>
           )}
-          {endContent}
+
+          {endContent && <span className="select-none">{endContent}</span>}
         </div>
 
         {isInvalid && errorMessage ? (
@@ -171,7 +178,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {errorMessage}
           </div>
         ) : description ? (
-          <div id={`${inputId}-description`} className={InputStyles.description()}>
+          <div
+            id={`${inputId}-description`}
+            className={InputStyles.description()}
+          >
             {description}
           </div>
         ) : null}
