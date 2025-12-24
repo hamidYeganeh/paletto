@@ -82,4 +82,12 @@
   --radius-theme-md: 12px;
   --radius-theme-lg: 10px;
   --radius-theme-xl: 10px;
+
+  --auth-header-height-desktop: 84px;
+  --auth-header-height-mobile: 72px;
+}
+
+@theme inline {
+  --height-auth-header-height-mobile: var(--auth-header-height-mobile);
+  --height-auth-header-height-desktop: var(--auth-header-height-desktop);
 }

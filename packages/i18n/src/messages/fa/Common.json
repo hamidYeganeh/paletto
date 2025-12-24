@@ -3,6 +3,7 @@
     "appName": "Paletto"
   },
   "general": {
-    "or": "یا"
+    "or": "یا",
+    "continue": "ادامه"
   }
 }

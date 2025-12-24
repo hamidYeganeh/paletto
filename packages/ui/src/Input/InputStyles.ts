@@ -15,7 +15,7 @@ export const InputStyles = {
   label: cva("block text-sm font-normal mb-1.5", {
     variants: {
       color: {
-        default: "text-neutral-800",
+        default: "text-white",
       },
       required: {
         true: "after:content-['*'] after:text-red-500 after:ml-0.5",
@@ -33,7 +33,7 @@ export const InputStyles = {
       variants: {
         variant: {
           outlined:
-            "ring ring-white/40 input-border-b-glow focus-within:bg-white/5 origin-bottom-left text-white bg-black/10",
+            "ring ring-white/40 input-border-b-glow focus-within:bg-white/5 origin-bottom-left text-white bg-black/10 focus-within:ring-white/60 placeholder:text-white",
         },
         color: {
           default: "text-white",
@@ -88,7 +88,7 @@ export const InputStyles = {
       },
     }
   ),
-  description: cva("text-xs text-zinc-500 mt-1"),
+  description: cva("text-xs text-white mt-1"),
   errorMessage: cva("text-xs text-red-500 mt-1"),
   clearButton: cva(
     "aspect-square p-1 rounded-full hover:bg-zinc-200 text-zinc-500 cursor-pointer transition-colors"
