@@ -84,7 +84,7 @@ const LoginFormEmailSection = () => {
   return (
     <div className="w-full max-w-lg mx-auto flex flex-col gap-4">
       {isLayoutTransformed && (
-        <motion.div {...fadeInUp}>
+        <motion.div layout {...fadeInUp}>
           <p className="text-white text-lg font-bold">
             {t("Auth.Login.form.login-register-label")}
           </p>
@@ -103,7 +103,7 @@ const LoginFormEmailSection = () => {
       />
 
       {isLayoutTransformed && (
-        <motion.div {...fadeInDown}>
+        <motion.div layout {...fadeInDown}>
           <Button onClick={() => handleSlideTo(LoginTransitionSteps.PASSWORD)}>
             {t("Auth.Login.form.login-submit")}
           </Button>
@@ -120,7 +120,7 @@ const LoginFormPasswordSection = () => {
 
   return (
     <div className="w-full max-w-lg mx-auto flex flex-col gap-4">
-      <motion.div {...fadeInUp}>
+      <motion.div layout {...fadeInUp}>
         <p className="text-white text-lg font-bold">
           {t("Auth.Login.form.password-label")}
         </p>
@@ -134,7 +134,7 @@ const LoginFormPasswordSection = () => {
         endContent={<>EYE</>}
       />
 
-      <motion.div {...fadeInDown}>
+      <motion.div layout {...fadeInDown}>
         <Button onClick={() => goToStep(LoginTransitionSteps.PASSWORD)}>
           {t("Common.general.continue")}
         </Button>

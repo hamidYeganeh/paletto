@@ -22,13 +22,14 @@ export const LoginOutlet = () => {
   return (
     <LayoutGroup>
       <motion.section
-        layout
+        layout="position"
         transition={layoutTransition}
         className=" h-[calc(100dvh-var(--auth-header-height-mobile))] w-full"
       >
         <AnimatePresence>
           <>
             <motion.section
+              layout="position"
               transition={layoutTransition}
               className={cn("absolute flex items-center w-full", {
                 "left-4 top-0 gap-2 flex-row-reverse h-auth-header-height-mobile":
@@ -37,7 +38,7 @@ export const LoginOutlet = () => {
                   !isLayoutTransformed,
               })}
             >
-              <motion.div layout transition={layoutTransition}>
+              <motion.div layout="position" transition={layoutTransition}>
                 <Logo
                   color={"secondary"}
                   size={isLayoutTransformed ? "xs" : "xl"}
@@ -45,7 +46,7 @@ export const LoginOutlet = () => {
               </motion.div>
 
               <motion.p
-                layout
+                layout="position"
                 transition={layoutTransition}
                 className={cn(
                   "text-sm font-medium text-white tracking-[0.4em] select-none"
@@ -56,7 +57,7 @@ export const LoginOutlet = () => {
 
               {!isLayoutTransformed && (
                 <motion.div
-                  layout
+                  layout="position"
                   transition={{ ...layoutTransition, delay: 0.5 }}
                   initial={{ y: -50, opacity: 0, filter: "blur(5px)" }}
                   animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
@@ -71,7 +72,7 @@ export const LoginOutlet = () => {
             </motion.section>
 
             <motion.section
-              layout
+              layout="position"
               transition={layoutTransition}
               className={cn(
                 "w-full absolute bottom-0 px-2 py-4 overflow-hidden",
