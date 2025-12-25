@@ -39,18 +39,20 @@ export const InputStyles = {
           default: "text-white",
         },
         size: {
-          xs: "h-9 px-3 text-xs",
-          sm: "h-10 px-3 text-sm",
-          md: "h-11 px-3 text-sm",
-          lg: "h-12 px-4 text-base",
-          xl: "h-14 px-4 text-base",
+          xs: "h-11 px-3 text-xs",
+          sm: "h-12 px-3 text-sm",
+          md: "h-13 px-3 text-sm",
+          lg: "h-14 px-4 text-base",
+          xl: "h-15 px-4 text-base",
         },
         radius: {
-          none: "rounded-none",
-          sm: "rounded-sm",
+          xs: "rounded-theme-xs",
+          sm: "rounded-theme-sm",
           md: "rounded-theme-md",
-          lg: "rounded-lg",
+          lg: "rounded-theme-lg",
+          xl: "rounded-theme-xl",
           full: "rounded-full",
+          none: "rounded-none",
         },
         isInvalid: {
           true: "border-red-400 text-red-700",
@@ -72,7 +74,7 @@ export const InputStyles = {
     }
   ),
   input: cva(
-    "w-full h-full font-semibold bg-transparent outline-none focus-visible:outline-none data-[has-start-content=true]:ps-1 data-[has-end-content=true]:pe-1 file:bg-transparent file:border-0 file:bg-none file:text-sm file:font-medium",
+    "w-full h-full font-semibold bg-transparent outline-none placeholder:text-white focus-visible:outline-none data-[has-start-content=true]:ps-1 data-[has-end-content=true]:pe-1 file:bg-transparent file:border-0 file:bg-none file:text-sm file:font-medium",
     {
       variants: {
         size: {

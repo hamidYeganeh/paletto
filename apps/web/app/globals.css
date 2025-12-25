@@ -7,7 +7,7 @@
   --primary-300: #6c9b87;
   --primary-400: #437c64;
   --primary-500: #295142;
-  --primary-600: #325c4b;
+  --primary-600: #2c5243;
   --primary-700: #2a4d3e;
   --primary-800: #213d31;
   --primary-900: #192e25;
@@ -40,9 +40,9 @@
 
   background: radial-gradient(
     ellipse at center,
-    rgba(255, 255, 255, 0.95),
-    rgba(255, 255, 255, 0.35) 40%,
-    rgba(255, 255, 255, 0) 70%
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 0.25) 40%,
+    rgba(255, 255, 255, 0) 60%
   );
 
   opacity: 0;
@@ -52,8 +52,8 @@
   backdrop-filter: blur(0px);
 
   transition:
-    opacity 0.5s ease-out,
-    transform 0.5s ease-out;
+    opacity 0.4s ease-in-out,
+    transform 0.4s ease-in-out;
 
   will-change: opacity, transform, backdrop-filter;
 }
@@ -61,5 +61,5 @@
 .input-border-b-glow:focus-within::after {
   opacity: 1;
   transform: scaleX(1);
-  transition: transform 0.5s;
+  transition: transform 0.4s ease-in-out;
 }

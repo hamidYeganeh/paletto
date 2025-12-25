@@ -9,7 +9,7 @@ const layoutTransition = {
   layout: {
     stiffness: 260,
     damping: 24,
-    duration: 0.5,
+    duration: 0.4,
   },
 };
 
@@ -31,7 +31,7 @@ export const LoginOutlet = () => {
             <motion.section
               layout="position"
               transition={layoutTransition}
-              className={cn("absolute flex items-center w-full", {
+              className={cn("absolute flex items-center w-fit", {
                 "left-4 top-0 gap-2 flex-row-reverse h-auth-header-height-mobile":
                   isLayoutTransformed,
                 "mx-auto left-0 right-0 gap-4 flex-col h-[calc(50dvh-var(--auth-header-height-mobile)-2px)] justify-end pb-4":
@@ -58,7 +58,7 @@ export const LoginOutlet = () => {
               {!isLayoutTransformed && (
                 <motion.div
                   layout="position"
-                  transition={{ ...layoutTransition, delay: 0.5 }}
+                  transition={{ ...layoutTransition, delay: 0.4 }}
                   initial={{ y: -50, opacity: 0, filter: "blur(5px)" }}
                   animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
                   exit={{ y: 50, opacity: 0, filter: "blur(5px)" }}

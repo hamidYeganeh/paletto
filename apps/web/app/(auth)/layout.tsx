@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@repo/utils";
 import dynamic from "next/dynamic";
 import { PropsWithChildren, useEffect, useState } from "react";
 
@@ -16,7 +17,6 @@ export default function AuthRootLayout(props: PropsWithChildren) {
   const [showSilk, setShowSilk] = useState(false);
 
   useEffect(() => {
-    // Delay mounting the heavy canvas background until after hydrate
     const scheduleIdle =
       typeof window !== "undefined" &&
       (window as any).requestIdleCallback &&
@@ -27,20 +27,20 @@ export default function AuthRootLayout(props: PropsWithChildren) {
       return () => (window as any).cancelIdleCallback?.(id);
     }
 
-    const timeoutId = setTimeout(() => setShowSilk(true), 200);
+    const timeoutId = setTimeout(() => setShowSilk(true), 100);
     return () => clearTimeout(timeoutId);
   }, []);
 
   return (
     <div className="bg-primary-500 relative">
       {showSilk && (
-        <div className="absolute inset-0 m-auto z-0">
+        <div className={cn("absolute inset-0 m-auto z-0")}>
           <Silk
             color="#3b6c57"
             speed={12}
             scale={1}
-            noiseIntensity={0.5}
-            fps={24}
+            noiseIntensity={0.4}
+            fps={25}
           />
         </div>
       )}

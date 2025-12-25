@@ -3,12 +3,14 @@ import { create } from "zustand";
 export enum LoginTransitionSteps {
   EMAIL = "email",
   PASSWORD = "password",
+  REGISTER = "register",
 }
 
 type Direction = 1 | -1;
 const stepsOrder: LoginTransitionSteps[] = [
   LoginTransitionSteps.EMAIL,
   LoginTransitionSteps.PASSWORD,
+  LoginTransitionSteps.REGISTER,
 ];
 
 interface LoginTransitionState {

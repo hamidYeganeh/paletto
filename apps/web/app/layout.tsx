@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { Locale, resolveLocale } from "@repo/i18n";
 import { getMessages } from "@repo/i18n/server";
 import { Providers } from "./providers";
+import { yekanBakh } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,8 +26,13 @@ export default async function RootLayout({
   const messages = await getMessages(locale);
 
   return (
-    <html lang={locale} dir="rtl" suppressHydrationWarning>
-      <body>
+    <html
+      lang={locale}
+      dir="rtl"
+      suppressHydrationWarning
+      className={yekanBakh.variable}
+    >
+      <body className="font-sans">
         <Providers locale={locale} messages={messages}>
           {children}
         </Providers>

@@ -29,7 +29,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     startIcon,
     endIcon,
     asChild,
-    disabledRipples,
+    disabledRipples = false,
     ...otherProps
   } = props;
 

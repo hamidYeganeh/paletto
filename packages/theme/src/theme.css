@@ -5,6 +5,8 @@
 @custom-variant dark (&:is(.dark *, [data-theme$="-dark"] *));
 
 @theme {
+  --font-sans: var(--font-yekanbakh), ui-sans-serif, system-ui, sans-serif;
+
   --color-primary-50: var(--primary-50);
   --color-primary-100: var(--primary-100);
   --color-primary-200: var(--primary-200);
@@ -77,11 +79,11 @@
   --color-info-900: var(--info-900);
   --color-info-950: var(--info-950);
 
-  --radius-theme-xs: 10px;
+  --radius-theme-xs: 8px;
   --radius-theme-sm: 10px;
   --radius-theme-md: 12px;
-  --radius-theme-lg: 10px;
-  --radius-theme-xl: 10px;
+  --radius-theme-lg: 14px;
+  --radius-theme-xl: 16px;
 
   --auth-header-height-desktop: 84px;
   --auth-header-height-mobile: 72px;

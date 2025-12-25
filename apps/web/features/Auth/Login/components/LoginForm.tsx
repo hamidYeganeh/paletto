@@ -43,7 +43,7 @@ const fadeInDown = {
   exit: { y: -16, opacity: 0 },
 };
 
-interface LoginFormProps {}
+interface LoginFormProps { }
 
 export const LoginForm: FC<LoginFormProps> = () => {
   const step = useLoginLayoutStore((state) => state.step);
@@ -58,11 +58,12 @@ export const LoginForm: FC<LoginFormProps> = () => {
         initial="enter"
         animate="center"
         exit="exit"
-        transition={{ duration: 0.5, ease: "easeInOut" }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
         className="w-full "
       >
         {step === LoginTransitionSteps.EMAIL && <LoginFormEmailSection />}
         {step === LoginTransitionSteps.PASSWORD && <LoginFormPasswordSection />}
+        {step === LoginTransitionSteps.REGISTER && <LoginFormRegisterSection />}
       </motion.div>
     </AnimatePresence>
   );
@@ -85,7 +86,7 @@ const LoginFormEmailSection = () => {
     <div className="w-full max-w-lg mx-auto flex flex-col gap-4">
       {isLayoutTransformed && (
         <motion.div layout {...fadeInUp}>
-          <p className="text-white text-lg font-bold">
+          <p className="text-white text-lg font-bold select-none">
             {t("Auth.Login.form.login-register-label")}
           </p>
         </motion.div>
@@ -121,17 +122,46 @@ const LoginFormPasswordSection = () => {
   return (
     <div className="w-full max-w-lg mx-auto flex flex-col gap-4">
       <motion.div layout {...fadeInUp}>
-        <p className="text-white text-lg font-bold">
+        <p className="text-white text-lg font-bold select-none">
           {t("Auth.Login.form.password-label")}
         </p>
       </motion.div>
 
       <Input
         fullWidth
-        label={t("Auth.Login.form.password-label")}
+        label={"\u00A0"}
         placeholder={t("Auth.Login.form.password-placeholder")}
         description={t("Auth.Login.form.password-description")}
         endContent={<>EYE</>}
+      />
+
+      <motion.div layout {...fadeInDown}>
+        <Button onClick={() => goToStep(LoginTransitionSteps.REGISTER)}>
+          {t("Common.general.continue")}
+        </Button>
+      </motion.div>
+    </div>
+  );
+};
+
+
+const LoginFormRegisterSection = () => {
+  const t = useTranslations();
+
+  const goToStep = useLoginLayoutStore((state) => state.goToStep);
+
+  return (
+    <div className="w-full max-w-lg mx-auto flex flex-col gap-4">
+      <motion.div layout {...fadeInUp}>
+        <p className="text-white text-lg font-bold select-none">
+          {t("Auth.Login.form.app-welcome")}
+        </p>
+      </motion.div>
+
+      <Input
+        fullWidth
+        label={t('Auth.Login.form.username-label')}
+        placeholder={t("Auth.Login.form.username-placeholder")}
       />
 
       <motion.div layout {...fadeInDown}>

@@ -10,7 +10,9 @@ export const LoginHeader = () => {
       )}
     >
       <div className="w-full h-full flex flex-row items-center">
-        <Button>FA</Button>
+        <Button variant="contained" color="default">
+          FA
+        </Button>
       </div>
     </header>
   );
