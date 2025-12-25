@@ -2,7 +2,7 @@
 
 import { cn } from "@repo/utils";
 import dynamic from "next/dynamic";
-import { PropsWithChildren, Suspense, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 
 const Silk = dynamic(
   () => import("../../components/shared/SilkBackground/SilkBackground"),
@@ -33,19 +33,17 @@ export default function AuthRootLayout(props: PropsWithChildren) {
 
   return (
     <div className={"bg-primary-950 relative"}>
-      <Suspense fallback={null}>
-        {showSilk && (
-          <div className={cn("absolute inset-0 m-auto z-0")}>
-            <Silk
-              color="#3b6c57"
-              speed={12}
-              scale={1}
-              noiseIntensity={0.4}
-              fps={25}
-            />
-          </div>
-        )}
-      </Suspense>
+      {showSilk && (
+        <div className={cn("absolute inset-0 m-auto z-0")}>
+          <Silk
+            color="#3b6c57"
+            speed={12}
+            scale={1}
+            noiseIntensity={0.4}
+            fps={25}
+          />
+        </div>
+      )}
       <div className="relative z-10">{children}</div>
     </div>
   );
