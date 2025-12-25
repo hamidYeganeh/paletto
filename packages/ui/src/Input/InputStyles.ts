@@ -28,7 +28,7 @@ export const InputStyles = {
     },
   }),
   inputWrapper: cva(
-    "relative w-full inline-flex items-center gap-2 rounded-lg transition-all duration-500 ease-in-out data-[invalid=true]:border-red-400 data-[invalid=true]:focus-within:ring-red-200",
+    "relative w-full inline-flex items-center gap-2 rounded-lg transition-all duration-500 ease-in-out data-[invalid=true]:ring-error-400 data-[invalid=true]:focus-within:ring-error-200",
     {
       variants: {
         variant: {
@@ -55,7 +55,7 @@ export const InputStyles = {
           none: "rounded-none",
         },
         isInvalid: {
-          true: "border-red-400 text-red-700",
+          true: "ring-error-400 text-error-700",
           false: "",
         },
         isDisabled: {

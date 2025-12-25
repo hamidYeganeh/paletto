@@ -24,6 +24,54 @@
   --secondary-800: #584d2d;
   --secondary-900: #413922;
   --secondary-950: #2b2516;
+
+  --success-50: #f2fbfa;
+  --success-100: #b3e4df;
+  --success-200: #73cec4;
+  --success-300: #33b8a9;
+  --success-400: #009e8c;
+  --success-500: #008a7a;
+  --success-600: #007668;
+  --success-700: #006257;
+  --success-800: #004e45;
+  --success-900: #003a33;
+  --success-950: #002622;
+
+  --error-50: #fcf5f5;
+  --error-100: #efc3c0;
+  --error-200: #e2928c;
+  --error-300: #d56057;
+  --error-400: #c1352b;
+  --error-500: #a82e25;
+  --error-600: #902820;
+  --error-700: #78211b;
+  --error-800: #5f1a15;
+  --error-900: #471410;
+  --error-950: #2f0d0a;
+
+  --warning-50: #fef7f2;
+  --warning-100: #fbd2b3;
+  --warning-200: #f8ac73;
+  --warning-300: #f58633;
+  --warning-400: #e66300;
+  --warning-500: #c95600;
+  --warning-600: #ac4a00;
+  --warning-700: #8f3d00;
+  --warning-800: #723100;
+  --warning-900: #552400;
+  --warning-950: #381800;
+
+  --info-50: #f4f5fc;
+  --info-100: #bbc4eb;
+  --info-200: #8292da;
+  --info-300: #4961c9;
+  --info-400: #1b36b2;
+  --info-500: #172f9b;
+  --info-600: #142885;
+  --info-700: #11226e;
+  --info-800: #0d1b58;
+  --info-900: #0a1441;
+  --info-950: #060d2b;
 }
 
 .input-border-b-glow {

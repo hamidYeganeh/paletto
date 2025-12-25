@@ -26,6 +26,11 @@ export const registerUsernameSchema = z.object({
     .min(1, { message: "Auth.Login.validation.username-required" })
     .min(3, { message: "Auth.Login.validation.username-min" })
     .max(32, { message: "Auth.Login.validation.username-max" }),
+  privacy: z
+    .boolean()
+    .refine((v) => v === true)
+    .default(false),
+  news: z.boolean().default(false),
 });
 
 export type RegisterUsernameValues = z.infer<typeof registerUsernameSchema>;

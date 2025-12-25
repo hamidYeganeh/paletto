@@ -5,4 +5,9 @@ import { CheckboxStylesVariants } from "./CheckboxStyles";
 export interface CheckboxProps
   extends
     Omit<ComponentProps<typeof CheckboxPrimitive.Root>, "color">,
-    CheckboxStylesVariants {}
+    CheckboxStylesVariants {
+  label?: string;
+  isIndeterminate?: boolean;
+  ariaInvalid?: boolean;
+  ariaRequired?: boolean;
+}

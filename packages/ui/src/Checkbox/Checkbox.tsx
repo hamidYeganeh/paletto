@@ -3,25 +3,44 @@
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
 import { cn } from "@repo/utils"
 import { CheckboxStyles } from "./CheckboxStyles"
-import { FC } from "react"
+import { forwardRef, useId } from "react"
+import type { ElementRef } from "react"
 import { CheckboxProps } from "./CheckboxTypes"
 
 
-const Checkbox: FC<CheckboxProps> = (props) => {
+const Checkbox = forwardRef<
+    ElementRef<typeof CheckboxPrimitive.Root>,
+    CheckboxProps
+>((props, ref) => {
     const {
         className,
         color, variant,
         size,
+        label,
+        isIndeterminate,
+        ariaInvalid,
+        ariaRequired,
+        checked,
+        defaultChecked,
         ...otherProps
     } = props
 
     const CheckboxClassnames = cn(CheckboxStyles.base({ color, size, variant }), className)
+    const generatedId = useId()
+    const checkboxId = otherProps.id ?? generatedId
+    const resolvedChecked = isIndeterminate ? "indeterminate" : checked
 
-    return (
+    const root = (
         <CheckboxPrimitive.Root
             data-slot="checkbox"
+            ref={ref}
             className={CheckboxClassnames}
+            aria-invalid={ariaInvalid}
+            aria-required={ariaRequired}
             {...otherProps}
+            checked={resolvedChecked}
+            defaultChecked={isIndeterminate ? undefined : defaultChecked}
+            id={checkboxId}
         >
             <CheckboxPrimitive.Indicator
                 data-slot="checkbox-indicator"
@@ -33,6 +52,21 @@ const Checkbox: FC<CheckboxProps> = (props) => {
             </CheckboxPrimitive.Indicator>
         </CheckboxPrimitive.Root>
     )
-}
+
+    if (!label) {
+        return root
+    }
+
+    return (
+        <div data-slot="checkbox-field" className="flex flex-row gap-1 items-center">
+            {root}
+            {label ? (
+                <label data-slot="checkbox-label" htmlFor={checkboxId} className="text-sm font-light">
+                    {label}
+                </label>
+            ) : null}
+        </div>
+    )
+})
 
 export default Checkbox 

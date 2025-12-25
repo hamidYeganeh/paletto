@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ControlledInput, SubmitButton } from "@repo/ui/Form";
+import { ControlledInput, ControlledCheckbox, SubmitButton } from "@repo/ui/Form";
 import { AnimatePresence, motion } from "framer-motion";
 import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -53,7 +53,7 @@ const fadeInDown = {
   exit: { y: -16, opacity: 0 },
 };
 
-interface LoginFormProps {}
+interface LoginFormProps { }
 
 export const LoginForm: FC<LoginFormProps> = () => {
   const step = useLoginLayoutStore((state) => state.step);
@@ -127,7 +127,7 @@ const LoginFormEmailSection = () => {
 
         {isLayoutTransformed && (
           <motion.div layout {...fadeInDown}>
-            <SubmitButton>{t("Auth.Login.form.login-submit")}</SubmitButton>
+            <SubmitButton size={'xs'} disabled={!form.formState.isValid}>{t("Auth.Login.form.login-submit")}</SubmitButton>
           </motion.div>
         )}
       </form>
@@ -171,7 +171,7 @@ const LoginFormPasswordSection = () => {
         />
 
         <motion.div layout {...fadeInDown}>
-          <SubmitButton>{t("Common.general.continue")}</SubmitButton>
+          <SubmitButton size={'xs'} disabled={!form.formState.isValid}>{t("Common.general.continue")}</SubmitButton>
         </motion.div>
       </form>
     </FormProvider>
@@ -184,7 +184,7 @@ const LoginFormRegisterSection = () => {
 
   const form = useForm<RegisterUsernameValues>({
     resolver: zodResolver(registerUsernameSchema),
-    defaultValues: { username: "" },
+    defaultValues: { username: "", privacy: false, news: false },
     mode: "onSubmit",
   });
 
@@ -210,8 +210,22 @@ const LoginFormRegisterSection = () => {
           placeholder={t("Auth.Login.form.username-placeholder")}
         />
 
+        <ControlledCheckbox
+          control={form.control}
+          name="privacy"
+          t={t}
+          label={t("Auth.Login.form.privacy-check-label")}
+        />
+
+        <ControlledCheckbox
+          control={form.control}
+          name="news"
+          t={t}
+          label={t("Auth.Login.form.news-check-label")}
+        />
+
         <motion.div layout {...fadeInDown}>
-          <SubmitButton>{t("Common.general.continue")}</SubmitButton>
+          <SubmitButton size={'xs'} disabled={!form.formState.isValid}>{t("Common.general.continue")}</SubmitButton>
         </motion.div>
       </form>
     </FormProvider>
