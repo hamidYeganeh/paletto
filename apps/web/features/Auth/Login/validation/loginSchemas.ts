@@ -1,20 +1,31 @@
 import { z } from "zod";
 
 export const loginEmailSchema = z.object({
-  email: z.string().trim().email(),
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: "Auth.Login.validation.email-required" })
+    .email({ message: "Auth.Login.validation.email-invalid" }),
 });
 
 export type LoginEmailValues = z.infer<typeof loginEmailSchema>;
 
 export const loginPasswordSchema = z.object({
-  password: z.string().min(8),
+  password: z
+    .string()
+    .min(1, { message: "Auth.Login.validation.password-required" })
+    .min(8, { message: "Auth.Login.validation.password-min" }),
 });
 
 export type LoginPasswordValues = z.infer<typeof loginPasswordSchema>;
 
 export const registerUsernameSchema = z.object({
-  username: z.string().trim().min(3).max(32),
+  username: z
+    .string()
+    .trim()
+    .min(1, { message: "Auth.Login.validation.username-required" })
+    .min(3, { message: "Auth.Login.validation.username-min" })
+    .max(32, { message: "Auth.Login.validation.username-max" }),
 });
 
 export type RegisterUsernameValues = z.infer<typeof registerUsernameSchema>;
-

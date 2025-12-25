@@ -58,11 +58,11 @@ export const LoginOutlet = () => {
               {!isLayoutTransformed && (
                 <motion.div
                   layout="position"
-                  transition={{ ...layoutTransition, delay: 0.4 }}
-                  initial={{ y: -50, opacity: 0, filter: "blur(5px)" }}
+                  transition={{ ...layoutTransition, delay: 0.2 }}
+                  initial={{ y: -50, opacity: 0, filter: "blur(8px)" }}
                   animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-                  exit={{ y: 50, opacity: 0, filter: "blur(5px)" }}
-                  className="overflow-hidden mt-4"
+                  exit={{ y: 50, opacity: 0, filter: "blur(8px)" }}
+                  className="overflow-hidden mt-2 mb-1"
                 >
                   <p className="text-white text-lg font-semibold">
                     {t("Auth.Login.form.online-artworks-market")}

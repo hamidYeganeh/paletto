@@ -3,11 +3,16 @@
 import Input, { type InputProps } from "../Input";
 import {
   type FieldValues,
+  type FieldPathValue,
   type Path,
+  type FieldError,
   type RegisterOptions,
   useController,
+  useFormState,
   type Control,
 } from "react-hook-form";
+
+export type ShowErrorStrategy = "submitted" | "touched" | "dirty" | "always";
 
 export type ControlledInputProps<TFieldValues extends FieldValues> = Omit<
   InputProps,
@@ -16,7 +21,9 @@ export type ControlledInputProps<TFieldValues extends FieldValues> = Omit<
   control: Control<TFieldValues>;
   name: Path<TFieldValues>;
   rules?: RegisterOptions<TFieldValues, Path<TFieldValues>>;
-  defaultValue?: TFieldValues[Path<TFieldValues>];
+  defaultValue?: FieldPathValue<TFieldValues, Path<TFieldValues>>;
+  showError?: ShowErrorStrategy;
+  t?: (key: any) => string;
 };
 
 export function ControlledInput<TFieldValues extends FieldValues>(
@@ -29,7 +36,8 @@ export function ControlledInput<TFieldValues extends FieldValues>(
     defaultValue,
     isInvalid: isInvalidProp,
     errorMessage: errorMessageProp,
-    isDisabled: isDisabledProp,
+    showError = "submitted",
+    t,
     ...inputProps
   } = props;
 
@@ -40,8 +48,37 @@ export function ControlledInput<TFieldValues extends FieldValues>(
     defaultValue,
   });
 
-  const errorMessage = fieldState.error?.message;
-  const isInvalid = isInvalidProp ?? Boolean(errorMessage);
+  const { submitCount } = useFormState({ control });
+
+  function translateErrorMessage(error: FieldError | undefined) {
+    const message = error?.message;
+    if (!message) return undefined;
+    if (!t) return message;
+    try {
+      return t(message as any);
+    } catch {
+      return message;
+    }
+  }
+
+  const hasFieldError = Boolean(fieldState.error);
+  const shouldShowError =
+    showError === "always"
+      ? true
+      : showError === "dirty"
+        ? fieldState.isDirty
+        : showError === "touched"
+          ? fieldState.isTouched
+          : submitCount > 0;
+
+  const resolvedErrorMessage =
+    errorMessageProp ??
+    (hasFieldError && shouldShowError
+      ? translateErrorMessage(fieldState.error)
+      : undefined);
+
+  const isInvalid =
+    isInvalidProp ?? (hasFieldError && shouldShowError) ?? false;
 
   return (
     <Input
@@ -58,9 +95,7 @@ export function ControlledInput<TFieldValues extends FieldValues>(
       onChange={field.onChange}
       onBlur={field.onBlur}
       isInvalid={isInvalid}
-      errorMessage={errorMessageProp ?? errorMessage}
-      isDisabled={isDisabledProp ?? field.disabled}
+      errorMessage={resolvedErrorMessage}
     />
   );
 }
-

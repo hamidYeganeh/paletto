@@ -1,13 +1,23 @@
-import Input from "@repo/ui/Input";
-import { AnimatePresence } from "framer-motion";
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ControlledInput, SubmitButton } from "@repo/ui/Form";
+import { AnimatePresence, motion } from "framer-motion";
 import { FC } from "react";
-import { motion } from "framer-motion";
-import { Button } from "@repo/ui/Button";
+import { FormProvider, useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import {
   LoginTransitionSteps,
   useLoginLayoutStore,
 } from "../store/LoginLayoutStore";
-import { useTranslations } from "next-intl";
+import {
+  loginEmailSchema,
+  type LoginEmailValues,
+  loginPasswordSchema,
+  type LoginPasswordValues,
+  registerUsernameSchema,
+  type RegisterUsernameValues,
+} from "../validation/loginSchemas";
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -43,7 +53,7 @@ const fadeInDown = {
   exit: { y: -16, opacity: 0 },
 };
 
-interface LoginFormProps { }
+interface LoginFormProps {}
 
 export const LoginForm: FC<LoginFormProps> = () => {
   const step = useLoginLayoutStore((state) => state.step);
@@ -59,7 +69,7 @@ export const LoginForm: FC<LoginFormProps> = () => {
         animate="center"
         exit="exit"
         transition={{ duration: 0.4, ease: "easeInOut" }}
-        className="w-full "
+        className="w-full"
       >
         {step === LoginTransitionSteps.EMAIL && <LoginFormEmailSection />}
         {step === LoginTransitionSteps.PASSWORD && <LoginFormPasswordSection />}
@@ -79,96 +89,131 @@ const LoginFormEmailSection = () => {
     (state) => state.setLayoutTransformed
   );
 
-  function handleSlideTo(slide: LoginTransitionSteps) {
-    goToStep(slide);
-  }
+  const form = useForm<LoginEmailValues>({
+    resolver: zodResolver(loginEmailSchema),
+    defaultValues: { email: "" },
+    mode: "onSubmit",
+  });
+
   return (
-    <div className="w-full max-w-lg mx-auto flex flex-col gap-4">
-      {isLayoutTransformed && (
-        <motion.div layout {...fadeInUp}>
-          <p className="text-white text-lg font-bold select-none">
-            {t("Auth.Login.form.login-register-label")}
-          </p>
-        </motion.div>
-      )}
+    <FormProvider {...form}>
+      <form
+        className="w-full max-w-lg mx-auto flex flex-col gap-4"
+        onSubmit={form.handleSubmit(() => goToStep(LoginTransitionSteps.PASSWORD))}
+        noValidate
+      >
+        {isLayoutTransformed && (
+          <motion.div layout {...fadeInUp}>
+            <p className="text-white text-lg font-bold select-none">
+              {t("Auth.Login.form.login-register-label")}
+            </p>
+          </motion.div>
+        )}
 
-      <Input
-        fullWidth
-        onFocus={() => setLayoutTransformed(true)}
-        label={
-          isLayoutTransformed
-            ? "\u00A0"
-            : t("Auth.Login.form.login-register-label")
-        }
-        placeholder={t("Auth.Login.form.login-register-placeholder")}
-      />
+        <ControlledInput
+          control={form.control}
+          name="email"
+          fullWidth
+          type="email"
+          t={t}
+          onFocus={() => setLayoutTransformed(true)}
+          label={
+            isLayoutTransformed
+              ? "\u00A0"
+              : t("Auth.Login.form.login-register-label")
+          }
+          placeholder={t("Auth.Login.form.login-register-placeholder")}
+        />
 
-      {isLayoutTransformed && (
-        <motion.div layout {...fadeInDown}>
-          <Button onClick={() => handleSlideTo(LoginTransitionSteps.PASSWORD)}>
-            {t("Auth.Login.form.login-submit")}
-          </Button>
-        </motion.div>
-      )}
-    </div>
+        {isLayoutTransformed && (
+          <motion.div layout {...fadeInDown}>
+            <SubmitButton>{t("Auth.Login.form.login-submit")}</SubmitButton>
+          </motion.div>
+        )}
+      </form>
+    </FormProvider>
   );
 };
 
 const LoginFormPasswordSection = () => {
   const t = useTranslations();
-
   const goToStep = useLoginLayoutStore((state) => state.goToStep);
 
+  const form = useForm<LoginPasswordValues>({
+    resolver: zodResolver(loginPasswordSchema),
+    defaultValues: { password: "" },
+    mode: "onSubmit",
+  });
+
   return (
-    <div className="w-full max-w-lg mx-auto flex flex-col gap-4">
-      <motion.div layout {...fadeInUp}>
-        <p className="text-white text-lg font-bold select-none">
-          {t("Auth.Login.form.password-label")}
-        </p>
-      </motion.div>
+    <FormProvider {...form}>
+      <form
+        className="w-full max-w-lg mx-auto flex flex-col gap-4"
+        onSubmit={form.handleSubmit(() => goToStep(LoginTransitionSteps.REGISTER))}
+        noValidate
+      >
+        <motion.div layout {...fadeInUp}>
+          <p className="text-white text-lg font-bold select-none">
+            {t("Auth.Login.form.password-label")}
+          </p>
+        </motion.div>
 
-      <Input
-        fullWidth
-        label={"\u00A0"}
-        placeholder={t("Auth.Login.form.password-placeholder")}
-        description={t("Auth.Login.form.password-description")}
-        endContent={<>EYE</>}
-      />
+        <ControlledInput
+          control={form.control}
+          name="password"
+          fullWidth
+          type="password"
+          t={t}
+          label={"\u00A0"}
+          placeholder={t("Auth.Login.form.password-placeholder")}
+          description={t("Auth.Login.form.password-description")}
+          endContent={<>EYE</>}
+        />
 
-      <motion.div layout {...fadeInDown}>
-        <Button onClick={() => goToStep(LoginTransitionSteps.REGISTER)}>
-          {t("Common.general.continue")}
-        </Button>
-      </motion.div>
-    </div>
+        <motion.div layout {...fadeInDown}>
+          <SubmitButton>{t("Common.general.continue")}</SubmitButton>
+        </motion.div>
+      </form>
+    </FormProvider>
   );
 };
 
-
 const LoginFormRegisterSection = () => {
   const t = useTranslations();
-
   const goToStep = useLoginLayoutStore((state) => state.goToStep);
 
+  const form = useForm<RegisterUsernameValues>({
+    resolver: zodResolver(registerUsernameSchema),
+    defaultValues: { username: "" },
+    mode: "onSubmit",
+  });
+
   return (
-    <div className="w-full max-w-lg mx-auto flex flex-col gap-4">
-      <motion.div layout {...fadeInUp}>
-        <p className="text-white text-lg font-bold select-none">
-          {t("Auth.Login.form.app-welcome")}
-        </p>
-      </motion.div>
+    <FormProvider {...form}>
+      <form
+        className="w-full max-w-lg mx-auto flex flex-col gap-4"
+        onSubmit={form.handleSubmit(() => goToStep(LoginTransitionSteps.PASSWORD))}
+        noValidate
+      >
+        <motion.div layout {...fadeInUp}>
+          <p className="text-white text-lg font-bold select-none">
+            {t("Auth.Login.form.app-welcome")}
+          </p>
+        </motion.div>
 
-      <Input
-        fullWidth
-        label={t('Auth.Login.form.username-label')}
-        placeholder={t("Auth.Login.form.username-placeholder")}
-      />
+        <ControlledInput
+          control={form.control}
+          name="username"
+          fullWidth
+          t={t}
+          label={t("Auth.Login.form.username-label")}
+          placeholder={t("Auth.Login.form.username-placeholder")}
+        />
 
-      <motion.div layout {...fadeInDown}>
-        <Button onClick={() => goToStep(LoginTransitionSteps.PASSWORD)}>
-          {t("Common.general.continue")}
-        </Button>
-      </motion.div>
-    </div>
+        <motion.div layout {...fadeInDown}>
+          <SubmitButton>{t("Common.general.continue")}</SubmitButton>
+        </motion.div>
+      </form>
+    </FormProvider>
   );
 };
