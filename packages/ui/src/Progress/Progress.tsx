@@ -60,9 +60,11 @@ const Progress: FC<ProgressProps> = (props) => {
         data-slot="progress-indicator"
         className={thumbClassnames}
         initial={false}
-        animate={{ x: `${100 - clampedValue}%` }}
+        animate={{
+          x: `${100 - clampedValue}%`,
+          width: clampedValue === 0 ? 0 : "100%",
+        }}
         transition={defaultIndicatorTransition}
-        style={{ width: clampedValue === 0 ? 0 : "100%" }}
       />
     </ProgressPrimitive.Root>
   );

@@ -27,7 +27,7 @@ const CheckboxBaseStyles = cva(
         ),
       },
       size: {
-        md: "w-6 h-8",
+        md: cn("w-6 h-8", "[--checkbox-icon-size:1.5rem]", "[--checkbox-stroke-width:2]"),
       },
     },
     defaultVariants: {
