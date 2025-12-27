@@ -6,6 +6,9 @@ import { Model } from "mongoose";
 import { User } from "src/users/schemas/users.schema";
 import { SignInDto, SignInResponseDto } from "../dto/sign-in.dto";
 
+const BCRYPT_PREFIX = "$2";
+const SALT_ROUNDS = 10;
+
 @Injectable()
 export class AuthSignInService {
   constructor(
@@ -17,62 +20,72 @@ export class AuthSignInService {
   async execute(dto: SignInDto): Promise<SignInResponseDto> {
     const { email, password } = dto;
 
-    const existingUser = await this.userModel
-      .findOne({ email })
-      .select("+password")
-      .exec();
+    const existingUser = await this.findUserWithPassword(email);
 
-    if (existingUser) {
-      const storedPassword = existingUser.password;
-      const looksHashed =
-        typeof storedPassword === "string" && storedPassword.startsWith("$2");
-
-      let isPasswordValid = false;
-
-      if (looksHashed) {
-        isPasswordValid = await bcrypt.compare(password, storedPassword);
-      } else {
-        isPasswordValid = password === storedPassword;
-
-        if (isPasswordValid) {
-          const upgradedHash = await bcrypt.hash(password, 10);
-          await this.userModel.updateOne(
-            { _id: existingUser._id },
-            { password: upgradedHash }
-          );
-        }
-      }
-
-      if (!isPasswordValid) {
-        throw new UnauthorizedException("Invalid credentials");
-      }
-
-      const token = this.jwtService.sign({
-        sub: existingUser._id.toString(),
-      });
-
+    if (!existingUser) {
+      const newUser = await this.createUser(email, password);
       return {
-        token,
-        signedUpBefore: true,
+        token: this.signToken(newUser._id.toString()),
+        signedUpBefore: false,
       };
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
+    const isPasswordValid = await this.validateAndUpgradePasswordIfNeeded(
+      existingUser,
+      password
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException("Invalid credentials");
+    }
+
+    return {
+      token: this.signToken(existingUser._id.toString()),
+      signedUpBefore: true,
+    };
+  }
+
+  private async findUserWithPassword(email: string) {
+    return this.userModel.findOne({ email }).select("+password").exec();
+  }
+
+  private signToken(userId: string): string {
+    return this.jwtService.sign({ sub: userId });
+  }
+
+  private async createUser(email: string, password: string) {
+    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
     const fallbackName = email?.split("@")?.[0] || "User";
 
-    const newUser = await this.userModel.create({
+    return this.userModel.create({
       email,
       password: passwordHash,
       name: fallbackName,
     });
+  }
 
-    const token = this.jwtService.sign({
-      sub: newUser._id.toString(),
-    });
+  private isBcryptHash(value: unknown): value is string {
+    return typeof value === "string" && value.startsWith(BCRYPT_PREFIX);
+  }
 
-    return {
-      signedUpBefore: false,
-      token,
-    };
+  private async validateAndUpgradePasswordIfNeeded(
+    user: User,
+    inputPassword: string
+  ): Promise<boolean> {
+    const storedPassword = user.password;
+
+    if (this.isBcryptHash(storedPassword)) {
+      return bcrypt.compare(inputPassword, storedPassword);
+    }
+
+    const isMatch = inputPassword === storedPassword;
+    if (!isMatch) return false;
+
+    const upgradedHash = await bcrypt.hash(inputPassword, SALT_ROUNDS);
+    await this.userModel
+      .updateOne({ _id: user._id }, { password: upgradedHash })
+      .exec();
+
+    return true;
   }
 }
