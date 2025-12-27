@@ -91,7 +91,7 @@ export const ProfileArtTasteCustomizeView = () => {
             <div className="w-full flex-col flex h-full gap-8 max-w-sm mx-auto">
                 <AnimatePresence custom={direction} mode="wait">
                     <motion.div
-                        key={activeQuestion.index}
+                        key={activeQuestion?.index}
                         custom={direction}
                         variants={slideVariants}
                         initial="enter"
@@ -102,9 +102,9 @@ export const ProfileArtTasteCustomizeView = () => {
                     >
                         <ArtTasteSlide
                             key={activeQuestion?.type}
-                            question={activeQuestion || ''}
+                            question={activeQuestion as ArtTasteQuestion}
                             totalSteps={artTasteQuestions.length}
-                            defaultValues={answers[activeQuestion?.type] ?? []}
+                            defaultValues={answers[activeQuestion?.type as string] ?? []}
                             canGoPrev={canGoPrev}
                             canGoNext={canGoNext}
                             isSubmitting={isSubmitting}
@@ -112,7 +112,7 @@ export const ProfileArtTasteCustomizeView = () => {
                             onBack={() => goToIndex(activeIndex - 1)}
                             onSubmit={async (values) => {
                                 setSubmitError(null);
-                                const nextAnswers = { ...answers, [activeQuestion?.type]: values };
+                                const nextAnswers = { ...answers, [activeQuestion?.type as string]: values };
                                 setAnswers(nextAnswers);
                                 if (canGoNext) {
                                     goToIndex(activeIndex + 1);
