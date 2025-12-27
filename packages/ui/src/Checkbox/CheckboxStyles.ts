@@ -3,7 +3,8 @@ import { cn, cva, VariantProps } from "@repo/utils";
 const CheckboxBaseStyles = cva(
   cn(
     "peer border-0 shrink-0 transition-color outline-none overflow-hidden relative",
-    "rounded-theme-md transition-all duration-400"
+    "rounded-theme-md transition-all duration-400",
+    "flex items-center justify-center"
   ),
   {
     variants: {
@@ -51,7 +52,7 @@ const CheckboxFieldStyles = cva(
         white: cn(
           "[--bg-color:theme(colors.white)]",
           "[--indicator-color:theme(colors.black)]",
-          "[--text-color:theme(colors.black)]",
+          "[--text-color:theme(colors.black)]"
         ),
         black: cn(
           "[--bg-color:theme(colors.black)]",
