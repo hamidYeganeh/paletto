@@ -55,12 +55,10 @@ export class AuthSignInService {
 
   private async createUser(email: string, password: string) {
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-    const fallbackName = email?.split("@")?.[0] || "User";
 
     return this.userModel.create({
       email,
       password: passwordHash,
-      name: fallbackName,
     });
   }
 

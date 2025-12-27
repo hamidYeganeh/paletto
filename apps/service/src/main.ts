@@ -21,7 +21,13 @@ async function bootstrap() {
     })
   );
 
-  app.enableCors();
+  app.enableCors({
+    origin: "*",
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false,
+    optionsSuccessStatus: 204,
+  });
   app.use("/medias", express.static(join(process.cwd(), "uploads")));
 
   await app.listen(port);
