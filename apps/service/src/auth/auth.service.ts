@@ -1,4 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
+import { AuthSignInService } from "./services/auth-signIn.service";
+import { SignInDto, SignInResponseDto } from "./dto/sign-in.dto";
 
 @Injectable()
-export class AuthService {}
+export class AuthService {
+  constructor(private readonly authSignInService: AuthSignInService) {}
+
+  async signIn(dto: SignInDto): Promise<SignInResponseDto> {
+    return this.authSignInService.execute(dto);
+  }
+}

@@ -17,8 +17,7 @@ import { IUserStatus } from "src/users/enums/users-status.enum";
 export class RolesGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    @InjectModel(User.name)
-    private readonly userModel: Model<User>
+    @InjectModel(User.name) private readonly userModel: Model<User>
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

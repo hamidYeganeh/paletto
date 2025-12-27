@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auth Service Demo</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: radial-gradient(120% 120% at 15% 20%, #1c2733 0, #0e1116 35%),
+          radial-gradient(120% 120% at 85% 10%, #2a1f3d 0, #0e1116 35%),
+          radial-gradient(140% 140% at 50% 120%, #0f1f2d 0, #0e1116 40%);
+        color: #f4f7fb;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 32px;
+      }
+
+      .card {
+        width: min(720px, 100%);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 18px 80px rgba(0, 0, 0, 0.35);
+      }
+
+      h1 {
+        margin: 0 0 6px 0;
+        letter-spacing: -0.02em;
+        font-size: 28px;
+      }
+
+      p {
+        margin: 0 0 20px 0;
+        color: #c8d1dc;
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      label {
+        font-weight: 600;
+        color: #e3e9f1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      input {
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.25);
+        color: #f4f7fb;
+        font-size: 15px;
+        transition: border-color 0.2s ease, background 0.2s ease;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #7dd1ff;
+        background: rgba(0, 0, 0, 0.35);
+      }
+
+      button {
+        margin-top: 8px;
+        padding: 13px 16px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        background: linear-gradient(120deg, #66e0ff, #7a7cff, #ff6b9d);
+        color: #0b0f16;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 45px rgba(0, 0, 0, 0.45);
+      }
+
+      .muted {
+        color: #a7b3c4;
+        font-size: 14px;
+      }
+
+      .panel {
+        margin-top: 18px;
+        padding: 14px;
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+        color: #dbe9ff;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="card">
+      <h1>Auth Service Demo</h1>
+      <p>
+        Sends a POST request to <code>/auth/sign-in</code> with email and
+        password. New emails are created on first request; returning users get a
+        token right away.
+      </p>
+
+      <form id="auth-form">
+        <label>
+          API base URL
+          <input
+            id="base-url"
+            name="baseUrl"
+            type="url"
+            value="http://localhost:5000"
+            autocomplete="off"
+            required
+          />
+          <span class="muted">Make sure the Nest service is running with CORS enabled.</span>
+        </label>
+        <label>
+          Email
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="demo@example.com"
+            required
+          />
+        </label>
+        <label>
+          Password
+          <input
+            id="password"
+            name="password"
+            type="password"
+            minlength="6"
+            placeholder="At least 6 characters"
+            required
+          />
+        </label>
+        <button type="submit">Send sign-in request</button>
+      </form>
+
+      <div class="panel">
+        <div class="muted">Request preview (curl)</div>
+        <pre id="curl-preview"></pre>
+      </div>
+
+      <div class="panel">
+        <div class="muted">Response</div>
+        <pre id="response" aria-live="polite">Waiting for a request...</pre>
+      </div>
+    </section>
+
+    <script>
+      const form = document.getElementById("auth-form");
+      const responseEl = document.getElementById("response");
+      const curlEl = document.getElementById("curl-preview");
+      const baseUrlInput = document.getElementById("base-url");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+
+      const buildCurl = () => {
+        const base = baseUrlInput.value.replace(/\/+$/, "");
+        const payload = {
+          email: emailInput.value || "demo@example.com",
+          password: passwordInput.value || "password123",
+        };
+
+        return [
+          "curl",
+          "-X POST",
+          `"${base}/auth/sign-in"`,
+          "-H \"Content-Type: application/json\"",
+          `-d '${JSON.stringify(payload)}'`,
+        ].join(" ");
+      };
+
+      const renderCurl = () => {
+        curlEl.textContent = buildCurl();
+      };
+
+      form.addEventListener("input", renderCurl);
+      renderCurl();
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        responseEl.textContent = "Sending request...";
+
+        const base = baseUrlInput.value.replace(/\/+$/, "");
+        const payload = {
+          email: emailInput.value,
+          password: passwordInput.value,
+        };
+
+        try {
+          const res = await fetch(`${base}/auth/sign-in`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          const text = await res.text();
+          let data;
+
+          try {
+            data = JSON.parse(text);
+          } catch (err) {
+            throw new Error(`Unexpected JSON response: ${text}`);
+          }
+
+          if (!res.ok) {
+            const message =
+              data?.message || data?.error || res.statusText || "Request failed";
+            throw new Error(message);
+          }
+
+          responseEl.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          responseEl.textContent = `Error: ${err.message}`;
+        }
+      });
+    </script>
+  </body>
+</html>

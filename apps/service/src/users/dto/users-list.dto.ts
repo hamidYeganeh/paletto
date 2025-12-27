@@ -1,7 +1,6 @@
 import { Transform, Type } from "class-transformer";
 import {
   IsInt,
-  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
