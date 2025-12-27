@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { UserProfile } from "../schemas/users-profile.schema";
 import { User } from "../schemas/users.schema";
+import { ErrorKeys } from "src/common/errors";
 
 @Injectable()
 export class GetUserProfileService {
@@ -21,7 +22,7 @@ export class GetUserProfileService {
       .exec();
 
     if (!user) {
-      throw new NotFoundException("User not found");
+      throw new NotFoundException(ErrorKeys.USERS_USER_NOT_FOUND);
     }
 
     const profile = await this.userProfileModel

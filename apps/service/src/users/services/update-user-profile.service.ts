@@ -6,6 +6,7 @@ import {
 import { Model, Types } from "mongoose";
 import { UserProfileUpdateDto } from "../dto/users-profile.dto";
 import { InjectModel } from "@nestjs/mongoose";
+import { ErrorKeys } from "src/common/errors";
 
 @Injectable()
 export class UpdateUserProfileService {
@@ -29,7 +30,7 @@ export class UpdateUserProfileService {
       )
       .lean();
     if (!profile) {
-      throw new NotFoundException("Profile not found");
+      throw new NotFoundException(ErrorKeys.USERS_PROFILE_NOT_FOUND);
     }
 
     return profile;

@@ -182,8 +182,8 @@ const LoginFormPasswordSection = () => {
     } catch (error) {
       const message =
         error instanceof ApiError
-          ? "Invalid credentials"
-          : "Something went wrong";
+          ? t("Errors.Auth.invalidCredentials")
+          : t("Errors.Common.generic");
       form.setError("password", { message });
     }
   };
@@ -262,10 +262,7 @@ const LoginFormRegisterSection = () => {
       setSignedUpBefore(true);
       router.replace("/");
     } catch (error) {
-      const message =
-        error instanceof ApiError
-          ? "Something went wrong"
-          : "Something went wrong";
+      const message = t("Errors.Common.generic");
       form.setError("name", { message });
     }
   };

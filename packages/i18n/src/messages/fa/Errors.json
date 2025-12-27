@@ -1,0 +1,13 @@
+{
+  "Auth": {
+    "invalidCredentials": "اطلاعات ورود صحیح نیست.",
+    "invalidToken": "جلسه شما معتبر نیست. دوباره وارد شوید."
+  },
+  "Users": {
+    "userNotFound": "کاربر یافت نشد.",
+    "profileNotFound": "پروفایل یافت نشد."
+  },
+  "Common": {
+    "generic": "مشکلی رخ داد. دوباره تلاش کنید."
+  }
+}

@@ -5,6 +5,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User } from "src/users/schemas/users.schema";
 import { SignInDto, SignInResponseDto } from "../dto/sign-in.dto";
+import { ErrorKeys } from "src/common/errors";
 
 const BCRYPT_PREFIX = "$2";
 const SALT_ROUNDS = 10;
@@ -36,7 +37,7 @@ export class AuthSignInService {
     );
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException("Invalid credentials");
+      throw new UnauthorizedException(ErrorKeys.AUTH_INVALID_CREDENTIALS);
     }
 
     return {
