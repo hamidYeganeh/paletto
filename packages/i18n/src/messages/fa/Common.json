@@ -4,6 +4,8 @@
   },
   "general": {
     "or": "یا",
-    "continue": "ادامه"
+    "continue": "ادامه",
+    "previous": "قبلی",
+    "finish": "اتمام"
   }
 }

@@ -11,7 +11,7 @@ export const LoginView = () => {
   }, [resetLayout]);
 
   return (
-    <main className="h-dvh">
+    <main className="h-dvh overflow-hidden">
       <LoginHeader />
       <LoginOutlet />
     </main>

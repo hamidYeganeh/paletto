@@ -45,12 +45,13 @@ const CheckboxFieldStyles = cva(
     variants: {
       variant: {
         contained:
-          "bg-(--bg-color)/5 [&:has([data-state=checked])]:bg-(--indicator-color) [&:has([data-state=checked])]:text-(--bg-color)",
+          "bg-(--bg-color)/5 [&:has([data-state=checked])]:bg-(--indicator-color) [&:has([data-state=checked])]:text-(--bg-color) text-white",
       },
       color: {
         white: cn(
           "[--bg-color:theme(colors.white)]",
-          "[--indicator-color:theme(colors.black)]"
+          "[--indicator-color:theme(colors.black)]",
+          "[--text-color:theme(colors.black)]",
         ),
         black: cn(
           "[--bg-color:theme(colors.black)]",
@@ -65,7 +66,7 @@ const CheckboxFieldStyles = cva(
         md: "p-2",
       },
       bgTransparent: {
-        false: "[&:not([data-state=checked])]:bg-transparent!  text-inherit!",
+        false: "[&:not([data-state=checked])]:bg-transparent!  text-inherit!_",
       },
     },
     defaultVariants: {

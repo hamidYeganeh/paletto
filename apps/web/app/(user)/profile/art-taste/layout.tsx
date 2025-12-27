@@ -5,46 +5,50 @@ import dynamic from "next/dynamic";
 import { PropsWithChildren, useEffect, useState } from "react";
 
 const Silk = dynamic(
-    () => import("../../../../components/shared/SilkBackground"),
-    {
-        ssr: false,
-        loading: () => null,
-    }
+  () => import("../../../../components/shared/SilkBackground"),
+  {
+    ssr: false,
+    loading: () => null,
+  }
 );
 
-export default function ProfileArtTasteCustomizeRootLayout(props: PropsWithChildren) {
-    const { children } = props;
-    const [showSilk, setShowSilk] = useState(false);
+export default function ProfileArtTasteCustomizeRootLayout(
+  props: PropsWithChildren
+) {
+  const { children } = props;
+  const [showSilk, setShowSilk] = useState(false);
+  const silkColor = "#3b6c57";
 
-    useEffect(() => {
-        const scheduleIdle =
-            typeof window !== "undefined" &&
-            (window as any).requestIdleCallback &&
-            typeof (window as any).requestIdleCallback === "function";
+  useEffect(() => {
+    const scheduleIdle =
+      typeof window !== "undefined" &&
+      (window as any).requestIdleCallback &&
+      typeof (window as any).requestIdleCallback === "function";
 
-        if (scheduleIdle) {
-            const id = (window as any).requestIdleCallback(() => setShowSilk(true));
-            return () => (window as any).cancelIdleCallback?.(id);
-        }
+    if (scheduleIdle) {
+      const id = (window as any).requestIdleCallback(() => setShowSilk(true));
+      return () => (window as any).cancelIdleCallback?.(id);
+    }
 
-        const timeoutId = setTimeout(() => setShowSilk(true), 100);
-        return () => clearTimeout(timeoutId);
-    }, []);
+    const timeoutId = setTimeout(() => setShowSilk(true), 100);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
-    return (
-        <div className={"bg-primary-950 relative"}>
-            {showSilk && (
-                <div className={cn("absolute inset-0 m-auto z-0")}>
-                    <Silk
-                        color="#3b6c57"
-                        speed={12}
-                        scale={1}
-                        noiseIntensity={0.4}
-                        fps={25}
-                    />
-                </div>
-            )}
-            <div className="relative z-10">{children}</div>
+  return (
+    <div className={"bg-primary-950 relative"}>
+      {showSilk && (
+        <div className={cn("absolute inset-0 m-auto z-0")}>
+          <Silk
+            key={silkColor}
+            color={silkColor}
+            speed={12}
+            scale={1}
+            noiseIntensity={0.4}
+            fps={25}
+          />
         </div>
-    );
+      )}
+      <div className="relative z-50">{children}</div>
+    </div>
+  );
 }

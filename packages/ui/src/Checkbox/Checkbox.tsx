@@ -76,7 +76,7 @@ const Checkbox = forwardRef<
         <div data-slot="checkbox-field" className={cn(CheckboxStyles.field({ color, size, variant, bgTransparent }))}>
             {root}
             {label ? (
-                <label data-slot="checkbox-label" htmlFor={checkboxId} className="text-sm font-semibold select-none">
+                <label data-slot="checkbox-label" htmlFor={checkboxId} className="text-sm font-semibold select-none text-inherit">
                     {label}
                 </label>
             ) : null}

@@ -18,7 +18,7 @@ export const Providers: FC<ProvidersProps> = (props) => {
       messages={messages}
     >
       <ApiProvider>
-        <ThemeProvider defaultMode="system">{children}</ThemeProvider>
+        <ThemeProvider defaultMode="light">{children}</ThemeProvider>
       </ApiProvider>
     </NextIntlClientProvider>
   );
