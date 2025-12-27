@@ -17,9 +17,13 @@ interface LoginTransitionState {
   step: LoginTransitionSteps;
   direction: Direction;
   isLayoutTransformed: boolean;
+  email: string;
+  signedUpBefore?: boolean;
 
   goToStep: (step: LoginTransitionSteps) => void;
   setLayoutTransformed: (value: boolean) => void;
+  setEmail: (email: string) => void;
+  setSignedUpBefore: (value: boolean | undefined) => void;
   reset: () => void;
 }
 
@@ -27,6 +31,8 @@ const initialState = {
   step: LoginTransitionSteps.EMAIL,
   direction: 1 as Direction,
   isLayoutTransformed: false,
+  email: "",
+  signedUpBefore: undefined as boolean | undefined,
 };
 
 export const useLoginLayoutStore = create<LoginTransitionState>((set) => ({
@@ -42,6 +48,10 @@ export const useLoginLayoutStore = create<LoginTransitionState>((set) => ({
     }),
 
   setLayoutTransformed: (value) => set({ isLayoutTransformed: value }),
+
+  setEmail: (email) => set({ email }),
+
+  setSignedUpBefore: (value) => set({ signedUpBefore: value }),
 
   reset: () => set(initialState),
 }));

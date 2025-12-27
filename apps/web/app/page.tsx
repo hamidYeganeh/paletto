@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import Checkbox from "@repo/ui/Checkbox";
 import {
   DropdownMenu,
@@ -14,10 +17,36 @@ import {
   DropdownMenuTrigger,
 } from "@repo/ui/DropdownMenu";
 import { Button } from "@repo/ui/Button";
+import { getAuthToken, useCurrentUser } from "@repo/api";
 
 export default function Home() {
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    setToken(getAuthToken());
+  }, []);
+
+  const { data: profile, isLoading } = useCurrentUser();
+
+  const isAuthenticated = Boolean(token);
+
   return (
     <main className="bg-blue-500 min-h-dvh h-dvh p-4 flex items-center justify-center flex-col gap-4">
+      <div className="flex flex-col items-center gap-2 bg-white/10 text-white px-3 py-2 rounded-lg">
+        <p className="text-sm font-semibold">
+          {isAuthenticated
+            ? "Authenticated"
+            : "Not authenticated. Please log in."}
+        </p>
+        {isAuthenticated && (
+          <p className="text-xs">
+            {isLoading
+              ? "Loading profile..."
+              : (profile?.user?.email ?? "Signed in")}
+          </p>
+        )}
+      </div>
+
       <Link href={"/login"}>LOGIN</Link>
       <Link href={"/profile/art-taste"}>ART TASTE</Link>
 

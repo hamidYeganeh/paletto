@@ -1,7 +1,7 @@
 export const endpoints = {
   auth: {
-    login: "/login",
-    me: "/users/2",
+    signIn: "/auth/sign-in",
+    me: "/users/profile/get",
   },
   posts: {
     list: "https://jsonplaceholder.typicode.com/posts",
@@ -9,7 +9,11 @@ export const endpoints = {
       `https://jsonplaceholder.typicode.com/posts/${postId}`,
   },
   users: {
-    list: "/users",
+    list: "/admin/users/list",
     detail: (userId: number | string) => `/users/${userId}`,
+    profile: {
+      get: "/users/profile/get",
+      update: "/users/profile/update",
+    },
   },
 };

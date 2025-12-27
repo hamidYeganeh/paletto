@@ -14,23 +14,18 @@ export const loginPasswordSchema = z.object({
   password: z
     .string()
     .min(1, { message: "Auth.Login.validation.password-required" })
-    .min(8, { message: "Auth.Login.validation.password-min" }),
+    .min(6, { message: "Auth.Login.validation.password-min" }),
 });
 
 export type LoginPasswordValues = z.infer<typeof loginPasswordSchema>;
 
-export const registerUsernameSchema = z.object({
-  username: z
+export const registerProfileSchema = z.object({
+  name: z
     .string()
     .trim()
     .min(1, { message: "Auth.Login.validation.username-required" })
-    .min(3, { message: "Auth.Login.validation.username-min" })
-    .max(32, { message: "Auth.Login.validation.username-max" }),
-  privacy: z
-    .boolean()
-    .refine((v) => v === true)
-    .default(false),
-  news: z.boolean().default(false),
+    .min(2, { message: "Auth.Login.validation.username-min" })
+    .max(64, { message: "Auth.Login.validation.username-max" }),
 });
 
-export type RegisterUsernameValues = z.infer<typeof registerUsernameSchema>;
+export type RegisterProfileValues = z.infer<typeof registerProfileSchema>;

@@ -1,11 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ControlledInput, ControlledCheckbox, SubmitButton } from "@repo/ui/Form";
+import { ControlledInput, SubmitButton } from "@repo/ui/Form";
 import { AnimatePresence, motion } from "framer-motion";
-import { FC } from "react";
+import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { ApiError, useSignIn, useUpdateUserProfile } from "@repo/api";
 import {
   LoginTransitionSteps,
   useLoginLayoutStore,
@@ -15,8 +17,8 @@ import {
   type LoginEmailValues,
   loginPasswordSchema,
   type LoginPasswordValues,
-  registerUsernameSchema,
-  type RegisterUsernameValues,
+  registerProfileSchema,
+  type RegisterProfileValues,
 } from "../validation/loginSchemas";
 
 const slideVariants = {
@@ -53,9 +55,7 @@ const fadeInDown = {
   exit: { y: -16, opacity: 0 },
 };
 
-interface LoginFormProps { }
-
-export const LoginForm: FC<LoginFormProps> = () => {
+export const LoginForm = () => {
   const step = useLoginLayoutStore((state) => state.step);
   const direction = useLoginLayoutStore((state) => state.direction);
 
@@ -88,18 +88,26 @@ const LoginFormEmailSection = () => {
   const setLayoutTransformed = useLoginLayoutStore(
     (state) => state.setLayoutTransformed
   );
+  const setEmail = useLoginLayoutStore((state) => state.setEmail);
+  const setSignedUpBefore = useLoginLayoutStore(
+    (state) => state.setSignedUpBefore
+  );
 
   const form = useForm<LoginEmailValues>({
     resolver: zodResolver(loginEmailSchema),
     defaultValues: { email: "" },
-    mode: "onSubmit",
+    mode: "onChange",
   });
 
   return (
     <FormProvider {...form}>
       <form
         className="w-full max-w-lg mx-auto flex flex-col gap-4"
-        onSubmit={form.handleSubmit(() => goToStep(LoginTransitionSteps.PASSWORD))}
+        onSubmit={form.handleSubmit((values) => {
+          setEmail(values.email);
+          setSignedUpBefore(undefined);
+          goToStep(LoginTransitionSteps.PASSWORD);
+        })}
         noValidate
       >
         {isLayoutTransformed && (
@@ -138,18 +146,53 @@ const LoginFormEmailSection = () => {
 const LoginFormPasswordSection = () => {
   const t = useTranslations();
   const goToStep = useLoginLayoutStore((state) => state.goToStep);
+  const email = useLoginLayoutStore((state) => state.email);
+  const setSignedUpBefore = useLoginLayoutStore(
+    (state) => state.setSignedUpBefore
+  );
+  const router = useRouter();
+
+  const { mutateAsync: signIn, isPending } = useSignIn();
 
   const form = useForm<LoginPasswordValues>({
     resolver: zodResolver(loginPasswordSchema),
     defaultValues: { password: "" },
-    mode: "onSubmit",
+    mode: "onChange",
   });
+
+  const handleSubmit = async (values: LoginPasswordValues) => {
+    if (!email) {
+      form.setError("password", {
+        message: t("Auth.Login.validation.email-required"),
+      });
+      goToStep(LoginTransitionSteps.EMAIL);
+      return;
+    }
+
+    try {
+      const session = await signIn({ email, password: values.password });
+      setSignedUpBefore(session.signedUpBefore);
+
+      if (session.signedUpBefore) {
+        router.replace("/");
+        return;
+      }
+
+      goToStep(LoginTransitionSteps.REGISTER);
+    } catch (error) {
+      const message =
+        error instanceof ApiError
+          ? "Invalid credentials"
+          : "Something went wrong";
+      form.setError("password", { message });
+    }
+  };
 
   return (
     <FormProvider {...form}>
       <form
         className="w-full max-w-lg mx-auto flex flex-col gap-4"
-        onSubmit={form.handleSubmit(() => goToStep(LoginTransitionSteps.REGISTER))}
+        onSubmit={form.handleSubmit(handleSubmit)}
         noValidate
       >
         <motion.div layout {...fadeInUp}>
@@ -166,12 +209,19 @@ const LoginFormPasswordSection = () => {
           t={t}
           label={"\u00A0"}
           placeholder={t("Auth.Login.form.password-placeholder")}
-          description={t("Auth.Login.form.password-description")}
-          endContent={<>EYE</>}
+          description={
+            email ? t("Auth.Login.form.password-description") : undefined
+          }
         />
 
         <motion.div layout {...fadeInDown}>
-          <SubmitButton size={'xs'} disabled={!form.formState.isValid}>{t("Common.general.continue")}</SubmitButton>
+          <SubmitButton
+            size={"xs"}
+            disabled={!form.formState.isValid || isPending}
+            isLoading={isPending}
+          >
+            {t("Common.general.continue")}
+          </SubmitButton>
         </motion.div>
       </form>
     </FormProvider>
@@ -181,18 +231,50 @@ const LoginFormPasswordSection = () => {
 const LoginFormRegisterSection = () => {
   const t = useTranslations();
   const goToStep = useLoginLayoutStore((state) => state.goToStep);
+  const signedUpBefore = useLoginLayoutStore(
+    (state) => state.signedUpBefore
+  );
+  const setSignedUpBefore = useLoginLayoutStore(
+    (state) => state.setSignedUpBefore
+  );
+  const router = useRouter();
 
-  const form = useForm<RegisterUsernameValues>({
-    resolver: zodResolver(registerUsernameSchema),
-    defaultValues: { username: "", privacy: false, news: false },
-    mode: "onSubmit",
+  const { mutateAsync: updateProfile, isPending } = useUpdateUserProfile();
+
+  useEffect(() => {
+    if (signedUpBefore === false) return;
+    if (signedUpBefore === true) {
+      router.replace("/");
+      return;
+    }
+    goToStep(LoginTransitionSteps.EMAIL);
+  }, [goToStep, router, signedUpBefore]);
+
+  const form = useForm<RegisterProfileValues>({
+    resolver: zodResolver(registerProfileSchema),
+    defaultValues: { name: "" },
+    mode: "onChange",
   });
+
+  const handleSubmit = async (values: RegisterProfileValues) => {
+    try {
+      await updateProfile({ name: values.name });
+      setSignedUpBefore(true);
+      router.replace("/");
+    } catch (error) {
+      const message =
+        error instanceof ApiError
+          ? "Something went wrong"
+          : "Something went wrong";
+      form.setError("name", { message });
+    }
+  };
 
   return (
     <FormProvider {...form}>
       <form
         className="w-full max-w-lg mx-auto flex flex-col gap-4"
-        onSubmit={form.handleSubmit(() => goToStep(LoginTransitionSteps.PASSWORD))}
+        onSubmit={form.handleSubmit(handleSubmit)}
         noValidate
       >
         <motion.div layout {...fadeInUp}>
@@ -203,29 +285,21 @@ const LoginFormRegisterSection = () => {
 
         <ControlledInput
           control={form.control}
-          name="username"
+          name="name"
           fullWidth
           t={t}
           label={t("Auth.Login.form.username-label")}
           placeholder={t("Auth.Login.form.username-placeholder")}
         />
 
-        <ControlledCheckbox
-          control={form.control}
-          name="privacy"
-          t={t}
-          label={t("Auth.Login.form.privacy-check-label")}
-        />
-
-        <ControlledCheckbox
-          control={form.control}
-          name="news"
-          t={t}
-          label={t("Auth.Login.form.news-check-label")}
-        />
-
         <motion.div layout {...fadeInDown}>
-          <SubmitButton size={'xs'} disabled={!form.formState.isValid}>{t("Common.general.continue")}</SubmitButton>
+          <SubmitButton
+            size={"xs"}
+            disabled={!form.formState.isValid || isPending}
+            isLoading={isPending}
+          >
+            {t("Common.general.continue")}
+          </SubmitButton>
         </motion.div>
       </form>
     </FormProvider>

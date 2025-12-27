@@ -1,28 +1,39 @@
 import { endpoints } from "../../client/endpoints";
 import { http } from "../../client/http";
-import type { User, UserResponse, UsersListParams, UsersListResponse } from "./users.types";
-
-export const DEFAULT_USERS_PER_PAGE = 6;
-
-export const normalizeUsersParams = (params?: UsersListParams) => ({
-  page: params?.page ?? 1,
-  perPage: params?.perPage ?? DEFAULT_USERS_PER_PAGE,
-});
+import type {
+  UpdateUserProfilePayload,
+  User,
+  UserProfile,
+  UserProfileResponse,
+  UsersListParams,
+  UsersListResponse,
+} from "./users.types";
 
 export async function fetchUsers(
   params?: UsersListParams
 ): Promise<UsersListResponse> {
-  const normalized = normalizeUsersParams(params);
-
   return http.get<UsersListResponse>(endpoints.users.list, {
     query: {
-      page: normalized.page,
-      per_page: normalized.perPage,
+      page: params?.page ?? 1,
+      limit: params?.limit ?? 10,
+      search: params?.search,
     },
   });
 }
 
 export async function fetchUser(userId: number | string): Promise<User> {
-  const response = await http.get<UserResponse>(endpoints.users.detail(userId));
-  return response.data;
+  return http.get<User>(endpoints.users.detail(userId));
+}
+
+export async function fetchUserProfile(): Promise<UserProfileResponse> {
+  return http.get<UserProfileResponse>(endpoints.users.profile.get);
+}
+
+export async function updateUserProfile(
+  payload: UpdateUserProfilePayload
+): Promise<UserProfile> {
+  return http.patch<UserProfile, UpdateUserProfilePayload>(
+    endpoints.users.profile.update,
+    payload
+  );
 }

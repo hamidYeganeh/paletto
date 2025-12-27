@@ -3,6 +3,7 @@ export * from "./provider";
 export * from "./client/config";
 export * from "./client/endpoints";
 export * from "./client/http";
+export * from "./session";
 export * from "./core/queryClient";
 export * from "./core/queryKeys";
 export * from "./domains/auth/auth.api";

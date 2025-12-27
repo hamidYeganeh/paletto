@@ -1,17 +1,23 @@
 import { endpoints } from "../../client/endpoints";
 import { http } from "../../client/http";
-import type { User } from "../users/users.types";
-import type { LoginPayload, LoginResponse, Session } from "./auth.types";
+import { setAuthToken } from "../../session";
+import type {
+  SignInPayload,
+  SignInResponse,
+  Session,
+} from "./auth.types";
+import type { UserProfileResponse } from "../users/users.types";
 
-export async function login(payload: LoginPayload): Promise<Session> {
-  const response = await http.post<LoginResponse, LoginPayload>(
-    endpoints.auth.login,
+export async function signIn(payload: SignInPayload): Promise<Session> {
+  const response = await http.post<SignInResponse, SignInPayload>(
+    endpoints.auth.signIn,
     payload
   );
-  return { token: response.token };
+  setAuthToken(response.token);
+  return response;
 }
 
-export async function fetchCurrentUser(): Promise<User> {
-  const response = await http.get<{ data: User }>(endpoints.auth.me);
-  return response.data;
+export async function fetchCurrentUser(): Promise<UserProfileResponse> {
+  const response = await http.get<UserProfileResponse>(endpoints.auth.me);
+  return response;
 }

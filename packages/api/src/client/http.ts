@@ -1,4 +1,5 @@
 import { API_BASE_URL, DEFAULT_HEADERS } from "./config";
+import { getAuthToken } from "../session";
 
 type Primitive = string | number | boolean | null | undefined;
 
@@ -47,10 +48,12 @@ async function request<TResponse, TBody = unknown>({
   cache = "no-store",
 }: RequestConfig<TBody>): Promise<TResponse> {
   const url = buildUrl(path, query);
+  const authToken = getAuthToken();
   const response = await fetch(url, {
     method,
     headers: {
       ...DEFAULT_HEADERS,
+      ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
       ...headers,
     },
     body: body ? JSON.stringify(body) : undefined,

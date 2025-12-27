@@ -6,12 +6,14 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { ApiError } from "../../client/http";
-import { fetchCurrentUser, login } from "./auth.api";
+import { fetchCurrentUser, signIn } from "./auth.api";
 import { authKeys } from "./auth.keys";
-import type { LoginPayload, Session } from "./auth.types";
-import type { User } from "../users/users.types";
+import type { SignInPayload, Session } from "./auth.types";
+import type { UserProfileResponse } from "../users/users.types";
 
-export function useCurrentUser(options?: UseQueryOptions<User, ApiError>) {
+export function useCurrentUser(
+  options?: UseQueryOptions<UserProfileResponse, ApiError>
+) {
   return useQuery({
     queryKey: authKeys.session(),
     queryFn: fetchCurrentUser,
@@ -20,14 +22,14 @@ export function useCurrentUser(options?: UseQueryOptions<User, ApiError>) {
   });
 }
 
-export function useLogin(
-  options?: UseMutationOptions<Session, ApiError, LoginPayload>
+export function useSignIn(
+  options?: UseMutationOptions<Session, ApiError, SignInPayload>
 ) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: authKeys.login(),
-    mutationFn: login,
+    mutationKey: authKeys.signIn(),
+    mutationFn: signIn,
     ...options,
     onSuccess: (session, variables, onMutateResult, mutationContext) => {
       queryClient.invalidateQueries({ queryKey: authKeys.session() });
