@@ -97,7 +97,7 @@ type UncontrolledParentModeHighlightProps<T extends React.ElementType = "div"> =
       mode: "parent";
       controlledItems?: false;
       itemsClassName?: string;
-      children: React.ReactElement | React.ReactElement[];
+      children: React.ReactNode;
     };
 
 type UncontrolledChildrenModeHighlightProps<
@@ -106,7 +106,7 @@ type UncontrolledChildrenModeHighlightProps<
   mode?: "children";
   controlledItems?: false;
   itemsClassName?: string;
-  children: React.ReactElement | React.ReactElement[];
+  children: React.ReactNode;
 };
 
 type HighlightProps<T extends React.ElementType = "div"> =
@@ -299,6 +299,12 @@ const Highlight = React.forwardRef<HTMLDivElement, HighlightProps<any>>(
       return childrenNode;
     };
 
+    const itemsClassName = (
+      props as
+        | UncontrolledChildrenModeHighlightProps
+        | UncontrolledParentModeHighlightProps
+    ).itemsClassName;
+
     return (
       <HighlightContext.Provider
         value={{
@@ -327,7 +333,7 @@ const Highlight = React.forwardRef<HTMLDivElement, HighlightProps<any>>(
             ? render(children)
             : render(
                 React.Children.map(children, (child, index) => (
-                  <HighlightItem key={index} className={props?.itemsClassName}>
+                  <HighlightItem key={index} className={itemsClassName}>
                     {child as React.ReactElement}
                   </HighlightItem>
                 ))
