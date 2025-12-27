@@ -4,8 +4,9 @@ import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
 import { cn } from "@repo/utils"
 import { CheckboxStyles } from "./CheckboxStyles"
 import { forwardRef, useId } from "react"
-import type { ElementRef } from "react"
+import type { ElementRef, MouseEvent } from "react"
 import { CheckboxProps } from "./CheckboxTypes"
+import { useRipple } from "@repo/hooks"
 
 
 const Checkbox = forwardRef<
@@ -22,6 +23,9 @@ const Checkbox = forwardRef<
         ariaRequired,
         checked,
         defaultChecked,
+        onClick,
+        disabledRipples,
+        bgTransparent,
         ...otherProps
     } = props
 
@@ -29,6 +33,20 @@ const Checkbox = forwardRef<
     const generatedId = useId()
     const checkboxId = otherProps.id ?? generatedId
     const resolvedChecked = isIndeterminate ? "indeterminate" : checked
+    const { createRipple } = useRipple()
+
+    function handleClick(event: MouseEvent<HTMLButtonElement>) {
+        if (otherProps.disabled) {
+            event.preventDefault();
+            return;
+        }
+
+        if (!disabledRipples) {
+            createRipple(event);
+        }
+
+        onClick?.(event);
+    }
 
     const root = (
         <CheckboxPrimitive.Root
@@ -41,6 +59,7 @@ const Checkbox = forwardRef<
             checked={resolvedChecked}
             defaultChecked={isIndeterminate ? undefined : defaultChecked}
             id={checkboxId}
+            onClick={handleClick}
         >
             <CheckboxPrimitive.Indicator
                 data-slot="checkbox-indicator"
@@ -53,15 +72,11 @@ const Checkbox = forwardRef<
         </CheckboxPrimitive.Root>
     )
 
-    if (!label) {
-        return root
-    }
-
     return (
-        <div data-slot="checkbox-field" className="flex flex-row gap-1 items-center">
+        <div data-slot="checkbox-field" className={cn(CheckboxStyles.field({ color, size, variant, bgTransparent }))}>
             {root}
             {label ? (
-                <label data-slot="checkbox-label" htmlFor={checkboxId} className="text-sm font-light">
+                <label data-slot="checkbox-label" htmlFor={checkboxId} className="text-sm font-semibold select-none">
                     {label}
                 </label>
             ) : null}
