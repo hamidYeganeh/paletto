@@ -1,24 +1,24 @@
 import { Injectable } from "@nestjs/common";
 import { UserProfileUpdateDto } from "./dto/users-profile.dto";
 import { UserProfileDocument } from "./schemas/users-profile.schema";
-import { UsersUpdateService } from "./services/users-update.service";
-import { UsersProfileService } from "./services/users-profile.service";
+import { UpdateUserProfileService } from "./services/update-user-profile.service";
+import { GetUserProfileService } from "./services/get-user-profile.service";
 
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly usersUpdateService: UsersUpdateService,
-    private readonly usersProfileService: UsersProfileService
+    private readonly updateUserProfileService: UpdateUserProfileService,
+    private readonly getUserProfileService: GetUserProfileService
   ) {}
 
   async updateProfile(
     userId: string,
     dto: UserProfileUpdateDto
   ): Promise<UserProfileDocument> {
-    return this.usersUpdateService.execute(userId, dto);
+    return this.updateUserProfileService.execute(userId, dto);
   }
 
   async getProfile(userId: string) {
-    return this.usersProfileService.execute(userId);
+    return this.getUserProfileService.execute(userId);
   }
 }

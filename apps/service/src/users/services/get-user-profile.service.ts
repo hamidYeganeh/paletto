@@ -5,7 +5,7 @@ import { UserProfile } from "../schemas/users-profile.schema";
 import { User } from "../schemas/users.schema";
 
 @Injectable()
-export class UsersProfileService {
+export class GetUserProfileService {
   constructor(
     @InjectModel(UserProfile.name)
     private readonly userProfileModel: Model<UserProfile>,

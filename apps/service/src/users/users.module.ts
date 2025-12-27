@@ -3,10 +3,10 @@ import { UsersController } from "./controllers/users.controller";
 import { UsersService } from "./users.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { User, UserSchema } from "./schemas/users.schema";
-import { UsersListService } from "./services/users-list.service";
-import { UsersProfileService } from "./services/users-profile.service";
-import { UsersUpdateService } from "./services/users-update.service";
-import { UsersAdminControllers } from "./controllers/users-admin.controller";
+import { ListUsersService } from "./services/list-users.service";
+import { GetUserProfileService } from "./services/get-user-profile.service";
+import { UpdateUserProfileService } from "./services/update-user-profile.service";
+import { UsersAdminController } from "./controllers/users-admin.controller";
 import { UserProfile, UserProfileSchema } from "./schemas/users-profile.schema";
 
 @Module({
@@ -16,12 +16,12 @@ import { UserProfile, UserProfileSchema } from "./schemas/users-profile.schema";
       { name: UserProfile.name, schema: UserProfileSchema },
     ]),
   ],
-  controllers: [UsersController, UsersAdminControllers],
+  controllers: [UsersController, UsersAdminController],
   providers: [
     UsersService,
-    UsersListService,
-    UsersUpdateService,
-    UsersProfileService,
+    ListUsersService,
+    UpdateUserProfileService,
+    GetUserProfileService,
   ],
   exports: [MongooseModule],
 })

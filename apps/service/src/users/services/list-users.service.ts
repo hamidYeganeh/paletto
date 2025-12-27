@@ -9,7 +9,7 @@ import {
 } from "src/constants/default-list-params";
 
 @Injectable()
-export class UsersListService {
+export class ListUsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>
   ) {}

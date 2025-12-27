@@ -8,7 +8,7 @@ import { UserProfileUpdateDto } from "../dto/users-profile.dto";
 import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
-export class UsersUpdateService {
+export class UpdateUserProfileService {
   constructor(
     @InjectModel(UserProfile.name)
     private readonly userProfileModel: Model<UserProfileDocument>
