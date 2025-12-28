@@ -7,7 +7,7 @@ export type UserProfileDocument = HydratedDocument<UserProfile>;
 export class UserProfile {
   @Prop({
     type: Types.ObjectId,
-    ref: "User",
+    ref: "Users",
     unique: true,
     index: true,
     required: true,

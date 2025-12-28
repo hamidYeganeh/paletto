@@ -8,20 +8,27 @@ import { GetUserProfileService } from "./services/get-user-profile.service";
 import { UpdateUserProfileService } from "./services/update-user-profile.service";
 import { UsersAdminController } from "./controllers/users-admin.controller";
 import { UserProfile, UserProfileSchema } from "./schemas/users-profile.schema";
+import { Artist, ArtistSchema } from "./schemas/artists-profile.schema";
+import { CreateArtistService } from "./services/create-artist.service";
+import { UpdateArtistService } from "./services/update-artist.service";
+import { ArtistsController } from "./controllers/artists.controller";
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: UserProfile.name, schema: UserProfileSchema },
+      { name: Artist.name, schema: ArtistSchema },
     ]),
   ],
-  controllers: [UsersController, UsersAdminController],
+  controllers: [UsersController, UsersAdminController, ArtistsController],
   providers: [
     UsersService,
     ListUsersService,
     UpdateUserProfileService,
     GetUserProfileService,
+    CreateArtistService,
+    UpdateArtistService,
   ],
   exports: [MongooseModule],
 })

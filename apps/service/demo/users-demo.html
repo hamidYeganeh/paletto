@@ -233,6 +233,92 @@
             <pre id="resp-update">Waiting...</pre>
           </div>
         </div>
+
+        <div class="card">
+          <h2>Create artist profile</h2>
+          <p class="muted">POST /artists/create</p>
+          <form id="artist-create-form">
+            <label>
+              Display name
+              <input
+                id="artist-display-name"
+                name="displayName"
+                type="text"
+                placeholder="Painter Jane"
+              />
+            </label>
+            <label>
+              Techniques (comma-separated ObjectIds)
+              <input
+                id="artist-techniques"
+                name="techniques"
+                type="text"
+                placeholder="6512abc..., 6512def..."
+              />
+            </label>
+            <label>
+              Styles (comma-separated ObjectIds)
+              <input
+                id="artist-styles"
+                name="styles"
+                type="text"
+                placeholder="6512fed..., 6512cba..."
+              />
+            </label>
+            <button type="submit">Create artist</button>
+          </form>
+          <div class="panel">
+            <div class="muted">Curl</div>
+            <pre id="curl-artist-create"></pre>
+          </div>
+          <div class="panel">
+            <div class="muted">Response</div>
+            <pre id="resp-artist-create">Waiting...</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Update artist profile</h2>
+          <p class="muted">PATCH /artists/update</p>
+          <form id="artist-update-form">
+            <label>
+              Display name
+              <input
+                id="artist-update-display-name"
+                name="displayName"
+                type="text"
+                placeholder="Painter Jane"
+              />
+            </label>
+            <label>
+              Techniques (comma-separated ObjectIds)
+              <input
+                id="artist-update-techniques"
+                name="techniques"
+                type="text"
+                placeholder="6512abc..., 6512def..."
+              />
+            </label>
+            <label>
+              Styles (comma-separated ObjectIds)
+              <input
+                id="artist-update-styles"
+                name="styles"
+                type="text"
+                placeholder="6512fed..., 6512cba..."
+              />
+            </label>
+            <button type="submit">Update artist</button>
+          </form>
+          <div class="panel">
+            <div class="muted">Curl</div>
+            <pre id="curl-artist-update"></pre>
+          </div>
+          <div class="panel">
+            <div class="muted">Response</div>
+            <pre id="resp-artist-update">Waiting...</pre>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -249,7 +335,35 @@
       const curlUpdateEl = document.getElementById("curl-update");
       const respUpdateEl = document.getElementById("resp-update");
 
+      const artistCreateForm = document.getElementById("artist-create-form");
+      const artistCreateDisplayNameInput =
+        document.getElementById("artist-display-name");
+      const artistCreateTechniquesInput =
+        document.getElementById("artist-techniques");
+      const artistCreateStylesInput =
+        document.getElementById("artist-styles");
+      const curlArtistCreateEl = document.getElementById("curl-artist-create");
+      const respArtistCreateEl = document.getElementById("resp-artist-create");
+
+      const artistUpdateForm = document.getElementById("artist-update-form");
+      const artistUpdateDisplayNameInput = document.getElementById(
+        "artist-update-display-name"
+      );
+      const artistUpdateTechniquesInput = document.getElementById(
+        "artist-update-techniques"
+      );
+      const artistUpdateStylesInput =
+        document.getElementById("artist-update-styles");
+      const curlArtistUpdateEl = document.getElementById("curl-artist-update");
+      const respArtistUpdateEl = document.getElementById("resp-artist-update");
+
       const cleanBase = () => baseUrlInput.value.replace(/\/+$/, "");
+
+      const parseList = (value) =>
+        (value || "")
+          .split(",")
+          .map((v) => v.trim())
+          .filter(Boolean);
 
       const renderCurlGet = () => {
         const base = cleanBase();
@@ -279,18 +393,80 @@
         ].join(" ");
       };
 
+      const renderCurlArtistCreate = () => {
+        const base = cleanBase();
+        const token = tokenInput.value || "<TOKEN>";
+        const body = {};
+
+        if (artistCreateDisplayNameInput.value.trim()) {
+          body.displayName = artistCreateDisplayNameInput.value.trim();
+        }
+        const techniques = parseList(artistCreateTechniquesInput.value);
+        if (techniques.length) {
+          body.techniques = techniques;
+        }
+        const styles = parseList(artistCreateStylesInput.value);
+        if (styles.length) {
+          body.styles = styles;
+        }
+
+        curlArtistCreateEl.textContent = [
+          "curl",
+          "-X POST",
+          `"${base}/artists/create"`,
+          '-H "Authorization: Bearer ' + token + '"',
+          '-H "Content-Type: application/json"',
+          `-d '${JSON.stringify(body)}'`,
+        ].join(" ");
+      };
+
+      const renderCurlArtistUpdate = () => {
+        const base = cleanBase();
+        const token = tokenInput.value || "<TOKEN>";
+        const body = {};
+
+        if (artistUpdateDisplayNameInput.value.trim()) {
+          body.displayName = artistUpdateDisplayNameInput.value.trim();
+        }
+        const techniques = parseList(artistUpdateTechniquesInput.value);
+        if (techniques.length) {
+          body.techniques = techniques;
+        }
+        const styles = parseList(artistUpdateStylesInput.value);
+        if (styles.length) {
+          body.styles = styles;
+        }
+
+        curlArtistUpdateEl.textContent = [
+          "curl",
+          "-X PATCH",
+          `"${base}/artists/update"`,
+          '-H "Authorization: Bearer ' + token + '"',
+          '-H "Content-Type: application/json"',
+          `-d '${JSON.stringify(body)}'`,
+        ].join(" ");
+      };
+
       baseUrlInput.addEventListener("input", () => {
         renderCurlGet();
         renderCurlUpdate();
+        renderCurlArtistCreate();
+        renderCurlArtistUpdate();
       });
       tokenInput.addEventListener("input", () => {
         renderCurlGet();
         renderCurlUpdate();
+        renderCurlArtistCreate();
+        renderCurlArtistUpdate();
       });
       updateForm.addEventListener("input", renderCurlUpdate);
+      artistCreateForm.addEventListener("input", renderCurlArtistCreate);
+      artistUpdateForm.addEventListener("input", renderCurlArtistUpdate);
 
       renderCurlGet();
       renderCurlUpdate();
+      renderCurlArtistCreate();
+      renderCurlArtistUpdate();
 
       getBtn.addEventListener("click", async () => {
         respGetEl.textContent = "Fetching profile...";
@@ -345,6 +521,90 @@
           respUpdateEl.textContent = JSON.stringify(data, null, 2);
         } catch (err) {
           respUpdateEl.textContent = `Error: ${err.message}`;
+        }
+      });
+
+      artistCreateForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        respArtistCreateEl.textContent = "Creating artist profile...";
+        const payload = {};
+
+        if (artistCreateDisplayNameInput.value.trim()) {
+          payload.displayName = artistCreateDisplayNameInput.value.trim();
+        }
+        const techniques = parseList(artistCreateTechniquesInput.value);
+        if (techniques.length) {
+          payload.techniques = techniques;
+        }
+        const styles = parseList(artistCreateStylesInput.value);
+        if (styles.length) {
+          payload.styles = styles;
+        }
+
+        try {
+          const res = await fetch(`${cleanBase()}/artists/create`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenInput.value}`,
+            },
+            body: JSON.stringify(payload),
+          });
+          const text = await res.text();
+          let data;
+          try {
+            data = JSON.parse(text);
+          } catch (err) {
+            throw new Error(`Unexpected JSON response: ${text}`);
+          }
+          if (!res.ok) {
+            throw new Error(data?.message || res.statusText);
+          }
+          respArtistCreateEl.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          respArtistCreateEl.textContent = `Error: ${err.message}`;
+        }
+      });
+
+      artistUpdateForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        respArtistUpdateEl.textContent = "Updating artist profile...";
+        const payload = {};
+
+        if (artistUpdateDisplayNameInput.value.trim()) {
+          payload.displayName = artistUpdateDisplayNameInput.value.trim();
+        }
+        const techniques = parseList(artistUpdateTechniquesInput.value);
+        if (techniques.length) {
+          payload.techniques = techniques;
+        }
+        const styles = parseList(artistUpdateStylesInput.value);
+        if (styles.length) {
+          payload.styles = styles;
+        }
+
+        try {
+          const res = await fetch(`${cleanBase()}/artists/update`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenInput.value}`,
+            },
+            body: JSON.stringify(payload),
+          });
+          const text = await res.text();
+          let data;
+          try {
+            data = JSON.parse(text);
+          } catch (err) {
+            throw new Error(`Unexpected JSON response: ${text}`);
+          }
+          if (!res.ok) {
+            throw new Error(data?.message || res.statusText);
+          }
+          respArtistUpdateEl.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          respArtistUpdateEl.textContent = `Error: ${err.message}`;
         }
       });
     </script>
