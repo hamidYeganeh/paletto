@@ -26,9 +26,10 @@ export class UpdateUserProfileService {
         {
           new: true,
           upsert: true,
+          setDefaultsOnInsert: true,
         }
       )
-      .lean();
+      .exec();
     if (!profile) {
       throw new NotFoundException(ErrorKeys.USERS_PROFILE_NOT_FOUND);
     }

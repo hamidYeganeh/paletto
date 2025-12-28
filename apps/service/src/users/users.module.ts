@@ -12,6 +12,7 @@ import { Artist, ArtistSchema } from "./schemas/artists-profile.schema";
 import { CreateArtistService } from "./services/create-artist.service";
 import { UpdateArtistService } from "./services/update-artist.service";
 import { ArtistsController } from "./controllers/artists.controller";
+import { ArtistAccessService } from "./services/artist-access.service";
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { ArtistsController } from "./controllers/artists.controller";
     GetUserProfileService,
     CreateArtistService,
     UpdateArtistService,
+    ArtistAccessService,
   ],
-  exports: [MongooseModule],
+  exports: [MongooseModule, UsersService, ArtistAccessService],
 })
 export class UsersModule {}

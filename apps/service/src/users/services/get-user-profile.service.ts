@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { UserProfile } from "../schemas/users-profile.schema";
@@ -15,8 +19,10 @@ export class GetUserProfileService {
   ) {}
 
   async execute(userId: string) {
+    const userObjectId = this.toObjectId(userId);
+
     const user = await this.userModel
-      .findById(new Types.ObjectId(userId))
+      .findById(userObjectId)
       .select("email role status createdAt updatedAt")
       .lean()
       .exec();
@@ -27,18 +33,34 @@ export class GetUserProfileService {
 
     const profile = await this.userProfileModel
       .findOne({
-        userId: new Types.ObjectId(userId),
+        userId: userObjectId,
       })
       .lean()
       .exec();
 
     return {
-      user,
-      profile: profile ?? {
-        userId: new Types.ObjectId(userId),
-        name: "",
-        bio: undefined,
+      user: {
+        ...user,
+        _id: user._id.toString(),
       },
+      profile: profile
+        ? {
+            ...profile,
+            userId: profile.userId.toString(),
+          }
+        : {
+            userId: userObjectId.toString(),
+            name: "",
+            bio: undefined,
+          },
     };
+  }
+
+  private toObjectId(userId: string): Types.ObjectId {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException(ErrorKeys.USERS_USER_NOT_FOUND);
+    }
+
+    return new Types.ObjectId(userId);
   }
 }

@@ -1,20 +1,16 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Artist, ArtistDocument } from "../schemas/artists-profile.schema";
 import { Model, Types } from "mongoose";
 import { ArtistUpdateDto } from "../dto/artist-update.dto";
-import { User, UserDocument } from "../schemas/users.schema";
-import { IUserStatus } from "../enums/users-status.enum";
-import { IUserRoles } from "../enums/users-role.enum";
+import { ArtistAccessService } from "./artist-access.service";
 
 @Injectable()
 export class UpdateArtistService {
   constructor(
     @InjectModel(Artist.name)
     private readonly artistModel: Model<ArtistDocument>,
-
-    @InjectModel(User.name)
-    private readonly userModel: Model<UserDocument>
+    private readonly artistAccessService: ArtistAccessService
   ) {}
 
   async execute(
@@ -23,14 +19,7 @@ export class UpdateArtistService {
   ): Promise<ArtistDocument> {
     const userObjectId = new Types.ObjectId(userId);
 
-    const user = await this.userModel
-      .findById(userObjectId)
-      .select("role status")
-      .exec();
-
-    if (!user || user.status !== IUserStatus.ACTIVE) {
-      throw new UnauthorizedException();
-    }
+    const user = await this.artistAccessService.ensureActiveUser(userObjectId);
 
     const updatePayload: Partial<Artist> = {};
 
@@ -57,14 +46,7 @@ export class UpdateArtistService {
       )
       .exec();
 
-    if (user.role !== IUserRoles.ARTIST) {
-      await this.userModel
-        .findByIdAndUpdate(
-          { _id: userObjectId },
-          { $set: { role: IUserRoles.ARTIST } }
-        )
-        .exec();
-    }
+    await this.artistAccessService.ensureArtistRole(userObjectId, user.role);
 
     return artist;
   }

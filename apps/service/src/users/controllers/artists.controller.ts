@@ -1,16 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Patch,
-  Post,
-  Query,
-  Req,
-  UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import { Request } from "express";
 import { RolesGuard } from "src/auth/guards/role.guards";
 import { JwtAuthGuard } from "src/auth/guards/jwt.guards";
-import { CreateArtistService } from "../services/create-artist.service";
 import { UsersService } from "../users.service";
 import { ArtistCreateDto } from "../dto/artist-create.dto";
 import { ArtistUpdateDto } from "../dto/artist-update.dto";
