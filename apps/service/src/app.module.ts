@@ -7,6 +7,7 @@ import configs from "./config";
 import envValidationSchema from "./config/env.validation";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AuthModule } from './auth/auth.module';
+import { ArtworksModule } from './artworks/artworks.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    ArtworksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
