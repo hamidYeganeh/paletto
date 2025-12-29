@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
-import { CreateArtworkDto } from "./dto/create-artwork.dto";
-import { Artwork, ArtworkDocument } from "./schemas/artwork.schema";
+import { CreateArtworkDto } from "../dto/create-artwork.dto";
+import { Artwork, ArtworkDocument } from "../schemas/artwork.schema";
 import {
   Artist,
   ArtistDocument,

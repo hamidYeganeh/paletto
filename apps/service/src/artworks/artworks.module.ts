@@ -5,7 +5,9 @@ import { ArtworksService } from "./artworks.service";
 import { Artwork, ArtworkSchema } from "./schemas/artwork.schema";
 import { Artist, ArtistSchema } from "src/users/schemas/artists-profile.schema";
 import { UsersModule } from "src/users/users.module";
-import { CreateArtworkService } from "./create-artwork.service";
+import { CreateArtworkService } from "./services/create-artwork.service";
+import { ListArtworksService } from "./services/list-artworks.service";
+import { UpdateArtworkService } from "./services/update-artwork.service";
 
 @Module({
   imports: [
@@ -16,6 +18,11 @@ import { CreateArtworkService } from "./create-artwork.service";
     ]),
   ],
   controllers: [ArtworksController],
-  providers: [ArtworksService, CreateArtworkService],
+  providers: [
+    ArtworksService,
+    CreateArtworkService,
+    ListArtworksService,
+    UpdateArtworkService,
+  ],
 })
 export class ArtworksModule {}

@@ -3,7 +3,7 @@ import { HydratedDocument, Types } from "mongoose";
 
 export type ArtworkDocument = HydratedDocument<Artwork>;
 
-@Schema({ timestamps: true, collection: "Artworks" })
+@Schema({ timestamps: true, _id: true, collection: "Artworks" })
 export class Artwork {
   @Prop({
     type: Types.ObjectId,
@@ -20,7 +20,7 @@ export class Artwork {
   description?: string;
 
   @Prop({ trim: true })
-  images: string[];
+  imageUrl?: string;
 
   createdAt: Date;
 
