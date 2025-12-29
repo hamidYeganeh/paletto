@@ -8,6 +8,7 @@ import {
 import { ListArtworksService } from "./services/list-artworks.service";
 import { UpdateArtworkDto } from "./dto/update-artwork.dto";
 import { UpdateArtworkService } from "./services/update-artwork.service";
+import { ArtworkDocument } from "./schemas/artwork.schema";
 
 @Injectable()
 export class ArtworksService {
@@ -23,11 +24,17 @@ export class ArtworksService {
     return this.listArtworksService.execute(dto);
   }
 
-  async createForArtist(userId: string, dto: CreateArtworkDto) {
+  async createForArtist(
+    userId: string,
+    dto: CreateArtworkDto
+  ): Promise<ArtworkDocument> {
     return this.createArtworkService.execute(userId, dto);
   }
 
-  async updateArtwork(userId: string, dto: UpdateArtworkDto) {
+  async updateArtwork(
+    userId: string,
+    dto: UpdateArtworkDto
+  ): Promise<ArtworkDocument> {
     return this.updateArtworkService.execute(userId, dto);
   }
 }

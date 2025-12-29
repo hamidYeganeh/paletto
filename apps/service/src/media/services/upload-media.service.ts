@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import { createHash } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import { extname, resolve } from "path";
-import { Express } from "express";
+import type { Express } from "express";
 
 export interface UploadMediaResponse {
   hash: string;
@@ -35,7 +35,7 @@ export class UploadMediaService {
     return {
       hash,
       fileName,
-      url: `/medias/${fileName}`,
+      url: `/media/${fileName}`,
     };
   }
 }

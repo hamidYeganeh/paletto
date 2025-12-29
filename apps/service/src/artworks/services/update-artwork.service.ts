@@ -12,6 +12,7 @@ import {
   ArtistDocument,
 } from "src/users/schemas/artists-profile.schema";
 import { ArtistAccessService } from "src/users/services/artist-access.service";
+import { normalizeImages } from "../utils/normalize-images";
 
 @Injectable()
 export class UpdateArtworkService {
@@ -54,9 +55,7 @@ export class UpdateArtworkService {
     }
 
     if (dto.images !== undefined) {
-      updatePayload.images = dto.images
-        ?.map((img) => img?.trim())
-        .filter((img) => Boolean(img));
+      updatePayload.images = normalizeImages(dto.images);
     }
 
     const artworkObjectId = new Types.ObjectId(artworkId);
@@ -65,7 +64,7 @@ export class UpdateArtworkService {
       .findOneAndUpdate(
         { _id: artworkObjectId, artistId: artist._id },
         { $set: updatePayload },
-        { new: true }
+        { new: true, runValidators: true }
       )
       .exec();
 

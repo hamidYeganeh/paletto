@@ -12,6 +12,7 @@ import { ROLES_KEY } from "../auth.decorator";
 import { IUserRoles } from "src/users/enums/users-role.enum";
 import { User } from "src/users/schemas/users.schema";
 import { IUserStatus } from "src/users/enums/users-status.enum";
+import { AuthenticatedRequest } from "../types/authenticated-request";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -30,7 +31,7 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const authUser = request.user;
 
     if (!authUser?.userId) {
@@ -39,8 +40,9 @@ export class RolesGuard implements CanActivate {
 
     const user = await this.userModel
       .findById(authUser.userId)
-      .select("role isActive")
-      .lean();
+      .select("role status")
+      .lean()
+      .exec();
 
     if (!user || user.status !== IUserStatus.ACTIVE) {
       throw new UnauthorizedException();

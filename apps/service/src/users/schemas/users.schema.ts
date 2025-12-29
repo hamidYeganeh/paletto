@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { IUserRoles } from "../enums/users-role.enum";
 import { IUserStatus } from "../enums/users-status.enum";
-import { HydratedDocument } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -35,7 +35,7 @@ export class User {
   })
   status: IUserStatus;
 
-  _id: string;
+  _id: Types.ObjectId;
 
   createdAt: Date;
 

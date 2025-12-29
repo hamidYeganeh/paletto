@@ -8,6 +8,7 @@ import {
   ArtistDocument,
 } from "src/users/schemas/artists-profile.schema";
 import { ArtistAccessService } from "src/users/services/artist-access.service";
+import { normalizeImages } from "../utils/normalize-images";
 
 @Injectable()
 export class CreateArtworkService {
@@ -35,10 +36,7 @@ export class CreateArtworkService {
       throw new NotFoundException("Artist profile not found");
     }
 
-    const images =
-      dto.images
-        ?.map((img) => img?.trim())
-        .filter((img) => Boolean(img)) ?? [];
+    const images = normalizeImages(dto.images) ?? [];
 
     const artwork = await this.artworkModel.create({
       artistId: artist._id,

@@ -14,7 +14,7 @@ export class UserProfile {
   })
   userId: Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop({ required: true, trim: true, default: "" })
   name: string;
 
   @Prop()

@@ -2,28 +2,21 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Patch,
   Post,
   Query,
   Req,
   UseGuards,
 } from "@nestjs/common";
-import { Request } from "express";
 import { JwtAuthGuard } from "src/auth/guards/jwt.guards";
 import { RolesGuard } from "src/auth/guards/role.guards";
 import { Roles } from "src/auth/auth.decorator";
 import { IUserRoles } from "src/users/enums/users-role.enum";
+import { AuthenticatedRequest } from "src/auth/types/authenticated-request";
 import { ArtworksService } from "./artworks.service";
 import { CreateArtworkDto } from "./dto/create-artwork.dto";
 import { ListArtworksQueryDto } from "./dto/list-artworks.dto";
 import { UpdateArtworkDto } from "./dto/update-artwork.dto";
-
-interface AuthenticatedRequest extends Request {
-  user: {
-    userId: string;
-  };
-}
 
 @Controller("artworks")
 export class ArtworksController {

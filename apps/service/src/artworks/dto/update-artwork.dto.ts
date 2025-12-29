@@ -1,4 +1,11 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import {
+  IsArray,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from "class-validator";
+import { Transform } from "class-transformer";
 
 export class UpdateArtworkDto {
   @IsString()
@@ -14,7 +21,10 @@ export class UpdateArtworkDto {
   @IsOptional()
   images?: string[];
 
-  @IsString()
+  @Transform(({ value }) =>
+    typeof value === "string" ? value.trim() : value
+  )
+  @IsMongoId()
   @IsNotEmpty()
   artworkId: string;
 }

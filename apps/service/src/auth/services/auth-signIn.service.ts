@@ -20,11 +20,12 @@ export class AuthSignInService {
 
   async execute(dto: SignInDto): Promise<SignInResponseDto> {
     const { email, password } = dto;
+    const normalizedEmail = email.trim().toLowerCase();
 
-    const existingUser = await this.findUserWithPassword(email);
+    const existingUser = await this.findUserWithPassword(normalizedEmail);
 
     if (!existingUser) {
-      const newUser = await this.createUser(email, password);
+      const newUser = await this.createUser(normalizedEmail, password);
       return {
         token: this.signToken(newUser._id.toString()),
         signedUpBefore: false,

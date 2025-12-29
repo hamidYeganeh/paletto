@@ -42,7 +42,7 @@ export class UpdateArtistService {
           $set: updatePayload,
           $setOnInsert: { userId: userObjectId },
         },
-        { new: true, upsert: true }
+        { new: true, upsert: true, runValidators: true }
       )
       .exec();
 

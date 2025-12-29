@@ -53,12 +53,13 @@ export class ListArtworksService {
     const skip = this.getSkip(page, limit);
 
     const [count, artworks] = await Promise.all([
-      this.artworkModel.countDocuments(filters),
+      this.artworkModel.countDocuments(filters).exec(),
       this.artworkModel
         .find(filters)
+        .select("_id artistId title description images createdAt updatedAt")
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .sort({ createdAt: -1 })
         .lean()
         .exec(),
     ]);

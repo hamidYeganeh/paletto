@@ -27,6 +27,7 @@ export class UpdateUserProfileService {
           new: true,
           upsert: true,
           setDefaultsOnInsert: true,
+          runValidators: true,
         }
       )
       .exec();

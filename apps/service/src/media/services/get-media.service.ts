@@ -64,7 +64,7 @@ export class GetMediaService {
       wav: "audio/wav",
       pdf: "application/pdf",
     };
-    const mimeType = mimeMap[ext];
+    const mimeType = mimeMap[ext] ?? "application/octet-stream";
     const dispositionName = fileName;
 
     return new StreamableFile(createReadStream(filePath), {

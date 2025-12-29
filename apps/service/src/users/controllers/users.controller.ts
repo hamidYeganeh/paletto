@@ -1,14 +1,8 @@
 import { Body, Controller, Get, Patch, Req, UseGuards } from "@nestjs/common";
-import { Request } from "express";
 import { UserProfileUpdateDto } from "../dto/users-profile.dto";
 import { UsersService } from "../users.service";
 import { JwtAuthGuard } from "src/auth/guards/jwt.guards";
-
-interface AuthenticatedRequest extends Request {
-  user: {
-    userId: string;
-  };
-}
+import { AuthenticatedRequest } from "src/auth/types/authenticated-request";
 
 @UseGuards(JwtAuthGuard)
 @Controller("users")

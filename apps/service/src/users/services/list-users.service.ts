@@ -25,10 +25,7 @@ export class ListUsersService {
 
     if (search) {
       const safeSearch = this.escapeRegExp(search);
-      queryObject.$or = [
-        { name: { $regex: safeSearch, $options: "i" } },
-        { email: { $regex: safeSearch, $options: "i" } },
-      ];
+      queryObject.email = { $regex: safeSearch, $options: "i" };
     }
 
     return queryObject;
@@ -45,13 +42,14 @@ export class ListUsersService {
     const skip = this.getSkip(page, limit);
 
     const [count, users] = await Promise.all([
-      this.userModel.countDocuments(filter),
+      this.userModel.countDocuments(filter).exec(),
       this.userModel
         .find(filter)
+        .select("_id email role status createdAt updatedAt")
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean()
-        .sort({ createdAt: -1 })
         .exec(),
     ]);
 
