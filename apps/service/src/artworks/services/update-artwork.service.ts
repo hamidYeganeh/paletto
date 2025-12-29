@@ -23,11 +23,9 @@ export class UpdateArtworkService {
     private readonly artistAccessService: ArtistAccessService
   ) {}
 
-  async execute(
-    userId: string,
-    dto: UpdateArtworkDto
-  ): Promise<ArtworkDocument> {
-    if (!Types.ObjectId.isValid(dto.artworkId)) {
+  async execute(userId: string, dto: UpdateArtworkDto): Promise<ArtworkDocument> {
+    const artworkId = dto.artworkId?.trim();
+    if (!artworkId || !Types.ObjectId.isValid(artworkId)) {
       throw new BadRequestException("Invalid artwork id");
     }
 
@@ -55,11 +53,13 @@ export class UpdateArtworkService {
       updatePayload.description = dto.description?.trim();
     }
 
-    if (dto.imageUrl !== undefined) {
-      updatePayload.imageUrl = dto.imageUrl?.trim();
+    if (dto.images !== undefined) {
+      updatePayload.images = dto.images
+        ?.map((img) => img?.trim())
+        .filter((img) => Boolean(img));
     }
 
-    const artworkObjectId = new Types.ObjectId(dto.artworkId);
+    const artworkObjectId = new Types.ObjectId(artworkId);
 
     const artwork = await this.artworkModel
       .findOneAndUpdate(

@@ -28,7 +28,7 @@ async function bootstrap() {
     credentials: false,
     optionsSuccessStatus: 204,
   });
-  app.use("/medias", express.static(join(process.cwd(), "uploads")));
+  app.use("/medias", express.static(join(process.cwd(), "storage", "media")));
 
   await app.listen(port);
   console.log(`Application is running on: ${await app.getUrl()} 🚀`);

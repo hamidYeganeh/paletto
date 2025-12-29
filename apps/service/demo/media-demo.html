@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Media Demo</title>
+    <style>
+      :root {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        background: #f5f6fb;
+        color: #0f172a;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 26px;
+        letter-spacing: -0.02em;
+      }
+      p {
+        margin: 4px 0 0;
+        color: #475569;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 15px 40px rgba(15, 23, 42, 0.06);
+      }
+      form {
+        display: grid;
+        gap: 12px;
+      }
+      label {
+        font-weight: 600;
+        color: #1e293b;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      input {
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        font-size: 14px;
+      }
+      input:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+      }
+      button {
+        justify-self: start;
+        padding: 11px 14px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(120deg, #6366f1, #22c55e);
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.25);
+      }
+      button:hover {
+        filter: brightness(1.05);
+      }
+      .grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+      pre {
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 12px;
+        border-radius: 10px;
+        overflow-x: auto;
+      }
+      .preview {
+        max-width: 100%;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        margin-top: 10px;
+      }
+      code {
+        background: #e2e8f0;
+        padding: 2px 6px;
+        border-radius: 6px;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Media Demo</h1>
+      <p>Upload a file (saved by SHA-256 hash) and retrieve it by hash.</p>
+    </header>
+
+    <section class="card">
+      <form id="settingsForm">
+        <label
+          >API Base URL
+          <input id="apiBase" value="http://localhost:5000" />
+        </label>
+      </form>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>Upload</h3>
+        <form id="uploadForm">
+          <label
+            >File
+            <input type="file" name="file" required />
+          </label>
+          <button type="submit">Upload</button>
+        </form>
+        <div id="uploadResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>Get Media</h3>
+        <form id="getMediaForm">
+          <label
+            >Media Hash
+            <input id="mediaHash" placeholder="sha256 hash" required />
+          </label>
+          <button type="submit">Load</button>
+        </form>
+        <div id="mediaResult"></div>
+      </div>
+    </section>
+
+    <script>
+      const apiBaseInput = document.getElementById("apiBase");
+
+      const formatJson = (data) =>
+        `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+      document
+        .getElementById("uploadForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const resEl = document.getElementById("uploadResult");
+          const formData = new FormData(e.target);
+          resEl.textContent = "Uploading...";
+          try {
+            const res = await fetch(`${apiBaseInput.value}/media/upload`, {
+              method: "POST",
+              body: formData,
+            });
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = `
+              <div>Hash: <code>${data.hash}</code></div>
+              <div>URL: <code>${data.url}</code></div>
+              <img class="preview" src="${apiBaseInput.value}${data.url}" alt="preview" />
+              ${formatJson(data)}
+            `;
+            document.getElementById("mediaHash").value = data.hash;
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("getMediaForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const hash = document.getElementById("mediaHash").value.trim();
+          const resEl = document.getElementById("mediaResult");
+          if (!hash) return;
+          const url = `${apiBaseInput.value}/media/${hash}`;
+          resEl.innerHTML = `<div>From: <code>${url}</code></div><img class="preview" src="${url}" alt="media" />`;
+        });
+    </script>
+  </body>
+</html>

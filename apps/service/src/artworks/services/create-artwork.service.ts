@@ -35,11 +35,16 @@ export class CreateArtworkService {
       throw new NotFoundException("Artist profile not found");
     }
 
+    const images =
+      dto.images
+        ?.map((img) => img?.trim())
+        .filter((img) => Boolean(img)) ?? [];
+
     const artwork = await this.artworkModel.create({
       artistId: artist._id,
       title: dto.title.trim(),
       description: dto.description?.trim(),
-      imageUrl: dto.imageUrl?.trim(),
+      images,
     });
 
     await this.artistModel

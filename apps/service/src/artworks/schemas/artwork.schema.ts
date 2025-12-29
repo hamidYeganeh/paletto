@@ -19,8 +19,8 @@ export class Artwork {
   @Prop({ trim: true })
   description?: string;
 
-  @Prop({ trim: true })
-  imageUrl?: string;
+  @Prop({ type: [String], default: [] })
+  images?: string[];
 
   createdAt: Date;
 

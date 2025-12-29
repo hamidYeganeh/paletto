@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Artworks Demo</title>
+    <style>
+      :root {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        background:
+          radial-gradient(
+            120% 120% at 80% 10%,
+            rgba(79, 70, 229, 0.25),
+            transparent
+          ),
+          radial-gradient(
+            120% 120% at 10% 20%,
+            rgba(34, 197, 94, 0.2),
+            transparent
+          ),
+          #0f172a;
+      }
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: -0.02em;
+      }
+      p {
+        margin: 4px 0 0;
+        color: #cbd5e1;
+      }
+      .card {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(226, 232, 240, 0.12);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+      }
+      form {
+        display: grid;
+        gap: 12px;
+      }
+      label {
+        font-weight: 600;
+        color: #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      input,
+      textarea {
+        padding: 11px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(226, 232, 240, 0.2);
+        background: rgba(226, 232, 240, 0.05);
+        color: #e2e8f0;
+      }
+      input:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #a78bfa;
+        box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
+      }
+      button {
+        justify-self: start;
+        padding: 11px 14px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(120deg, #a855f7, #22c55e);
+        color: #0b1021;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        box-shadow: 0 16px 45px rgba(168, 85, 247, 0.35);
+      }
+      button:hover {
+        filter: brightness(1.05);
+      }
+      .grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+      pre {
+        background: #0b1021;
+        border-radius: 12px;
+        padding: 12px;
+        color: #e2e8f0;
+        overflow-x: auto;
+        border: 1px solid rgba(226, 232, 240, 0.08);
+      }
+      code {
+        background: rgba(226, 232, 240, 0.1);
+        padding: 2px 6px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Artworks Demo</h1>
+      <p>Create artworks (requires artist token) and list artworks (public).</p>
+    </header>
+
+    <section class="card">
+      <form>
+        <label
+          >API Base URL
+          <input id="apiBase" value="http://localhost:5000" />
+        </label>
+        <label
+          >Auth Token (Bearer)
+          <input id="authToken" placeholder="jwt-token-here for create" />
+        </label>
+      </form>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>Create Artwork</h3>
+        <form id="createArtworkForm">
+          <label
+            >Title
+            <input name="title" required />
+          </label>
+          <label
+            >Description
+            <textarea name="description" rows="3"></textarea>
+          </label>
+          <label
+            >Images (comma separated media hashes)
+            <input name="images" placeholder="hash1,hash2" />
+          </label>
+          <button type="submit">Create</button>
+        </form>
+        <div id="createArtworkResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>List Artworks</h3>
+        <form id="listArtworksForm">
+          <label
+            >Search
+            <input name="search" placeholder="title search" />
+          </label>
+          <label
+            >Page
+            <input name="page" type="number" min="1" value="1" />
+          </label>
+          <label
+            >Limit
+            <input name="limit" type="number" min="1" value="10" />
+          </label>
+          <button type="submit">List</button>
+        </form>
+        <div id="artworksResult"></div>
+      </div>
+    </section>
+
+    <script>
+      const apiBaseInput = document.getElementById("apiBase");
+      const authInput = document.getElementById("authToken");
+
+      const formatJson = (data) =>
+        `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+      document
+        .getElementById("createArtworkForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const images = form.get("images")
+            ? form
+                .get("images")
+                .split(",")
+                .map((i) => i.trim())
+                .filter(Boolean)
+            : [];
+          const payload = {
+            title: form.get("title"),
+            description: form.get("description") || undefined,
+            images,
+          };
+          const resEl = document.getElementById("createArtworkResult");
+          resEl.textContent = "Creating...";
+          try {
+            const res = await fetch(`${apiBaseInput.value}/artworks/create`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...(authInput.value
+                  ? { Authorization: `Bearer ${authInput.value}` }
+                  : {}),
+              },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("listArtworksForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const params = new URLSearchParams();
+          for (const [key, value] of form.entries()) {
+            if (value) params.append(key, value.toString());
+          }
+          const resEl = document.getElementById("artworksResult");
+          resEl.textContent = "Loading...";
+          try {
+            const res = await fetch(
+              `${apiBaseInput.value}/artworks/list?${params.toString()}`
+            );
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+    </script>
+  </body>
+</html>
