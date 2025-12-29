@@ -14,7 +14,7 @@ import { Types } from "mongoose";
 import { IUserRoles } from "../enums/users-role.enum";
 import { IUserStatus } from "../enums/users-status.enum";
 
-export class UsersListQueryDto {
+export class ListUsersQueryDto {
   @Transform(({ value }) => (value === "" ? undefined : value))
   @Type(() => Number)
   @IsOptional()
@@ -38,7 +38,7 @@ export class UsersListQueryDto {
   search?: string;
 }
 
-export interface UsersListItemDto {
+export interface ListUsersItemDto {
   _id: Types.ObjectId;
   email: string;
   role: IUserRoles;
@@ -47,7 +47,7 @@ export interface UsersListItemDto {
   updatedAt: Date;
 }
 
-export interface UsersListResponseDto {
+export interface ListUsersResponseDto {
   count: number;
-  users: UsersListItemDto[];
+  users: ListUsersItemDto[];
 }

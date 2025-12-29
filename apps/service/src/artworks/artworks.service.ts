@@ -18,7 +18,7 @@ export class ArtworksService {
     private readonly updateArtworkService: UpdateArtworkService
   ) {}
 
-  async getArtworks(
+  async listArtworks(
     dto: ListArtworksQueryDto
   ): Promise<ListArtworksResponseDto> {
     return this.listArtworksService.execute(dto);

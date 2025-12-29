@@ -2,7 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { User, UserDocument } from "../schemas/users.schema";
 import { Model, QueryFilter } from "mongoose";
-import { UsersListQueryDto, UsersListResponseDto } from "../dto/users-list.dto";
+import {
+  ListUsersQueryDto,
+  ListUsersResponseDto,
+} from "../dto/list-users.dto";
 import {
   DEFAULT_LIST_LIMIT,
   DEFAULT_LIST_PAGE,
@@ -18,27 +21,24 @@ export class ListUsersService {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
-  private buildQuery(query: UsersListQueryDto): QueryFilter<UserDocument> {
-    const search = query.search?.trim();
-
-    const queryObject: QueryFilter<UserDocument> = {};
-
-    if (search) {
-      const safeSearch = this.escapeRegExp(search);
-      queryObject.email = { $regex: safeSearch, $options: "i" };
+  private buildFilters(query: ListUsersQueryDto): QueryFilter<UserDocument> {
+    if (!query.search?.trim()) {
+      return {};
     }
 
-    return queryObject;
+    const safeSearch = this.escapeRegExp(query.search.trim());
+
+    return { email: { $regex: safeSearch, $options: "i" } };
   }
 
   private getSkip(page: number, limit: number): number {
     return Math.max(0, page - 1) * limit;
   }
 
-  async execute(query: UsersListQueryDto): Promise<UsersListResponseDto> {
+  async execute(query: ListUsersQueryDto): Promise<ListUsersResponseDto> {
     const page = query.page ?? DEFAULT_LIST_PAGE;
     const limit = query.limit ?? DEFAULT_LIST_LIMIT;
-    const filter = this.buildQuery(query);
+    const filter = this.buildFilters(query);
     const skip = this.getSkip(page, limit);
 
     const [count, users] = await Promise.all([

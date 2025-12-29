@@ -27,9 +27,17 @@ export class ListArtworksQueryDto {
   search?: string;
 }
 
+export interface ArtistProfileDto {
+  _id: Types.ObjectId;
+  userId: Types.ObjectId;
+  displayName?: string;
+  techniques: Types.ObjectId[];
+  styles: Types.ObjectId[];
+}
+
 export interface ArtworkListItemDto {
   _id: Types.ObjectId;
-  artistId: Types.ObjectId;
+  artist?: ArtistProfileDto;
   title: string;
   description?: string;
   images?: string[];

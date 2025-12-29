@@ -1,6 +1,6 @@
 import { Body, Controller, Patch, Post, Req, UseGuards } from "@nestjs/common";
-import { RolesGuard } from "src/auth/guards/role.guards";
-import { JwtAuthGuard } from "src/auth/guards/jwt.guards";
+import { RolesGuard } from "src/auth/guards/roles.guard";
+import { JwtAuthGuard } from "src/auth/guards/jwt.guard";
 import type { AuthenticatedRequest } from "src/auth/types/authenticated-request";
 import { UsersService } from "../users.service";
 import { ArtistCreateDto } from "../dto/artist-create.dto";

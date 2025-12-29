@@ -1,15 +1,23 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import { Model, QueryFilter, Types } from "mongoose";
+
 import { Artwork, ArtworkDocument } from "../schemas/artwork.schema";
-import { Model, QueryFilter } from "mongoose";
 import {
   ListArtworksQueryDto,
   ListArtworksResponseDto,
 } from "../dto/list-artworks.dto";
+import type { ArtistProfileDto } from "../dto/list-artworks.dto";
+import { Artist } from "src/users/schemas/artists-profile.schema";
 import {
   DEFAULT_LIST_LIMIT,
   DEFAULT_LIST_PAGE,
 } from "src/constants/default-list-params";
+
+const PUBLIC_ARTWORKS_LIST_SELECT =
+  "_id artistId title description images createdAt updatedAt";
+
+const ARTIST_PROFILE_SELECT = "_id userId displayName techniques styles";
 
 @Injectable()
 export class ListArtworksService {
@@ -18,45 +26,22 @@ export class ListArtworksService {
     private readonly artworkModel: Model<ArtworkDocument>
   ) {}
 
-  private escapeRegExp(value: string): string {
-    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  private buildQuery(
-    query: ListArtworksQueryDto
-  ): QueryFilter<ArtworkDocument> {
-    const search = query.search?.trim();
-
-    const queryObject: QueryFilter<ArtworkDocument> = {};
-
-    if (search) {
-      const safeSearch = this.escapeRegExp(search);
-
-      queryObject.$or = [
-        {
-          title: { $regex: safeSearch, $options: "i" },
-        },
-      ];
-    }
-
-    return queryObject;
-  }
-
-  private getSkip(page: number, limit: number): number {
-    return Math.max(0, page - 1) * limit;
-  }
-
   async execute(query: ListArtworksQueryDto): Promise<ListArtworksResponseDto> {
-    const page = query?.page ?? DEFAULT_LIST_PAGE;
-    const limit = query?.limit ?? DEFAULT_LIST_LIMIT;
-    const filters = this.buildQuery(query);
-    const skip = this.getSkip(page, limit);
+    const page = query.page ?? DEFAULT_LIST_PAGE;
+    const limit = query.limit ?? DEFAULT_LIST_LIMIT;
+    const filters = this.buildFilters(query);
+    const skip = Math.max(0, page - 1) * limit;
 
     const [count, artworks] = await Promise.all([
       this.artworkModel.countDocuments(filters).exec(),
       this.artworkModel
         .find(filters)
-        .select("_id artistId title description images createdAt updatedAt")
+        .select(PUBLIC_ARTWORKS_LIST_SELECT)
+        .populate({
+          path: "artistId",
+          select: ARTIST_PROFILE_SELECT,
+          model: Artist.name,
+        })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -66,7 +51,52 @@ export class ListArtworksService {
 
     return {
       count,
-      artworks,
+      artworks: artworks.map((artwork) => this.mapArtwork(artwork)),
+    };
+  }
+
+  private buildFilters(
+    query: ListArtworksQueryDto
+  ): QueryFilter<ArtworkDocument> {
+    if (!query.search?.trim()) {
+      return {};
+    }
+
+    const search = this.escapeRegExp(query.search.trim());
+
+    return {
+      $or: [{ title: { $regex: search, $options: "i" } }],
+    };
+  }
+
+  private escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  private isArtistProfile(
+    value: Types.ObjectId | ArtistProfileDto | undefined
+  ): value is ArtistProfileDto {
+    return typeof value === "object" && value !== null && "_id" in value;
+  }
+
+  private mapArtwork(
+    artwork: ArtworkListLean
+  ): ListArtworksResponseDto["artworks"][number] {
+    const { artistId, ...rest } = artwork;
+
+    return {
+      ...rest,
+      artist: this.isArtistProfile(artistId) ? artistId : undefined,
     };
   }
 }
+
+type ArtworkListLean = {
+  _id: Types.ObjectId;
+  artistId?: Types.ObjectId | ArtistProfileDto;
+  title: string;
+  description?: string;
+  images?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+};

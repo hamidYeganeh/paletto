@@ -1,13 +1,13 @@
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { UsersModule } from "src/users/users.module";
 import { AuthService } from "./auth.service";
-import { JwtAuthGuard } from "./guards/jwt.guards";
-import { RolesGuard } from "./guards/role.guards";
+import { JwtAuthGuard } from "./guards/jwt.guard";
+import { RolesGuard } from "./guards/roles.guard";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule, JwtSignOptions } from "@nestjs/jwt";
 import { Module } from "@nestjs/common";
-import { AuthSignInService } from "./services/auth-signIn.service";
+import { AuthSignInService } from "./services/auth-sign-in.service";
 import { AuthController } from "./auth.controller";
 
 @Module({

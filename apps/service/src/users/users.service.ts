@@ -8,6 +8,8 @@ import { ArtistCreateDto } from "./dto/artist-create.dto";
 import { ArtistUpdateDto } from "./dto/artist-update.dto";
 import { UpdateArtistService } from "./services/update-artist.service";
 import { ArtistDocument } from "./schemas/artists-profile.schema";
+import { ListUsersService } from "./services/list-users.service";
+import { ListUsersQueryDto, ListUsersResponseDto } from "./dto/list-users.dto";
 
 @Injectable()
 export class UsersService {
@@ -15,7 +17,8 @@ export class UsersService {
     private readonly updateUserProfileService: UpdateUserProfileService,
     private readonly getUserProfileService: GetUserProfileService,
     private readonly createArtistService: CreateArtistService,
-    private readonly updateArtistService: UpdateArtistService
+    private readonly updateArtistService: UpdateArtistService,
+    private readonly listUsersService: ListUsersService
   ) {}
 
   async updateProfile(
@@ -41,5 +44,9 @@ export class UsersService {
     dto: ArtistUpdateDto
   ): Promise<ArtistDocument> {
     return this.updateArtistService.execute(userId, dto);
+  }
+
+  async listUsers(dto: ListUsersQueryDto): Promise<ListUsersResponseDto> {
+    return this.listUsersService.execute(dto);
   }
 }

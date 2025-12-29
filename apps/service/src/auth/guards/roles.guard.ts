@@ -12,7 +12,7 @@ import { ROLES_KEY } from "../auth.decorator";
 import { IUserRoles } from "src/users/enums/users-role.enum";
 import { User } from "src/users/schemas/users.schema";
 import { IUserStatus } from "src/users/enums/users-status.enum";
-import { AuthenticatedRequest } from "../types/authenticated-request";
+import type { AuthenticatedRequest } from "../types/authenticated-request";
 
 @Injectable()
 export class RolesGuard implements CanActivate {

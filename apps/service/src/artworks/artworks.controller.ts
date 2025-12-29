@@ -8,8 +8,8 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
-import { JwtAuthGuard } from "src/auth/guards/jwt.guards";
-import { RolesGuard } from "src/auth/guards/role.guards";
+import { JwtAuthGuard } from "src/auth/guards/jwt.guard";
+import { RolesGuard } from "src/auth/guards/roles.guard";
 import { Roles } from "src/auth/auth.decorator";
 import { IUserRoles } from "src/users/enums/users-role.enum";
 import type { AuthenticatedRequest } from "src/auth/types/authenticated-request";
@@ -23,8 +23,8 @@ export class ArtworksController {
   constructor(private readonly artworksService: ArtworksService) {}
 
   @Get("list")
-  async getArtworksList(@Query() query: ListArtworksQueryDto) {
-    return this.artworksService.getArtworks(query);
+  async listArtworks(@Query() query: ListArtworksQueryDto) {
+    return this.artworksService.listArtworks(query);
   }
 
   @Post("create")
