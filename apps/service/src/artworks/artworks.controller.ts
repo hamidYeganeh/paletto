@@ -12,7 +12,7 @@ import { JwtAuthGuard } from "src/auth/guards/jwt.guards";
 import { RolesGuard } from "src/auth/guards/role.guards";
 import { Roles } from "src/auth/auth.decorator";
 import { IUserRoles } from "src/users/enums/users-role.enum";
-import { AuthenticatedRequest } from "src/auth/types/authenticated-request";
+import type { AuthenticatedRequest } from "src/auth/types/authenticated-request";
 import { ArtworksService } from "./artworks.service";
 import { CreateArtworkDto } from "./dto/create-artwork.dto";
 import { ListArtworksQueryDto } from "./dto/list-artworks.dto";
