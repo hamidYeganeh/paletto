@@ -1,23 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, QueryFilter, Types } from "mongoose";
+import { Model, QueryFilter } from "mongoose";
 
 import { Artwork, ArtworkDocument } from "../schemas/artwork.schema";
 import {
   ListArtworksQueryDto,
   ListArtworksResponseDto,
 } from "../dto/list-artworks.dto";
-import type { ArtistProfileDto } from "../dto/list-artworks.dto";
 import { Artist } from "src/users/schemas/artists-profile.schema";
 import {
   DEFAULT_LIST_LIMIT,
   DEFAULT_LIST_PAGE,
 } from "src/constants/default-list-params";
-
-const PUBLIC_ARTWORKS_LIST_SELECT =
-  "_id artistId title description images createdAt updatedAt";
-
-const ARTIST_PROFILE_SELECT = "_id userId displayName techniques styles";
+import {
+  ARTIST_PROFILE_SELECT,
+  mapArtworkListItem,
+  PUBLIC_ARTWORKS_LIST_SELECT,
+} from "../utils/artwork-list-mapper";
 
 @Injectable()
 export class ListArtworksService {
@@ -30,6 +29,7 @@ export class ListArtworksService {
     const page = query.page ?? DEFAULT_LIST_PAGE;
     const limit = query.limit ?? DEFAULT_LIST_LIMIT;
     const filters = this.buildFilters(query);
+    const sort = this.buildSort(query);
     const skip = Math.max(0, page - 1) * limit;
 
     const [count, artworks] = await Promise.all([
@@ -42,7 +42,7 @@ export class ListArtworksService {
           select: ARTIST_PROFILE_SELECT,
           model: Artist.name,
         })
-        .sort({ createdAt: -1 })
+        .sort(sort)
         .skip(skip)
         .limit(limit)
         .lean()
@@ -51,52 +51,37 @@ export class ListArtworksService {
 
     return {
       count,
-      artworks: artworks.map((artwork) => this.mapArtwork(artwork)),
+      artworks: artworks.map((artwork) => mapArtworkListItem(artwork)),
     };
   }
 
   private buildFilters(
     query: ListArtworksQueryDto
   ): QueryFilter<ArtworkDocument> {
-    if (!query.search?.trim()) {
-      return {};
+    const filters: QueryFilter<ArtworkDocument> = {};
+
+    if (query.status?.trim()) {
+      filters.status = query.status.trim();
     }
 
-    const search = this.escapeRegExp(query.search.trim());
+    if (query.search?.trim()) {
+      const search = this.escapeRegExp(query.search.trim());
+      filters.$or = [{ title: { $regex: search, $options: "i" } }];
+    }
 
-    return {
-      $or: [{ title: { $regex: search, $options: "i" } }],
-    };
+    return filters;
+  }
+
+  private buildSort(
+    query: ListArtworksQueryDto
+  ): Record<string, 1 | -1> {
+    const sortBy = query.sortBy ?? "createdAt";
+    const sortOrder = query.sortOrder ?? "desc";
+
+    return { [sortBy]: sortOrder === "asc" ? 1 : -1 };
   }
 
   private escapeRegExp(value: string): string {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
-
-  private isArtistProfile(
-    value: Types.ObjectId | ArtistProfileDto | undefined
-  ): value is ArtistProfileDto {
-    return typeof value === "object" && value !== null && "_id" in value;
-  }
-
-  private mapArtwork(
-    artwork: ArtworkListLean
-  ): ListArtworksResponseDto["artworks"][number] {
-    const { artistId, ...rest } = artwork;
-
-    return {
-      ...rest,
-      artist: this.isArtistProfile(artistId) ? artistId : undefined,
-    };
-  }
 }
-
-type ArtworkListLean = {
-  _id: Types.ObjectId;
-  artistId?: Types.ObjectId | ArtistProfileDto;
-  title: string;
-  description?: string;
-  images?: string[];
-  createdAt: Date;
-  updatedAt: Date;
-};

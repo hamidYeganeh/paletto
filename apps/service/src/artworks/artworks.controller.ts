@@ -15,6 +15,7 @@ import { IUserRoles } from "src/users/enums/users-role.enum";
 import type { AuthenticatedRequest } from "src/auth/types/authenticated-request";
 import { ArtworksService } from "./artworks.service";
 import { CreateArtworkDto } from "./dto/create-artwork.dto";
+import { GetArtworkDto } from "./dto/get-artwork.dto";
 import { ListArtworksQueryDto } from "./dto/list-artworks.dto";
 import { UpdateArtworkDto } from "./dto/update-artwork.dto";
 
@@ -25,6 +26,11 @@ export class ArtworksController {
   @Get("list")
   async listArtworks(@Query() query: ListArtworksQueryDto) {
     return this.artworksService.listArtworks(query);
+  }
+
+  @Post("get")
+  async getArtwork(@Body() dto: GetArtworkDto) {
+    return this.artworksService.getArtwork(dto);
   }
 
   @Post("create")

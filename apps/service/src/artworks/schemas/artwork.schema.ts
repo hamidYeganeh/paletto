@@ -22,6 +22,9 @@ export class Artwork {
   @Prop({ type: [String], default: [] })
   images?: string[];
 
+  @Prop({ trim: true })
+  status?: string;
+
   createdAt: Date;
 
   updatedAt: Date;

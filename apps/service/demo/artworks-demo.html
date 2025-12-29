@@ -63,7 +63,8 @@
         gap: 6px;
       }
       input,
-      textarea {
+      textarea,
+      select {
         padding: 11px 12px;
         border-radius: 12px;
         border: 1px solid rgba(226, 232, 240, 0.2);
@@ -71,7 +72,8 @@
         color: #e2e8f0;
       }
       input:focus,
-      textarea:focus {
+      textarea:focus,
+      select:focus {
         outline: none;
         border-color: #a78bfa;
         box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
@@ -114,7 +116,10 @@
   <body>
     <header>
       <h1>Artworks Demo</h1>
-      <p>Create artworks (requires artist token) and list artworks (public).</p>
+      <p>
+        Create artworks (requires artist token), list artworks (public), and
+        fetch a single artwork by id.
+      </p>
     </header>
 
     <section class="card">
@@ -159,6 +164,25 @@
             <input name="search" placeholder="title search" />
           </label>
           <label
+            >Status
+            <input name="status" placeholder="draft, published..." />
+          </label>
+          <label
+            >Sort By
+            <select name="sortBy">
+              <option value="createdAt" selected>createdAt</option>
+              <option value="updatedAt">updatedAt</option>
+              <option value="title">title</option>
+            </select>
+          </label>
+          <label
+            >Sort Order
+            <select name="sortOrder">
+              <option value="desc" selected>desc</option>
+              <option value="asc">asc</option>
+            </select>
+          </label>
+          <label
             >Page
             <input name="page" type="number" min="1" value="1" />
           </label>
@@ -169,6 +193,22 @@
           <button type="submit">List</button>
         </form>
         <div id="artworksResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>Get Artwork</h3>
+        <form id="getArtworkForm">
+          <label
+            >Artwork Id
+            <input name="artworkId" placeholder="artwork ObjectId" required />
+          </label>
+          <label
+            >Artist Id
+            <input name="artistId" placeholder="artist ObjectId" required />
+          </label>
+          <button type="submit">Get</button>
+        </form>
+        <div id="getArtworkResult"></div>
       </div>
     </section>
 
@@ -232,6 +272,33 @@
             const res = await fetch(
               `${apiBaseInput.value}/artworks/list?${params.toString()}`
             );
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("getArtworkForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const payload = {
+            artworkId: form.get("artworkId"),
+            artistId: form.get("artistId"),
+          };
+          const resEl = document.getElementById("getArtworkResult");
+          resEl.textContent = "Loading...";
+          try {
+            const res = await fetch(`${apiBaseInput.value}/artworks/get`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
             const data = await res.json();
             if (!res.ok) throw data;
             resEl.innerHTML = formatJson(data);

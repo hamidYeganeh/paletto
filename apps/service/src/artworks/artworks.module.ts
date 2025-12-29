@@ -5,6 +5,7 @@ import { ArtworksService } from "./artworks.service";
 import { Artwork, ArtworkSchema } from "./schemas/artwork.schema";
 import { UsersModule } from "src/users/users.module";
 import { CreateArtworkService } from "./services/create-artwork.service";
+import { GetArtworkService } from "./services/get-artwork.service";
 import { ListArtworksService } from "./services/list-artworks.service";
 import { UpdateArtworkService } from "./services/update-artwork.service";
 
@@ -19,6 +20,7 @@ import { UpdateArtworkService } from "./services/update-artwork.service";
   providers: [
     ArtworksService,
     CreateArtworkService,
+    GetArtworkService,
     ListArtworksService,
     UpdateArtworkService,
   ],
