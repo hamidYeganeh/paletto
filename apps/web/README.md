@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# Paletto Web
 
-## Getting Started
+Next.js App Router frontend for Paletto. Uses shared packages for API access, i18n, theme, and UI components.
 
-First, run the development server:
+## Tech Stack
+- Next.js 16 (App Router) + React 19
+- Tailwind CSS v4
+- next-intl for localization
+- TanStack Query via `@repo/api`
+- next-themes via `@repo/theme`
+- Zustand, React Hook Form, framer-motion
+- @react-three/fiber + three
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Key Features
+- Route groups for auth and user flows under `app/(auth)` and `app/(user)`
+- Locale resolution from cookies and `accept-language`
+- RTL layout (`dir="rtl"`) with YekanBakh font
+- Global providers for i18n, API, and theme (`app/providers.tsx`)
+
+## Scripts
+- `dev`: `next dev --port 3000`
+- `build`: `next build`
+- `start`: `next start`
+- `lint`: `eslint --max-warnings 0`
+- `check-types`: `next typegen && tsc --noEmit`
+
+## Configuration
+Environment variables used by shared API client:
+- `NEXT_PUBLIC_API_BASE_URL` (defaults to `http://localhost:5000`)
+
+Example `.env.local`:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Local Development
+From repo root:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+pnpm --filter web dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+Or via Turbo:
 
-## Learn More
+```sh
+pnpm turbo run dev --filter web
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Structure
+- `app/`: Next.js routes, layouts, and global styles
+- `app/(auth)`: auth-related routes
+- `app/(user)`: user-related routes
+- `app/providers.tsx`: NextIntl + API + Theme providers
+- `app/fonts`: local font setup (YekanBakh)
+- `components/shared`: shared UI composition
+- `features/Auth`, `features/User`: feature-level UI and logic
+- `public`: static assets
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Integration Points
+- `@repo/api`: API client + React Query providers/hooks
+- `@repo/i18n`: locale resolution + messages
+- `@repo/theme`: theme tokens and provider
+- `@repo/ui`: shared UI components
+- `@repo/utils`: utility helpers
