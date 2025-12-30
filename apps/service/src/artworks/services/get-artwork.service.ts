@@ -23,11 +23,13 @@ export class GetArtworkService {
   ) {}
 
   async execute(dto: GetArtworkDto): Promise<ArtworkListItemDto> {
-    const artworkObjectId = this.toObjectId(dto.artworkId, "Invalid artwork id");
-    const artistObjectId = this.toObjectId(dto.artistId, "Invalid artist id");
+    const artworkObjectId = this.toObjectId(
+      dto.artworkId,
+      "Invalid artwork id"
+    );
 
     const artwork = await this.artworkModel
-      .findOne({ _id: artworkObjectId, artistId: artistObjectId })
+      .findOne({ _id: artworkObjectId })
       .select(PUBLIC_ARTWORKS_LIST_SELECT)
       .populate({
         path: "artistId",
