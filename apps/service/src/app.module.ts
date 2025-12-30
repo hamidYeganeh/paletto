@@ -6,9 +6,12 @@ import { UsersModule } from "./users/users.module";
 import configs from "./config";
 import envValidationSchema from "./config/env.validation";
 import { MongooseModule } from "@nestjs/mongoose";
-import { AuthModule } from './auth/auth.module';
-import { ArtworksModule } from './artworks/artworks.module';
+import { AuthModule } from "./auth/auth.module";
+import { ArtworksModule } from "./artworks/artworks.module";
 import { MediaModule } from "./media/media.module";
+import { StylesModule } from "./styles/styles.module";
+import { CategoriesModule } from "./categories/categories.module";
+import { TechniquesModule } from "./techniques/techniques.module";
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { MediaModule } from "./media/media.module";
     AuthModule,
     ArtworksModule,
     MediaModule,
+    StylesModule,
+    CategoriesModule,
+    TechniquesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

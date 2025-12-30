@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Categories Module Demo</title>
+    <style>
+      :root {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        background:
+          radial-gradient(
+            120% 120% at 80% 10%,
+            rgba(251, 146, 60, 0.25),
+            transparent
+          ),
+          radial-gradient(
+            120% 120% at 10% 20%,
+            rgba(16, 185, 129, 0.2),
+            transparent
+          ),
+          #0f172a;
+      }
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: -0.02em;
+      }
+      p {
+        margin: 4px 0 0;
+        color: #cbd5e1;
+      }
+      .card {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(226, 232, 240, 0.12);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+      }
+      form {
+        display: grid;
+        gap: 12px;
+      }
+      label {
+        font-weight: 600;
+        color: #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      input,
+      textarea,
+      select {
+        padding: 11px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(226, 232, 240, 0.2);
+        background: rgba(226, 232, 240, 0.05);
+        color: #e2e8f0;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #fb923c;
+        box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.25);
+      }
+      button {
+        justify-self: start;
+        padding: 11px 14px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(120deg, #fb923c, #22c55e);
+        color: #0b1021;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        box-shadow: 0 16px 45px rgba(251, 146, 60, 0.35);
+      }
+      button:hover {
+        filter: brightness(1.05);
+      }
+      .grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+      pre {
+        background: #0b1021;
+        border-radius: 12px;
+        padding: 12px;
+        color: #e2e8f0;
+        overflow-x: auto;
+        border: 1px solid rgba(226, 232, 240, 0.08);
+      }
+      code {
+        background: rgba(226, 232, 240, 0.1);
+        padding: 2px 6px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Categories Module Demo</h1>
+      <p>Create/update require an admin token. List and get are public.</p>
+    </header>
+
+    <section class="card">
+      <form>
+        <label
+          >API Base URL
+          <input id="apiBase" value="http://localhost:5000" />
+        </label>
+        <label
+          >Auth Token (Bearer)
+          <input id="authToken" placeholder="jwt-token-here for create/update" />
+        </label>
+      </form>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>Create Category</h3>
+        <form id="createCategoryForm">
+          <label
+            >Title
+            <input name="title" required />
+          </label>
+          <label
+            >Description
+            <textarea name="description" rows="3"></textarea>
+          </label>
+          <label
+            >Slug
+            <input name="slug" required />
+          </label>
+          <label
+            >Status
+            <select name="status" required>
+              <option value="active" selected>active</option>
+              <option value="deactive">deactive</option>
+            </select>
+          </label>
+          <button type="submit">Create</button>
+        </form>
+        <div id="createCategoryResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>Update Category</h3>
+        <form id="updateCategoryForm">
+          <label
+            >Category Id
+            <input name="categoryId" placeholder="category ObjectId" required />
+          </label>
+          <label
+            >Title
+            <input name="title" />
+          </label>
+          <label
+            >Description
+            <textarea name="description" rows="3"></textarea>
+          </label>
+          <label
+            >Slug
+            <input name="slug" />
+          </label>
+          <label
+            >Status
+            <select name="status">
+              <option value="">unchanged</option>
+              <option value="active">active</option>
+              <option value="deactive">deactive</option>
+            </select>
+          </label>
+          <button type="submit">Update</button>
+        </form>
+        <div id="updateCategoryResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>Get Category</h3>
+        <form id="getCategoryForm">
+          <label
+            >Category Id
+            <input name="categoryId" placeholder="category ObjectId" />
+          </label>
+          <button type="submit">Get</button>
+        </form>
+        <div id="getCategoryResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>List Categories</h3>
+        <form id="listCategoriesForm">
+          <label
+            >Search
+            <input name="search" placeholder="title or slug" />
+          </label>
+          <label
+            >Status
+            <select name="status">
+              <option value="">all</option>
+              <option value="active">active</option>
+              <option value="deactive">deactive</option>
+            </select>
+          </label>
+          <label
+            >Sort By
+            <select name="sortBy">
+              <option value="createdAt" selected>createdAt</option>
+              <option value="updatedAt">updatedAt</option>
+              <option value="title">title</option>
+              <option value="slug">slug</option>
+            </select>
+          </label>
+          <label
+            >Sort Order
+            <select name="sortOrder">
+              <option value="desc" selected>desc</option>
+              <option value="asc">asc</option>
+            </select>
+          </label>
+          <label
+            >Page
+            <input name="page" type="number" min="1" value="1" />
+          </label>
+          <label
+            >Limit
+            <input name="limit" type="number" min="1" value="10" />
+          </label>
+          <button type="submit">List</button>
+        </form>
+        <div id="listCategoriesResult"></div>
+      </div>
+    </section>
+
+    <script>
+      const apiBaseInput = document.getElementById("apiBase");
+      const authInput = document.getElementById("authToken");
+
+      const formatJson = (data) =>
+        `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+      const readString = (form, name) => {
+        const value = form.get(name);
+        return typeof value === "string" ? value.trim() : "";
+      };
+
+      const authHeaders = () =>
+        authInput.value
+          ? { Authorization: `Bearer ${authInput.value}` }
+          : {};
+
+      document
+        .getElementById("createCategoryForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const payload = {
+            title: readString(form, "title"),
+            description: readString(form, "description") || undefined,
+            slug: readString(form, "slug"),
+            status: readString(form, "status"),
+          };
+          const resEl = document.getElementById("createCategoryResult");
+          resEl.textContent = "Creating...";
+          try {
+            const res = await fetch(`${apiBaseInput.value}/admin/categories/create`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...authHeaders(),
+              },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("updateCategoryForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const payload = { categoryId: readString(form, "categoryId") };
+          const title = readString(form, "title");
+          const description = readString(form, "description");
+          const slug = readString(form, "slug");
+          const status = readString(form, "status");
+
+          if (title) payload.title = title;
+          if (description) payload.description = description;
+          if (slug) payload.slug = slug;
+          if (status) payload.status = status;
+
+          const resEl = document.getElementById("updateCategoryResult");
+          resEl.textContent = "Updating...";
+          try {
+            const res = await fetch(`${apiBaseInput.value}/admin/categories/update`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                ...authHeaders(),
+              },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("getCategoryForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const payload = { categoryId: readString(form, "categoryId") };
+          const resEl = document.getElementById("getCategoryResult");
+          resEl.textContent = "Loading...";
+          try {
+            const res = await fetch(`${apiBaseInput.value}/categories/get`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("listCategoriesForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const params = new URLSearchParams();
+          for (const [key, value] of form.entries()) {
+            if (value) params.append(key, value.toString());
+          }
+          const resEl = document.getElementById("listCategoriesResult");
+          resEl.textContent = "Loading...";
+          try {
+            const res = await fetch(
+              `${apiBaseInput.value}/categories/list?${params.toString()}`
+            );
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+    </script>
+  </body>
+</html>
