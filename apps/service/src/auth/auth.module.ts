@@ -8,7 +8,7 @@ import { PassportModule } from "@nestjs/passport";
 import { JwtModule, JwtSignOptions } from "@nestjs/jwt";
 import { Module } from "@nestjs/common";
 import { AuthSignInService } from "./services/auth-sign-in.service";
-import { AuthController } from "./auth.controller";
+import { AuthController } from "./controllers/auth.controller";
 
 @Module({
   imports: [

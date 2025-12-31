@@ -37,12 +37,18 @@ export class CreateArtworkService {
     }
 
     const images = normalizeImages(dto.images) ?? [];
+    const techniques = dto.techniques ?? [];
+    const styles = dto.styles ?? [];
+    const categories = dto.categories ?? [];
 
     const artwork = await this.artworkModel.create({
       artistId: artist._id,
       title: dto.title.trim(),
       description: dto.description?.trim(),
       images,
+      techniques,
+      styles,
+      categories,
     });
 
     await this.artistModel

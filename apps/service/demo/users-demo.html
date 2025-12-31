@@ -73,7 +73,8 @@
       }
 
       input,
-      textarea {
+      textarea,
+      select {
         padding: 12px 14px;
         border-radius: 10px;
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -91,7 +92,8 @@
       }
 
       input:focus,
-      textarea:focus {
+      textarea:focus,
+      select:focus {
         outline: none;
         border-color: #7dd1ff;
         background: rgba(0, 0, 0, 0.35);
@@ -150,10 +152,12 @@
       <div class="card">
         <h1>Users Module Demo</h1>
         <p>
-          Exercise the authenticated endpoints:
+          Exercise authenticated endpoints:
           <code>GET /users/profile/get</code> and
-          <code>PATCH /users/profile/update</code>. You need a Bearer token from
-          the Auth demo (sign in first and paste the token here).
+          <code>PATCH /users/profile/update</code>. Admin endpoints
+          <code>GET /admin/users/list</code> and
+          <code>PATCH /admin/users/update</code> require an admin token (you can
+          reuse the same token if it has admin role).
         </p>
 
         <form id="base-form">
@@ -319,6 +323,111 @@
             <pre id="resp-artist-update">Waiting...</pre>
           </div>
         </div>
+
+        <div class="card">
+          <h2>Admin list users</h2>
+          <p class="muted">GET /admin/users/list</p>
+          <form id="admin-list-form">
+            <label>
+              Search
+              <input
+                id="admin-list-search"
+                name="search"
+                type="text"
+                placeholder="email search"
+              />
+            </label>
+            <label>
+              Status
+              <select id="admin-list-status" name="status">
+                <option value="">all</option>
+                <option value="active">active</option>
+                <option value="deactive">deactive</option>
+                <option value="banned">banned</option>
+              </select>
+            </label>
+            <label>
+              Sort By
+              <select id="admin-list-sort-by" name="sortBy">
+                <option value="createdAt" selected>createdAt</option>
+                <option value="updatedAt">updatedAt</option>
+                <option value="email">email</option>
+                <option value="role">role</option>
+                <option value="status">status</option>
+              </select>
+            </label>
+            <label>
+              Sort Order
+              <select id="admin-list-sort-order" name="sortOrder">
+                <option value="desc" selected>desc</option>
+                <option value="asc">asc</option>
+              </select>
+            </label>
+            <label>
+              Page
+              <input
+                id="admin-list-page"
+                name="page"
+                type="number"
+                min="1"
+                value="1"
+              />
+            </label>
+            <label>
+              Limit
+              <input
+                id="admin-list-limit"
+                name="limit"
+                type="number"
+                min="1"
+                value="10"
+              />
+            </label>
+            <button type="submit">List users</button>
+          </form>
+          <div class="panel">
+            <div class="muted">Curl</div>
+            <pre id="curl-admin-list"></pre>
+          </div>
+          <div class="panel">
+            <div class="muted">Response</div>
+            <pre id="resp-admin-list">Waiting...</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Admin update user status</h2>
+          <p class="muted">PATCH /admin/users/update</p>
+          <form id="admin-update-form">
+            <label>
+              User Id
+              <input
+                id="admin-update-user-id"
+                name="userId"
+                type="text"
+                placeholder="user ObjectId"
+                required
+              />
+            </label>
+            <label>
+              Status
+              <select id="admin-update-status" name="status" required>
+                <option value="active">active</option>
+                <option value="deactive">deactive</option>
+                <option value="banned">banned</option>
+              </select>
+            </label>
+            <button type="submit">Update status</button>
+          </form>
+          <div class="panel">
+            <div class="muted">Curl</div>
+            <pre id="curl-admin-update"></pre>
+          </div>
+          <div class="panel">
+            <div class="muted">Response</div>
+            <pre id="resp-admin-update">Waiting...</pre>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -356,6 +465,14 @@
         document.getElementById("artist-update-styles");
       const curlArtistUpdateEl = document.getElementById("curl-artist-update");
       const respArtistUpdateEl = document.getElementById("resp-artist-update");
+
+      const adminListForm = document.getElementById("admin-list-form");
+      const curlAdminListEl = document.getElementById("curl-admin-list");
+      const respAdminListEl = document.getElementById("resp-admin-list");
+
+      const adminUpdateForm = document.getElementById("admin-update-form");
+      const curlAdminUpdateEl = document.getElementById("curl-admin-update");
+      const respAdminUpdateEl = document.getElementById("resp-admin-update");
 
       const cleanBase = () => baseUrlInput.value.replace(/\/+$/, "");
 
@@ -447,26 +564,69 @@
         ].join(" ");
       };
 
+      const renderCurlAdminList = () => {
+        const base = cleanBase();
+        const token = tokenInput.value || "<TOKEN>";
+        const params = new URLSearchParams();
+        const form = new FormData(adminListForm);
+        for (const [key, value] of form.entries()) {
+          if (value) params.append(key, value.toString());
+        }
+        const query = params.toString();
+        curlAdminListEl.textContent = [
+          "curl",
+          "-X GET",
+          `"${base}/admin/users/list${query ? `?${query}` : ""}"`,
+          '-H "Authorization: Bearer ' + token + '"',
+        ].join(" ");
+      };
+
+      const renderCurlAdminUpdate = () => {
+        const base = cleanBase();
+        const token = tokenInput.value || "<TOKEN>";
+        const form = new FormData(adminUpdateForm);
+        const body = {
+          userId: (form.get("userId") || "<USER_ID>").toString().trim(),
+          status: (form.get("status") || "active").toString(),
+        };
+        curlAdminUpdateEl.textContent = [
+          "curl",
+          "-X PATCH",
+          `"${base}/admin/users/update"`,
+          '-H "Authorization: Bearer ' + token + '"',
+          '-H "Content-Type: application/json"',
+          `-d '${JSON.stringify(body)}'`,
+        ].join(" ");
+      };
+
       baseUrlInput.addEventListener("input", () => {
         renderCurlGet();
         renderCurlUpdate();
         renderCurlArtistCreate();
         renderCurlArtistUpdate();
+        renderCurlAdminList();
+        renderCurlAdminUpdate();
       });
       tokenInput.addEventListener("input", () => {
         renderCurlGet();
         renderCurlUpdate();
         renderCurlArtistCreate();
         renderCurlArtistUpdate();
+        renderCurlAdminList();
+        renderCurlAdminUpdate();
       });
       updateForm.addEventListener("input", renderCurlUpdate);
       artistCreateForm.addEventListener("input", renderCurlArtistCreate);
       artistUpdateForm.addEventListener("input", renderCurlArtistUpdate);
+      adminListForm.addEventListener("input", renderCurlAdminList);
+      adminUpdateForm.addEventListener("input", renderCurlAdminUpdate);
 
       renderCurlGet();
       renderCurlUpdate();
       renderCurlArtistCreate();
       renderCurlArtistUpdate();
+      renderCurlAdminList();
+      renderCurlAdminUpdate();
 
       getBtn.addEventListener("click", async () => {
         respGetEl.textContent = "Fetching profile...";
@@ -605,6 +765,73 @@
           respArtistUpdateEl.textContent = JSON.stringify(data, null, 2);
         } catch (err) {
           respArtistUpdateEl.textContent = `Error: ${err.message}`;
+        }
+      });
+
+      adminListForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        respAdminListEl.textContent = "Loading users...";
+        const params = new URLSearchParams();
+        const form = new FormData(adminListForm);
+        for (const [key, value] of form.entries()) {
+          if (value) params.append(key, value.toString());
+        }
+        const query = params.toString();
+        try {
+          const res = await fetch(
+            `${cleanBase()}/admin/users/list${query ? `?${query}` : ""}`,
+            {
+              headers: {
+                Authorization: `Bearer ${tokenInput.value}`,
+              },
+            }
+          );
+          const text = await res.text();
+          let data;
+          try {
+            data = JSON.parse(text);
+          } catch (err) {
+            throw new Error(`Unexpected JSON response: ${text}`);
+          }
+          if (!res.ok) {
+            throw new Error(data?.message || res.statusText);
+          }
+          respAdminListEl.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          respAdminListEl.textContent = `Error: ${err.message}`;
+        }
+      });
+
+      adminUpdateForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        respAdminUpdateEl.textContent = "Updating user status...";
+        const form = new FormData(adminUpdateForm);
+        const payload = {
+          userId: (form.get("userId") || "").toString().trim(),
+          status: form.get("status"),
+        };
+        try {
+          const res = await fetch(`${cleanBase()}/admin/users/update`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenInput.value}`,
+            },
+            body: JSON.stringify(payload),
+          });
+          const text = await res.text();
+          let data;
+          try {
+            data = JSON.parse(text);
+          } catch (err) {
+            throw new Error(`Unexpected JSON response: ${text}`);
+          }
+          if (!res.ok) {
+            throw new Error(data?.message || res.statusText);
+          }
+          respAdminUpdateEl.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          respAdminUpdateEl.textContent = `Error: ${err.message}`;
         }
       });
     </script>

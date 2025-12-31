@@ -5,8 +5,11 @@ import type { AuthenticatedRequest } from "src/auth/types/authenticated-request"
 import { UsersService } from "../users.service";
 import { ArtistCreateDto } from "../dto/artist-create.dto";
 import { ArtistUpdateDto } from "../dto/artist-update.dto";
+import { Roles } from "src/auth/auth.decorator";
+import { IUserRoles } from "../enums/users-role.enum";
 
 @UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(IUserRoles.ARTIST)
 @Controller("artists")
 export class ArtistsController {
   constructor(private readonly usersService: UsersService) {}

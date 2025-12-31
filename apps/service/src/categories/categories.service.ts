@@ -6,11 +6,13 @@ import {
   ListCategoriesResponseDto,
 } from "./dto/list-categories.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
+import { UpdateCategoryStatusDto } from "./dto/update-category-status.dto";
 import { CategoryDocument } from "./schemas/category.schema";
 import { CreateCategoryService } from "./services/create-category.service";
 import { GetCategoryService } from "./services/get-category.service";
 import { ListCategoriesService } from "./services/list-categories.service";
 import { UpdateCategoryService } from "./services/update-category.service";
+import { UpdateCategoryStatusService } from "./services/update-category-status.service";
 
 @Injectable()
 export class CategoriesService {
@@ -18,7 +20,8 @@ export class CategoriesService {
     private readonly createCategoryService: CreateCategoryService,
     private readonly getCategoryService: GetCategoryService,
     private readonly listCategoriesService: ListCategoriesService,
-    private readonly updateCategoryService: UpdateCategoryService
+    private readonly updateCategoryService: UpdateCategoryService,
+    private readonly updateCategoryStatusService: UpdateCategoryStatusService
   ) {}
 
   async createCategory(dto: CreateCategoryDto): Promise<CategoryDocument> {
@@ -37,5 +40,11 @@ export class CategoriesService {
 
   async updateCategory(dto: UpdateCategoryDto): Promise<CategoryDocument> {
     return this.updateCategoryService.execute(dto);
+  }
+
+  async updateCategoryStatus(
+    dto: UpdateCategoryStatusDto
+  ): Promise<CategoryDocument> {
+    return this.updateCategoryStatusService.execute(dto);
   }
 }

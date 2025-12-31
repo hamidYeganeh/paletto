@@ -9,6 +9,7 @@ import {
 } from "class-validator";
 import { MIN_LIST_LIMIT, MIN_LIST_PAGE } from "src/constants/default-list-params";
 import { Types } from "mongoose";
+import { TAXONOMY_STATUSES } from "src/common/enums/taxonomy-status.enum";
 
 const ARTWORK_SORT_FIELDS = ["createdAt", "updatedAt", "title"] as const;
 const SORT_ORDERS = ["asc", "desc"] as const;
@@ -45,6 +46,7 @@ export class ListArtworksQueryDto {
   @IsString()
   @IsOptional()
   @MaxLength(50)
+  @IsIn(TAXONOMY_STATUSES)
   status?: string;
 
   @Transform(({ value }) =>
@@ -70,6 +72,13 @@ export interface ArtistProfileDto {
   styles: Types.ObjectId[];
 }
 
+export interface TaxonomyListItemDto {
+  _id: Types.ObjectId;
+  title: string;
+  slug: string;
+  status: string;
+}
+
 export interface ArtworkListItemDto {
   _id: Types.ObjectId;
   artist?: ArtistProfileDto;
@@ -77,6 +86,9 @@ export interface ArtworkListItemDto {
   description?: string;
   images?: string[];
   status?: string;
+  techniques?: TaxonomyListItemDto[];
+  styles?: TaxonomyListItemDto[];
+  categories?: TaxonomyListItemDto[];
   createdAt: Date;
   updatedAt: Date;
 }

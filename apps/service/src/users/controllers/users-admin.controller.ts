@@ -1,4 +1,11 @@
-import { Controller, Get, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 import {
   ListUsersQueryDto,
   ListUsersResponseDto,
@@ -8,6 +15,7 @@ import { RolesGuard } from "src/auth/guards/roles.guard";
 import { JwtAuthGuard } from "src/auth/guards/jwt.guard";
 import { Roles } from "src/auth/auth.decorator";
 import { IUserRoles } from "../enums/users-role.enum";
+import { UpdateUserStatusDto } from "../dto/update-user-status.dto";
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(IUserRoles.ADMIN)
@@ -20,5 +28,10 @@ export class UsersAdminController {
     @Query() query: ListUsersQueryDto
   ): Promise<ListUsersResponseDto> {
     return this.usersService.listUsers(query);
+  }
+
+  @Patch("update")
+  async updateUserStatus(@Body() dto: UpdateUserStatusDto) {
+    return this.usersService.updateUserStatus(dto);
   }
 }

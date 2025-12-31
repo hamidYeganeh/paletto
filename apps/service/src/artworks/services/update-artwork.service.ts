@@ -58,6 +58,18 @@ export class UpdateArtworkService {
       updatePayload.images = normalizeImages(dto.images);
     }
 
+    if (dto.techniques !== undefined) {
+      updatePayload.techniques = dto.techniques;
+    }
+
+    if (dto.styles !== undefined) {
+      updatePayload.styles = dto.styles;
+    }
+
+    if (dto.categories !== undefined) {
+      updatePayload.categories = dto.categories;
+    }
+
     const artworkObjectId = new Types.ObjectId(artworkId);
 
     const artwork = await this.artworkModel

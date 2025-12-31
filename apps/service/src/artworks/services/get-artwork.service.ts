@@ -13,7 +13,11 @@ import {
   ARTIST_PROFILE_SELECT,
   mapArtworkListItem,
   PUBLIC_ARTWORKS_LIST_SELECT,
+  TAXONOMY_LIST_SELECT,
 } from "../utils/artwork-list-mapper";
+import { Technique } from "src/techniques/schemas/technique.schema";
+import { Style } from "src/styles/schemas/style.schema";
+import { Category } from "src/categories/schemas/category.schema";
 
 @Injectable()
 export class GetArtworkService {
@@ -35,6 +39,21 @@ export class GetArtworkService {
         path: "artistId",
         select: ARTIST_PROFILE_SELECT,
         model: Artist.name,
+      })
+      .populate({
+        path: "techniques",
+        select: TAXONOMY_LIST_SELECT,
+        model: Technique.name,
+      })
+      .populate({
+        path: "styles",
+        select: TAXONOMY_LIST_SELECT,
+        model: Style.name,
+      })
+      .populate({
+        path: "categories",
+        select: TAXONOMY_LIST_SELECT,
+        model: Category.name,
       })
       .lean()
       .exec();

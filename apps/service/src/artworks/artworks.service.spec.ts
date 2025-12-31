@@ -4,6 +4,7 @@ import { CreateArtworkService } from "./services/create-artwork.service";
 import { GetArtworkService } from "./services/get-artwork.service";
 import { ListArtworksService } from "./services/list-artworks.service";
 import { UpdateArtworkService } from "./services/update-artwork.service";
+import { UpdateArtworkStatusService } from "./services/update-artwork-status.service";
 
 describe('ArtworksService', () => {
   let service: ArtworksService;
@@ -16,6 +17,7 @@ describe('ArtworksService', () => {
         { provide: GetArtworkService, useValue: {} },
         { provide: ListArtworksService, useValue: {} },
         { provide: UpdateArtworkService, useValue: {} },
+        { provide: UpdateArtworkStatusService, useValue: {} },
       ],
     }).compile();
 

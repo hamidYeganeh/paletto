@@ -44,6 +44,11 @@
         margin: 4px 0 0;
         color: #cbd5e1;
       }
+      .hint {
+        margin: 6px 0 0;
+        color: #94a3b8;
+        font-size: 13px;
+      }
       .card {
         background: rgba(15, 23, 42, 0.7);
         border: 1px solid rgba(226, 232, 240, 0.12);
@@ -116,7 +121,10 @@
   <body>
     <header>
       <h1>Styles Module Demo</h1>
-      <p>Create/update require an admin token. List and get are public.</p>
+      <p>
+        Create/update/admin list require an admin token. Public list/get are
+        public and only return active items.
+      </p>
     </header>
 
     <section class="card">
@@ -206,7 +214,45 @@
 
       <div class="card">
         <h3>List Styles</h3>
+        <p class="hint">Public list is always filtered to active.</p>
         <form id="listStylesForm">
+          <label
+            >Search
+            <input name="search" placeholder="title or slug" />
+          </label>
+          <label
+            >Sort By
+            <select name="sortBy">
+              <option value="createdAt" selected>createdAt</option>
+              <option value="updatedAt">updatedAt</option>
+              <option value="title">title</option>
+              <option value="slug">slug</option>
+            </select>
+          </label>
+          <label
+            >Sort Order
+            <select name="sortOrder">
+              <option value="desc" selected>desc</option>
+              <option value="asc">asc</option>
+            </select>
+          </label>
+          <label
+            >Page
+            <input name="page" type="number" min="1" value="1" />
+          </label>
+          <label
+            >Limit
+            <input name="limit" type="number" min="1" value="10" />
+          </label>
+          <button type="submit">List</button>
+        </form>
+        <div id="listStylesResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>Admin List Styles</h3>
+        <p class="hint">Requires admin token.</p>
+        <form id="adminListStylesForm">
           <label
             >Search
             <input name="search" placeholder="title or slug" />
@@ -245,7 +291,7 @@
           </label>
           <button type="submit">List</button>
         </form>
-        <div id="listStylesResult"></div>
+        <div id="adminListStylesResult"></div>
       </div>
     </section>
 
@@ -369,6 +415,34 @@
           try {
             const res = await fetch(
               `${apiBaseInput.value}/styles/list?${params.toString()}`
+            );
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("adminListStylesForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const params = new URLSearchParams();
+          for (const [key, value] of form.entries()) {
+            if (value) params.append(key, value.toString());
+          }
+          const resEl = document.getElementById("adminListStylesResult");
+          resEl.textContent = "Loading...";
+          try {
+            const res = await fetch(
+              `${apiBaseInput.value}/admin/styles/list?${params.toString()}`,
+              {
+                headers: {
+                  ...authHeaders(),
+                },
+              }
             );
             const data = await res.json();
             if (!res.ok) throw data;

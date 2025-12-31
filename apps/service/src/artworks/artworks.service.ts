@@ -12,6 +12,8 @@ import { UpdateArtworkService } from "./services/update-artwork.service";
 import { ArtworkDocument } from "./schemas/artwork.schema";
 import { GetArtworkDto } from "./dto/get-artwork.dto";
 import type { ArtworkListItemDto } from "./dto/list-artworks.dto";
+import { UpdateArtworkStatusDto } from "./dto/update-artwork-status.dto";
+import { UpdateArtworkStatusService } from "./services/update-artwork-status.service";
 
 @Injectable()
 export class ArtworksService {
@@ -19,7 +21,8 @@ export class ArtworksService {
     private readonly createArtworkService: CreateArtworkService,
     private readonly listArtworksService: ListArtworksService,
     private readonly getArtworkService: GetArtworkService,
-    private readonly updateArtworkService: UpdateArtworkService
+    private readonly updateArtworkService: UpdateArtworkService,
+    private readonly updateArtworkStatusService: UpdateArtworkStatusService
   ) {}
 
   async listArtworks(
@@ -44,5 +47,11 @@ export class ArtworksService {
     dto: UpdateArtworkDto
   ): Promise<ArtworkDocument> {
     return this.updateArtworkService.execute(userId, dto);
+  }
+
+  async updateArtworkStatus(
+    dto: UpdateArtworkStatusDto
+  ): Promise<ArtworkDocument> {
+    return this.updateArtworkStatusService.execute(dto);
   }
 }

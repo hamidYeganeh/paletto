@@ -1,5 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
+import {
+  TAXONOMY_STATUSES,
+  type TaxonomyStatus,
+} from "src/common/enums/taxonomy-status.enum";
 
 export type ArtworkDocument = HydratedDocument<Artwork>;
 
@@ -22,8 +26,33 @@ export class Artwork {
   @Prop({ type: [String], default: [] })
   images?: string[];
 
-  @Prop({ trim: true })
-  status?: string;
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: "Techniques" }],
+    default: [],
+    index: true,
+  })
+  techniques?: Types.ObjectId[];
+
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: "Styles" }],
+    default: [],
+    index: true,
+  })
+  styles?: Types.ObjectId[];
+
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: "Categories" }],
+    default: [],
+    index: true,
+  })
+  categories?: Types.ObjectId[];
+
+  @Prop({
+    trim: true,
+    enum: TAXONOMY_STATUSES,
+    default: "active",
+  })
+  status?: TaxonomyStatus;
 
   createdAt: Date;
 
