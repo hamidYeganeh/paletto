@@ -18,5 +18,9 @@ export * from "./domains/users/users.api";
 export * from "./domains/users/users.hooks";
 export * from "./domains/users/users.keys";
 export * from "./domains/users/users.types";
+export * from "./domains/taxonomy/taxonomy.api";
+export * from "./domains/taxonomy/taxonomy.hooks";
+export * from "./domains/taxonomy/taxonomy.keys";
+export * from "./domains/taxonomy/taxonomy.types";
 
 export { HydrationBoundary } from "@tanstack/react-query";
