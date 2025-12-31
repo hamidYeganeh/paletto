@@ -12,7 +12,7 @@ import {
   MIN_LIST_PAGE,
 } from "src/constants/default-list-params";
 import { Types } from "mongoose";
-import { TAXONOMY_STATUSES } from "src/common/enums/taxonomy-status.enum";
+import { CATEGORY_STATUSES } from "src/categories/enums/category-status.enum";
 
 const CATEGORY_SORT_FIELDS = [
   "createdAt",
@@ -52,7 +52,7 @@ export class ListCategoriesQueryDto {
     typeof value === "string" && value.trim() === "" ? undefined : value
   )
   @IsOptional()
-  @IsIn(TAXONOMY_STATUSES)
+  @IsIn(CATEGORY_STATUSES)
   status?: string;
 
   @Transform(({ value }) =>

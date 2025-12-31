@@ -1,6 +1,6 @@
 import { Transform } from "class-transformer";
 import { IsIn, IsMongoId, IsNotEmpty, IsString } from "class-validator";
-import { TAXONOMY_STATUSES } from "src/common/enums/taxonomy-status.enum";
+import { CATEGORY_STATUSES } from "src/categories/enums/category-status.enum";
 
 export class UpdateCategoryStatusDto {
   @Transform(({ value }) =>
@@ -15,6 +15,6 @@ export class UpdateCategoryStatusDto {
   )
   @IsString()
   @IsNotEmpty()
-  @IsIn(TAXONOMY_STATUSES)
+  @IsIn(CATEGORY_STATUSES)
   status: string;
 }

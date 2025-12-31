@@ -1,8 +1,8 @@
 import { IsIn, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import {
-  TAXONOMY_STATUSES,
-  type TaxonomyStatus,
-} from "src/common/enums/taxonomy-status.enum";
+  STYLE_STATUSES,
+  type StyleStatus,
+} from "src/styles/enums/style-status.enum";
 
 export class CreateStyleDto {
   @IsString()
@@ -17,7 +17,7 @@ export class CreateStyleDto {
   @IsNotEmpty()
   slug: string;
 
-  @IsIn(TAXONOMY_STATUSES)
+  @IsIn(STYLE_STATUSES)
   @IsNotEmpty()
-  status: TaxonomyStatus;
+  status: StyleStatus;
 }

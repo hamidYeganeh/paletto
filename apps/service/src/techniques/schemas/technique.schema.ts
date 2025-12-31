@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
 import {
-  TAXONOMY_STATUSES,
-  type TaxonomyStatus,
-} from "src/common/enums/taxonomy-status.enum";
+  TECHNIQUE_STATUSES,
+  type TechniqueStatus,
+} from "src/techniques/enums/technique-status.enum";
 
 export type TechniqueDocument = HydratedDocument<Technique>;
 
@@ -18,8 +18,8 @@ export class Technique {
   @Prop({ required: true, trim: true, index: true, unique: true })
   slug: string;
 
-  @Prop({ required: true, trim: true, enum: TAXONOMY_STATUSES })
-  status: TaxonomyStatus;
+  @Prop({ required: true, trim: true, enum: TECHNIQUE_STATUSES })
+  status: TechniqueStatus;
 
   createdAt: Date;
 

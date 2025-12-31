@@ -1,8 +1,8 @@
 import { IsIn, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import {
-  TAXONOMY_STATUSES,
-  type TaxonomyStatus,
-} from "src/common/enums/taxonomy-status.enum";
+  CATEGORY_STATUSES,
+  type CategoryStatus,
+} from "src/categories/enums/category-status.enum";
 
 export class CreateCategoryDto {
   @IsString()
@@ -17,7 +17,7 @@ export class CreateCategoryDto {
   @IsNotEmpty()
   slug: string;
 
-  @IsIn(TAXONOMY_STATUSES)
+  @IsIn(CATEGORY_STATUSES)
   @IsNotEmpty()
-  status: TaxonomyStatus;
+  status: CategoryStatus;
 }

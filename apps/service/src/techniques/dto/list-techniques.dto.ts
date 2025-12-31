@@ -12,7 +12,7 @@ import {
   MIN_LIST_PAGE,
 } from "src/constants/default-list-params";
 import { Types } from "mongoose";
-import { TAXONOMY_STATUSES } from "src/common/enums/taxonomy-status.enum";
+import { TECHNIQUE_STATUSES } from "src/techniques/enums/technique-status.enum";
 
 const TECHNIQUE_SORT_FIELDS = [
   "createdAt",
@@ -52,7 +52,7 @@ export class ListTechniquesQueryDto {
     typeof value === "string" && value.trim() === "" ? undefined : value
   )
   @IsOptional()
-  @IsIn(TAXONOMY_STATUSES)
+  @IsIn(TECHNIQUE_STATUSES)
   status?: string;
 
   @Transform(({ value }) =>

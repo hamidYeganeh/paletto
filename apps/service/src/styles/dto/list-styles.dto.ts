@@ -12,7 +12,7 @@ import {
   MIN_LIST_PAGE,
 } from "src/constants/default-list-params";
 import { Types } from "mongoose";
-import { TAXONOMY_STATUSES } from "src/common/enums/taxonomy-status.enum";
+import { STYLE_STATUSES } from "src/styles/enums/style-status.enum";
 
 const STYLE_SORT_FIELDS = ["createdAt", "updatedAt", "title", "slug"] as const;
 const SORT_ORDERS = ["asc", "desc"] as const;
@@ -47,7 +47,7 @@ export class ListStylesQueryDto {
     typeof value === "string" && value.trim() === "" ? undefined : value
   )
   @IsOptional()
-  @IsIn(TAXONOMY_STATUSES)
+  @IsIn(STYLE_STATUSES)
   status?: string;
 
   @Transform(({ value }) =>

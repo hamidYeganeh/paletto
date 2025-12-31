@@ -7,9 +7,9 @@ import {
   IsString,
 } from "class-validator";
 import {
-  TAXONOMY_STATUSES,
-  type TaxonomyStatus,
-} from "src/common/enums/taxonomy-status.enum";
+  TECHNIQUE_STATUSES,
+  type TechniqueStatus,
+} from "src/techniques/enums/technique-status.enum";
 
 export class UpdateTechniqueDto {
   @IsString()
@@ -24,9 +24,9 @@ export class UpdateTechniqueDto {
   @IsOptional()
   slug?: string;
 
-  @IsIn(TAXONOMY_STATUSES)
+  @IsIn(TECHNIQUE_STATUSES)
   @IsOptional()
-  status?: TaxonomyStatus;
+  status?: TechniqueStatus;
 
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   @IsMongoId()

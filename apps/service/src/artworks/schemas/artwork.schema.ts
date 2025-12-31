@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 import {
-  TAXONOMY_STATUSES,
-  type TaxonomyStatus,
-} from "src/common/enums/taxonomy-status.enum";
+  ARTWORK_STATUSES,
+  type ArtworkStatus,
+} from "src/artworks/enums/artwork-status.enum";
 
 export type ArtworkDocument = HydratedDocument<Artwork>;
 
@@ -49,10 +49,10 @@ export class Artwork {
 
   @Prop({
     trim: true,
-    enum: TAXONOMY_STATUSES,
+    enum: ARTWORK_STATUSES,
     default: "active",
   })
-  status?: TaxonomyStatus;
+  status?: ArtworkStatus;
 
   createdAt: Date;
 

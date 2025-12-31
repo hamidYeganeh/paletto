@@ -9,7 +9,9 @@ import {
 } from "class-validator";
 import { MIN_LIST_LIMIT, MIN_LIST_PAGE } from "src/constants/default-list-params";
 import { Types } from "mongoose";
-import { TAXONOMY_STATUSES } from "src/common/enums/taxonomy-status.enum";
+import { ARTWORK_STATUSES } from "src/artworks/enums/artwork-status.enum";
+import { IsMongoIdArray } from "src/common/is-mongo-id-array";
+import { toObjectIdArray } from "src/common/transformers/to-object-id-array";
 
 const ARTWORK_SORT_FIELDS = ["createdAt", "updatedAt", "title"] as const;
 const SORT_ORDERS = ["asc", "desc"] as const;
@@ -46,8 +48,23 @@ export class ListArtworksQueryDto {
   @IsString()
   @IsOptional()
   @MaxLength(50)
-  @IsIn(TAXONOMY_STATUSES)
+  @IsIn(ARTWORK_STATUSES)
   status?: string;
+
+  @Transform(toObjectIdArray)
+  @IsMongoIdArray({ message: "techniques must be an array of ObjectIds" })
+  @IsOptional()
+  techniques?: Types.ObjectId[];
+
+  @Transform(toObjectIdArray)
+  @IsMongoIdArray({ message: "styles must be an array of ObjectIds" })
+  @IsOptional()
+  styles?: Types.ObjectId[];
+
+  @Transform(toObjectIdArray)
+  @IsMongoIdArray({ message: "categories must be an array of ObjectIds" })
+  @IsOptional()
+  categories?: Types.ObjectId[];
 
   @Transform(({ value }) =>
     typeof value === "string" && value.trim() === "" ? undefined : value

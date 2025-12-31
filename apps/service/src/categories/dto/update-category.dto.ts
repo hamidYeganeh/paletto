@@ -7,9 +7,9 @@ import {
   IsString,
 } from "class-validator";
 import {
-  TAXONOMY_STATUSES,
-  type TaxonomyStatus,
-} from "src/common/enums/taxonomy-status.enum";
+  CATEGORY_STATUSES,
+  type CategoryStatus,
+} from "src/categories/enums/category-status.enum";
 
 export class UpdateCategoryDto {
   @IsString()
@@ -24,9 +24,9 @@ export class UpdateCategoryDto {
   @IsOptional()
   slug?: string;
 
-  @IsIn(TAXONOMY_STATUSES)
+  @IsIn(CATEGORY_STATUSES)
   @IsOptional()
-  status?: TaxonomyStatus;
+  status?: CategoryStatus;
 
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   @IsMongoId()

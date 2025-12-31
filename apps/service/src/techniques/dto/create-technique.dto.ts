@@ -1,8 +1,8 @@
 import { IsIn, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import {
-  TAXONOMY_STATUSES,
-  type TaxonomyStatus,
-} from "src/common/enums/taxonomy-status.enum";
+  TECHNIQUE_STATUSES,
+  type TechniqueStatus,
+} from "src/techniques/enums/technique-status.enum";
 
 export class CreateTechniqueDto {
   @IsString()
@@ -17,7 +17,7 @@ export class CreateTechniqueDto {
   @IsNotEmpty()
   slug: string;
 
-  @IsIn(TAXONOMY_STATUSES)
+  @IsIn(TECHNIQUE_STATUSES)
   @IsNotEmpty()
-  status: TaxonomyStatus;
+  status: TechniqueStatus;
 }

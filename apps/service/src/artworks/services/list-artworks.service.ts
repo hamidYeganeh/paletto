@@ -88,6 +88,18 @@ export class ListArtworksService {
       filters.$or = [{ title: { $regex: search, $options: "i" } }];
     }
 
+    if (query.techniques?.length) {
+      filters.techniques = { $in: query.techniques };
+    }
+
+    if (query.styles?.length) {
+      filters.styles = { $in: query.styles };
+    }
+
+    if (query.categories?.length) {
+      filters.categories = { $in: query.categories };
+    }
+
     return filters;
   }
 
