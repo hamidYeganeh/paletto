@@ -1,6 +1,6 @@
 "use client";
 
-import { PREFERENCES_STEPS } from "../data/preferencesSteps";
+import { PREFERENCES_STEPS } from "../constants/preferencesSteps";
 import { PreferencesOptionsForm } from "../components/PreferencesOptionsForm";
 import { PreferencesProgress } from "../components/PreferencesProgress";
 import { PreferencesTitleCarousel } from "../components/PreferencesTitleCarousel";

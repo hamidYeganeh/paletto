@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, stagger, useAnimate } from "framer-motion";
 import { useEffect, useMemo } from "react";
-import type { PreferencesStep } from "../data/preferencesSteps";
+import type { PreferencesStep } from "../constants/preferencesSteps";
 import { usePreferencesStore } from "../store/PreferencesStore";
 
 type PreferencesTitleCarouselProps = {

@@ -24,7 +24,7 @@ export const PreferencesView = () => {
             <div className="size-full relative z-50 max-w-md mx-auto">
                 <div className="w-full h-auth-header-height-desktop flex flex-row items-center justify-center gap-1" >
                     <p className="text-sm text-white font-normal tracking-widest">Paletto</p>
-                    <Logo size={'xs'} color={'secondary'} />
+                    <Logo size={'sm'} color={'secondary'} />
                 </div>
 
                 <div className="h-[calc(100dvh-var(--auth-header-height-desktop))] w-full">

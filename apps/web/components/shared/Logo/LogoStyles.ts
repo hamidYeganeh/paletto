@@ -11,6 +11,9 @@ export const LogoStyles = {
       },
       size: {
         xs: "w-7 h-5",
+        sm: "w-9 h-6",
+        md: "w-12 h-8",
+        lg: "w-16 h-12",
         xl: "w-20 h-16",
       },
     },

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { ProgressGroup } from "@repo/ui/Progress";
-import type { PreferencesStep } from "../data/preferencesSteps";
+import type { PreferencesStep } from "../constants/preferencesSteps";
 import { usePreferencesStore } from "../store/PreferencesStore";
 
 type PreferencesProgressProps = {

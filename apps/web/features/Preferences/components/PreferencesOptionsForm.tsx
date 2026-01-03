@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Button } from "@repo/ui/Button";
 import Checkbox from "@repo/ui/Checkbox";
 import { useTranslations } from "@repo/i18n/client";
-import type { PreferencesStep } from "../data/preferencesSteps";
+import type { PreferencesStep } from "../constants/preferencesSteps";
 import { PreferencesAnswers, usePreferencesStore } from "../store/PreferencesStore";
 
 type PreferencesOptionsFormProps = {
@@ -49,7 +49,6 @@ export const PreferencesOptionsForm = ({
   const t = useTranslations();
   const [error, setError] = useState<string | null>(null);
 
-  const store = usePreferencesStore(state => state)
   const stepIndex = usePreferencesStore((state) => state.stepIndex);
   const direction = usePreferencesStore((state) => state.direction);
   const answers = usePreferencesStore((state) => state.answers);
@@ -154,16 +153,13 @@ export const PreferencesOptionsForm = ({
 
         <div className="flex items-center justify-between gap-4 mt-auto mb-2">
           {canGoPrev ? (
-            <Button type="button" onClick={() => goToStep(stepIndex - 1)}>
+            <Button type="button" size={'sm'} onClick={() => goToStep(stepIndex - 1)}>
               {t("Common.general.previous")}
             </Button>
           ) : (
             <span />
           )}
-          <div className="text-xs text-white/70">
-            {stepIndex + 1} / {totalSteps}
-          </div>
-          <Button type="submit">
+          <Button type="submit" size={'sm'}>
             {t(canGoNext ? "Common.general.next" : "Common.general.finish")}
           </Button>
         </div>
