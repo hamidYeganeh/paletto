@@ -12,6 +12,7 @@ import { MediaModule } from "./media/media.module";
 import { StylesModule } from "./styles/styles.module";
 import { CategoriesModule } from "./categories/categories.module";
 import { TechniquesModule } from "./techniques/techniques.module";
+import { BlogsModule } from './blogs/blogs.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { TechniquesModule } from "./techniques/techniques.module";
     StylesModule,
     CategoriesModule,
     TechniquesModule,
+    BlogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
