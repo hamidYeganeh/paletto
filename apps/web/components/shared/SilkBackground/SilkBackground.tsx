@@ -199,14 +199,32 @@ export default function SilkBackground({
       uRotation: { value: rotation },
       uTime: { value: 0 },
     }),
-    [speed, scale, noiseIntensity, color, rotation]
+    []
   );
+
+  useEffect(() => {
+    uniforms.uSpeed.value = speed;
+    uniforms.uScale.value = scale;
+    uniforms.uNoiseIntensity.value = noiseIntensity;
+    uniforms.uRotation.value = rotation;
+  }, [noiseIntensity, rotation, scale, speed, uniforms]);
+
+  useEffect(() => {
+    uniforms.uColor.value.set(color);
+  }, [color, uniforms]);
 
   return (
     <Canvas
       dpr={1}
       frameloop="demand"
-      gl={{ alpha: true, antialias: false, powerPreference: "low-power" }}
+      gl={{
+        alpha: true,
+        antialias: false,
+        powerPreference: "low-power",
+        depth: false,
+        stencil: false,
+        preserveDrawingBuffer: false,
+      }}
       className={["h-full w-full", className].filter(Boolean).join(" ")}
     >
       <FrameThrottle enabled={!prefersReducedMotion && isVisible} fps={fps} />
