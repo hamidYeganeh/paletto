@@ -52,6 +52,13 @@ export class GetUserProfileService {
             userId: userObjectId.toString(),
             name: "",
             bio: undefined,
+            blogs: [],
+            savedArtworks: [],
+            savedBlogs: [],
+            likedArtworks: [],
+            likedBlogs: [],
+            commentedArtworks: [],
+            commentedBlogs: [],
           },
     };
   }

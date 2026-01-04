@@ -1,8 +1,21 @@
 import { Transform } from "class-transformer";
-import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import {
+  ArrayMaxSize,
+  IsArray,
+  IsBoolean,
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  ValidateIf,
+} from "class-validator";
 import { Types } from "mongoose";
 import { IsMongoIdArray } from "src/common/is-mongo-id-array";
 import { toObjectIdArray } from "src/common/transformers/to-object-id-array";
+import { MAX_TAG_LENGTH, MAX_TAGS } from "src/common/tags";
+import { ArtworkStatus } from "../enums/artwork-status.enum";
 
 export class CreateArtworkDto {
   @IsString()
@@ -35,4 +48,24 @@ export class CreateArtworkDto {
   @IsArray()
   @IsOptional()
   categories?: Types.ObjectId[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMaxSize(MAX_TAGS)
+  @MaxLength(MAX_TAG_LENGTH, { each: true })
+  @IsOptional()
+  tags?: string[];
+
+  @IsEnum(ArtworkStatus)
+  @IsOptional()
+  status?: ArtworkStatus;
+
+  @IsBoolean()
+  @IsOptional()
+  isScheduled?: boolean;
+
+  @ValidateIf((dto) => dto.isScheduled === true)
+  @IsDateString()
+  @IsNotEmpty()
+  publishAt?: string;
 }

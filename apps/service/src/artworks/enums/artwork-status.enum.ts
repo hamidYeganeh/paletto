@@ -1,4 +1,5 @@
 export enum ArtworkStatus {
+  DRAFT = "draft",
   ACTIVE = "active",
   DEACTIVE = "deactive",
 }

@@ -30,12 +30,12 @@ export class BlogsController {
     return this.blogsService.listBlogs({
       ...query,
       status: PUBLIC_BLOG_STATUS,
-    });
+    }, { publicOnly: true });
   }
 
   @Post("get")
   async getBlog(@Body() dto: GetBlogDto) {
-    return this.blogsService.getBlog(dto);
+    return this.blogsService.getBlog(dto, { publicOnly: true });
   }
 
   @Post("create")

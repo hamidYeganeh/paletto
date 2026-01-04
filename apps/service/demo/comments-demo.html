@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comments Demo</title>
+    <style>
+      :root {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        background: #0b1220;
+        color: #e2e8f0;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        background:
+          radial-gradient(
+            120% 120% at 85% 10%,
+            rgba(56, 189, 248, 0.2),
+            transparent
+          ),
+          radial-gradient(
+            120% 120% at 15% 30%,
+            rgba(248, 113, 113, 0.18),
+            transparent
+          ),
+          #0b1220;
+      }
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: -0.02em;
+      }
+      p {
+        margin: 4px 0 0;
+        color: #cbd5e1;
+      }
+      .hint {
+        margin: 6px 0 0;
+        color: #94a3b8;
+        font-size: 13px;
+      }
+      .card {
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(226, 232, 240, 0.12);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+      }
+      form {
+        display: grid;
+        gap: 12px;
+      }
+      label {
+        font-weight: 600;
+        color: #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      input,
+      textarea,
+      select {
+        padding: 11px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(226, 232, 240, 0.2);
+        background: rgba(226, 232, 240, 0.05);
+        color: #e2e8f0;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+      }
+      button {
+        justify-self: start;
+        padding: 11px 14px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(120deg, #38bdf8, #f87171);
+        color: #0b1021;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        box-shadow: 0 16px 45px rgba(56, 189, 248, 0.3);
+      }
+      button:hover {
+        filter: brightness(1.05);
+      }
+      .grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+      pre {
+        background: #0b1021;
+        border-radius: 12px;
+        padding: 12px;
+        color: #e2e8f0;
+        overflow-x: auto;
+        border: 1px solid rgba(226, 232, 240, 0.08);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Comments Demo</h1>
+      <p>
+        Create comments (drafts), list approved comments publicly, and approve or
+        reject via owner or admin endpoints.
+      </p>
+    </header>
+
+    <section class="card">
+      <form>
+        <label
+          >API Base URL
+          <input id="apiBase" value="http://localhost:5000" />
+        </label>
+        <label
+          >Auth Token (Bearer)
+          <input id="authToken" placeholder="jwt-token-here for create/update" />
+        </label>
+        <label
+          >Admin Token (Bearer)
+          <input
+            id="adminToken"
+            placeholder="admin token for admin endpoints"
+          />
+        </label>
+      </form>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>Create Comment</h3>
+        <p class="hint">Requires auth token. New comments start as draft.</p>
+        <form id="createCommentForm">
+          <label
+            >Target Type
+            <select name="targetType" required>
+              <option value="artwork">artwork</option>
+              <option value="blog">blog</option>
+            </select>
+          </label>
+          <label
+            >Target Id
+            <input name="targetId" placeholder="artwork/blog ObjectId" required />
+          </label>
+          <label
+            >Content
+            <textarea name="content" rows="4" required></textarea>
+          </label>
+          <button type="submit">Create</button>
+        </form>
+        <div id="createCommentResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>List Comments (Public)</h3>
+        <p class="hint">
+          Requires targetType + targetId. Only approved comments are returned.
+        </p>
+        <form id="listCommentsForm">
+          <label
+            >Target Type
+            <select name="targetType" required>
+              <option value="artwork">artwork</option>
+              <option value="blog">blog</option>
+            </select>
+          </label>
+          <label
+            >Target Id
+            <input name="targetId" placeholder="artwork/blog ObjectId" required />
+          </label>
+          <label
+            >Sort Order
+            <select name="sortOrder">
+              <option value="desc" selected>desc</option>
+              <option value="asc">asc</option>
+            </select>
+          </label>
+          <label
+            >Page
+            <input name="page" type="number" min="1" value="1" />
+          </label>
+          <label
+            >Limit
+            <input name="limit" type="number" min="1" value="10" />
+          </label>
+          <button type="submit">List</button>
+        </form>
+        <div id="listCommentsResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>Update Comment Status (Owner)</h3>
+        <p class="hint">Requires auth token for the artwork/blog owner.</p>
+        <form id="updateCommentStatusForm">
+          <label
+            >Comment Id
+            <input name="commentId" placeholder="comment ObjectId" required />
+          </label>
+          <label
+            >Status
+            <select name="status" required>
+              <option value="approved">approved</option>
+              <option value="rejected">rejected</option>
+              <option value="draft">draft</option>
+            </select>
+          </label>
+          <button type="submit">Update Status</button>
+        </form>
+        <div id="updateCommentStatusResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>Admin List Comments</h3>
+        <p class="hint">Requires admin token.</p>
+        <form id="adminListCommentsForm">
+          <label
+            >Target Type
+            <select name="targetType">
+              <option value="">all</option>
+              <option value="artwork">artwork</option>
+              <option value="blog">blog</option>
+            </select>
+          </label>
+          <label
+            >Target Id
+            <input name="targetId" placeholder="artwork/blog ObjectId" />
+          </label>
+          <label
+            >Status
+            <select name="status">
+              <option value="">all</option>
+              <option value="draft">draft</option>
+              <option value="approved">approved</option>
+              <option value="rejected">rejected</option>
+            </select>
+          </label>
+          <label
+            >Sort Order
+            <select name="sortOrder">
+              <option value="desc" selected>desc</option>
+              <option value="asc">asc</option>
+            </select>
+          </label>
+          <label
+            >Page
+            <input name="page" type="number" min="1" value="1" />
+          </label>
+          <label
+            >Limit
+            <input name="limit" type="number" min="1" value="10" />
+          </label>
+          <button type="submit">List</button>
+        </form>
+        <div id="adminListCommentsResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>Admin Update Comment Status</h3>
+        <p class="hint">Requires admin token.</p>
+        <form id="adminUpdateCommentStatusForm">
+          <label
+            >Comment Id
+            <input name="commentId" placeholder="comment ObjectId" required />
+          </label>
+          <label
+            >Status
+            <select name="status" required>
+              <option value="approved">approved</option>
+              <option value="rejected">rejected</option>
+              <option value="draft">draft</option>
+            </select>
+          </label>
+          <button type="submit">Update Status</button>
+        </form>
+        <div id="adminUpdateCommentStatusResult"></div>
+      </div>
+    </section>
+
+    <script>
+      const apiBaseInput = document.getElementById("apiBase");
+      const authInput = document.getElementById("authToken");
+      const adminInput = document.getElementById("adminToken");
+
+      const formatJson = (data) =>
+        `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+      const authHeaders = () =>
+        authInput.value
+          ? { Authorization: `Bearer ${authInput.value}` }
+          : {};
+
+      const adminHeaders = () =>
+        adminInput.value
+          ? { Authorization: `Bearer ${adminInput.value}` }
+          : {};
+
+      document
+        .getElementById("createCommentForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const payload = {
+            targetType: form.get("targetType"),
+            targetId: form.get("targetId"),
+            content: form.get("content"),
+          };
+          const resEl = document.getElementById("createCommentResult");
+          resEl.textContent = "Creating...";
+          try {
+            const res = await fetch(`${apiBaseInput.value}/comments/create`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...authHeaders(),
+              },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("listCommentsForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const params = new URLSearchParams();
+          for (const [key, value] of form.entries()) {
+            if (value) params.append(key, value.toString());
+          }
+          const resEl = document.getElementById("listCommentsResult");
+          resEl.textContent = "Loading...";
+          try {
+            const res = await fetch(
+              `${apiBaseInput.value}/comments/list?${params.toString()}`
+            );
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("updateCommentStatusForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const payload = {
+            commentId: form.get("commentId"),
+            status: form.get("status"),
+          };
+          const resEl = document.getElementById("updateCommentStatusResult");
+          resEl.textContent = "Updating...";
+          try {
+            const res = await fetch(`${apiBaseInput.value}/comments/update-status`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                ...authHeaders(),
+              },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("adminListCommentsForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const params = new URLSearchParams();
+          for (const [key, value] of form.entries()) {
+            if (value) params.append(key, value.toString());
+          }
+          const resEl = document.getElementById("adminListCommentsResult");
+          resEl.textContent = "Loading...";
+          try {
+            const res = await fetch(
+              `${apiBaseInput.value}/admin/comments/list?${params.toString()}`,
+              {
+                headers: {
+                  ...adminHeaders(),
+                },
+              }
+            );
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+
+      document
+        .getElementById("adminUpdateCommentStatusForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = new FormData(e.target);
+          const payload = {
+            commentId: form.get("commentId"),
+            status: form.get("status"),
+          };
+          const resEl = document.getElementById(
+            "adminUpdateCommentStatusResult"
+          );
+          resEl.textContent = "Updating...";
+          try {
+            const res = await fetch(
+              `${apiBaseInput.value}/admin/comments/update-status`,
+              {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                  ...adminHeaders(),
+                },
+                body: JSON.stringify(payload),
+              }
+            );
+            const data = await res.json();
+            if (!res.ok) throw data;
+            resEl.innerHTML = formatJson(data);
+          } catch (err) {
+            resEl.innerHTML = formatJson(err);
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -145,6 +145,16 @@
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: 18px;
       }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .actions button {
+        flex: 1 1 auto;
+      }
     </style>
   </head>
   <body>
@@ -325,6 +335,126 @@
         </div>
 
         <div class="card">
+          <h2>Saved artworks</h2>
+          <p class="muted">
+            POST/DELETE /users/profile/saved/artworks, GET
+            /users/profile/saved/artworks
+          </p>
+          <form id="saved-artworks-form">
+            <label>
+              Artwork Id
+              <input
+                id="saved-artwork-id"
+                name="artworkId"
+                type="text"
+                placeholder="artwork ObjectId"
+              />
+            </label>
+            <div class="actions">
+              <button type="button" id="save-artwork-btn">Save artwork</button>
+              <button type="button" id="unsave-artwork-btn">
+                Remove saved
+              </button>
+              <button type="button" id="list-saved-artworks-btn">
+                List saved
+              </button>
+            </div>
+          </form>
+          <div class="panel">
+            <div class="muted">Response</div>
+            <pre id="resp-saved-artworks">Waiting...</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Saved blogs</h2>
+          <p class="muted">
+            POST/DELETE /users/profile/saved/blogs, GET /users/profile/saved/blogs
+          </p>
+          <form id="saved-blogs-form">
+            <label>
+              Blog Id
+              <input
+                id="saved-blog-id"
+                name="blogId"
+                type="text"
+                placeholder="blog ObjectId"
+              />
+            </label>
+            <div class="actions">
+              <button type="button" id="save-blog-btn">Save blog</button>
+              <button type="button" id="unsave-blog-btn">Remove saved</button>
+              <button type="button" id="list-saved-blogs-btn">
+                List saved
+              </button>
+            </div>
+          </form>
+          <div class="panel">
+            <div class="muted">Response</div>
+            <pre id="resp-saved-blogs">Waiting...</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Liked artworks</h2>
+          <p class="muted">
+            POST/DELETE /users/profile/liked/artworks, GET
+            /users/profile/liked/artworks
+          </p>
+          <form id="liked-artworks-form">
+            <label>
+              Artwork Id
+              <input
+                id="liked-artwork-id"
+                name="artworkId"
+                type="text"
+                placeholder="artwork ObjectId"
+              />
+            </label>
+            <div class="actions">
+              <button type="button" id="like-artwork-btn">Like artwork</button>
+              <button type="button" id="unlike-artwork-btn">
+                Remove like
+              </button>
+              <button type="button" id="list-liked-artworks-btn">
+                List liked
+              </button>
+            </div>
+          </form>
+          <div class="panel">
+            <div class="muted">Response</div>
+            <pre id="resp-liked-artworks">Waiting...</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Liked blogs</h2>
+          <p class="muted">
+            POST/DELETE /users/profile/liked/blogs, GET /users/profile/liked/blogs
+          </p>
+          <form id="liked-blogs-form">
+            <label>
+              Blog Id
+              <input
+                id="liked-blog-id"
+                name="blogId"
+                type="text"
+                placeholder="blog ObjectId"
+              />
+            </label>
+            <div class="actions">
+              <button type="button" id="like-blog-btn">Like blog</button>
+              <button type="button" id="unlike-blog-btn">Remove like</button>
+              <button type="button" id="list-liked-blogs-btn">List liked</button>
+            </div>
+          </form>
+          <div class="panel">
+            <div class="muted">Response</div>
+            <pre id="resp-liked-blogs">Waiting...</pre>
+          </div>
+        </div>
+
+        <div class="card">
           <h2>Admin list users</h2>
           <p class="muted">GET /admin/users/list</p>
           <form id="admin-list-form">
@@ -474,6 +604,15 @@
       const curlAdminUpdateEl = document.getElementById("curl-admin-update");
       const respAdminUpdateEl = document.getElementById("resp-admin-update");
 
+      const savedArtworkIdInput = document.getElementById("saved-artwork-id");
+      const savedBlogIdInput = document.getElementById("saved-blog-id");
+      const likedArtworkIdInput = document.getElementById("liked-artwork-id");
+      const likedBlogIdInput = document.getElementById("liked-blog-id");
+      const respSavedArtworks = document.getElementById("resp-saved-artworks");
+      const respSavedBlogs = document.getElementById("resp-saved-blogs");
+      const respLikedArtworks = document.getElementById("resp-liked-artworks");
+      const respLikedBlogs = document.getElementById("resp-liked-blogs");
+
       const cleanBase = () => baseUrlInput.value.replace(/\/+$/, "");
 
       const parseList = (value) =>
@@ -481,6 +620,33 @@
           .split(",")
           .map((v) => v.trim())
           .filter(Boolean);
+
+      const sendProfileRequest = async (method, path, body, responseEl) => {
+        responseEl.textContent = "Loading...";
+        try {
+          const res = await fetch(`${cleanBase()}${path}`, {
+            method,
+            headers: {
+              ...(body ? { "Content-Type": "application/json" } : {}),
+              Authorization: `Bearer ${tokenInput.value}`,
+            },
+            body: body ? JSON.stringify(body) : undefined,
+          });
+          const text = await res.text();
+          let data;
+          try {
+            data = JSON.parse(text);
+          } catch (err) {
+            throw new Error(`Unexpected JSON response: ${text}`);
+          }
+          if (!res.ok) {
+            throw new Error(data?.message || res.statusText);
+          }
+          responseEl.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          responseEl.textContent = `Error: ${err.message}`;
+        }
+      };
 
       const renderCurlGet = () => {
         const base = cleanBase();
@@ -834,6 +1000,146 @@
           respAdminUpdateEl.textContent = `Error: ${err.message}`;
         }
       });
+
+      document
+        .getElementById("save-artwork-btn")
+        .addEventListener("click", () => {
+          const artworkId = savedArtworkIdInput.value.trim();
+          sendProfileRequest(
+            "POST",
+            "/users/profile/saved/artworks",
+            { artworkId },
+            respSavedArtworks
+          );
+        });
+
+      document
+        .getElementById("unsave-artwork-btn")
+        .addEventListener("click", () => {
+          const artworkId = savedArtworkIdInput.value.trim();
+          sendProfileRequest(
+            "DELETE",
+            "/users/profile/saved/artworks",
+            { artworkId },
+            respSavedArtworks
+          );
+        });
+
+      document
+        .getElementById("list-saved-artworks-btn")
+        .addEventListener("click", () => {
+          sendProfileRequest(
+            "GET",
+            "/users/profile/saved/artworks",
+            null,
+            respSavedArtworks
+          );
+        });
+
+      document
+        .getElementById("save-blog-btn")
+        .addEventListener("click", () => {
+          const blogId = savedBlogIdInput.value.trim();
+          sendProfileRequest(
+            "POST",
+            "/users/profile/saved/blogs",
+            { blogId },
+            respSavedBlogs
+          );
+        });
+
+      document
+        .getElementById("unsave-blog-btn")
+        .addEventListener("click", () => {
+          const blogId = savedBlogIdInput.value.trim();
+          sendProfileRequest(
+            "DELETE",
+            "/users/profile/saved/blogs",
+            { blogId },
+            respSavedBlogs
+          );
+        });
+
+      document
+        .getElementById("list-saved-blogs-btn")
+        .addEventListener("click", () => {
+          sendProfileRequest(
+            "GET",
+            "/users/profile/saved/blogs",
+            null,
+            respSavedBlogs
+          );
+        });
+
+      document
+        .getElementById("like-artwork-btn")
+        .addEventListener("click", () => {
+          const artworkId = likedArtworkIdInput.value.trim();
+          sendProfileRequest(
+            "POST",
+            "/users/profile/liked/artworks",
+            { artworkId },
+            respLikedArtworks
+          );
+        });
+
+      document
+        .getElementById("unlike-artwork-btn")
+        .addEventListener("click", () => {
+          const artworkId = likedArtworkIdInput.value.trim();
+          sendProfileRequest(
+            "DELETE",
+            "/users/profile/liked/artworks",
+            { artworkId },
+            respLikedArtworks
+          );
+        });
+
+      document
+        .getElementById("list-liked-artworks-btn")
+        .addEventListener("click", () => {
+          sendProfileRequest(
+            "GET",
+            "/users/profile/liked/artworks",
+            null,
+            respLikedArtworks
+          );
+        });
+
+      document
+        .getElementById("like-blog-btn")
+        .addEventListener("click", () => {
+          const blogId = likedBlogIdInput.value.trim();
+          sendProfileRequest(
+            "POST",
+            "/users/profile/liked/blogs",
+            { blogId },
+            respLikedBlogs
+          );
+        });
+
+      document
+        .getElementById("unlike-blog-btn")
+        .addEventListener("click", () => {
+          const blogId = likedBlogIdInput.value.trim();
+          sendProfileRequest(
+            "DELETE",
+            "/users/profile/liked/blogs",
+            { blogId },
+            respLikedBlogs
+          );
+        });
+
+      document
+        .getElementById("list-liked-blogs-btn")
+        .addEventListener("click", () => {
+          sendProfileRequest(
+            "GET",
+            "/users/profile/liked/blogs",
+            null,
+            respLikedBlogs
+          );
+        });
     </script>
   </body>
 </html>

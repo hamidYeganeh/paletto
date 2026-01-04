@@ -1,5 +1,7 @@
 import { Transform, Type } from "class-transformer";
 import {
+  ArrayMaxSize,
+  IsArray,
   IsIn,
   IsInt,
   IsOptional,
@@ -12,6 +14,8 @@ import { Types } from "mongoose";
 import { ARTWORK_STATUSES } from "src/artworks/enums/artwork-status.enum";
 import { IsMongoIdArray } from "src/common/is-mongo-id-array";
 import { toObjectIdArray } from "src/common/transformers/to-object-id-array";
+import { toStringArray } from "src/common/transformers/to-string-array";
+import { MAX_TAG_LENGTH, MAX_TAGS } from "src/common/tags";
 
 const ARTWORK_SORT_FIELDS = ["createdAt", "updatedAt", "title"] as const;
 const SORT_ORDERS = ["asc", "desc"] as const;
@@ -66,6 +70,14 @@ export class ListArtworksQueryDto {
   @IsOptional()
   categories?: Types.ObjectId[];
 
+  @Transform(toStringArray)
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMaxSize(MAX_TAGS)
+  @MaxLength(MAX_TAG_LENGTH, { each: true })
+  @IsOptional()
+  tags?: string[];
+
   @Transform(({ value }) =>
     typeof value === "string" && value.trim() === "" ? undefined : value
   )
@@ -102,6 +114,9 @@ export interface ArtworkListItemDto {
   title: string;
   description?: string;
   images?: string[];
+  tags?: string[];
+  isScheduled?: boolean;
+  publishAt?: Date;
   status?: string;
   techniques?: TaxonomyListItemDto[];
   styles?: TaxonomyListItemDto[];

@@ -16,6 +16,15 @@ export class Blog {
   @Prop({ required: true, unique: true, trim: true })
   slug: string;
 
+  @Prop({ type: [String], default: [], index: true })
+  tags?: string[];
+
+  @Prop({ type: Boolean, default: false })
+  isScheduled?: boolean;
+
+  @Prop({ type: Date })
+  publishAt?: Date;
+
   @Prop({
     enum: IBlogsStatus,
     default: IBlogsStatus.DRAFT,

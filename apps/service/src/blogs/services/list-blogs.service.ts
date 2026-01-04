@@ -11,6 +11,10 @@ import {
   DEFAULT_LIST_PAGE,
 } from "src/constants/default-list-params";
 
+export interface ListBlogsOptions {
+  publicOnly?: boolean;
+}
+
 @Injectable()
 export class ListBlogsService {
   constructor(
@@ -18,10 +22,13 @@ export class ListBlogsService {
     private readonly blogModel: Model<BlogDocument>
   ) {}
 
-  async execute(query: ListBlogsQueryDto): Promise<ListBlogsResponseDto> {
+  async execute(
+    query: ListBlogsQueryDto,
+    options: ListBlogsOptions = {}
+  ): Promise<ListBlogsResponseDto> {
     const page = query.page ?? DEFAULT_LIST_PAGE;
     const limit = query.limit ?? DEFAULT_LIST_LIMIT;
-    const filters = this.buildFilters(query);
+    const filters = this.buildFilters(query, options);
     const sort = this.buildSort(query);
     const skip = Math.max(0, page - 1) * limit;
 
@@ -30,7 +37,7 @@ export class ListBlogsService {
       this.blogModel
         .find(filters)
         .select(
-          "_id title description slug status cover authorId createdAt updatedAt"
+          "_id title description slug status cover tags isScheduled publishAt authorId createdAt updatedAt"
         )
         .sort(sort)
         .skip(skip)
@@ -43,7 +50,8 @@ export class ListBlogsService {
   }
 
   private buildFilters(
-    query: ListBlogsQueryDto
+    query: ListBlogsQueryDto,
+    options: ListBlogsOptions
   ): QueryFilter<BlogDocument> {
     const filters: QueryFilter<BlogDocument> = {};
 
@@ -59,6 +67,17 @@ export class ListBlogsService {
       ];
     }
 
+    if (query.tags?.length) {
+      filters.tags = { $in: query.tags };
+    }
+
+    if (options.publicOnly) {
+      const scheduleFilter = this.buildScheduleFilter();
+      filters.$and = filters.$and
+        ? [...filters.$and, scheduleFilter]
+        : [scheduleFilter];
+    }
+
     return filters;
   }
 
@@ -71,5 +90,15 @@ export class ListBlogsService {
 
   private escapeRegExp(value: string): string {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  private buildScheduleFilter() {
+    const now = new Date();
+    return {
+      $or: [
+        { isScheduled: { $ne: true } },
+        { publishAt: { $lte: now } },
+      ],
+    };
   }
 }

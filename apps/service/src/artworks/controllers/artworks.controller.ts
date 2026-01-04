@@ -30,12 +30,12 @@ export class ArtworksController {
     return this.artworksService.listArtworks({
       ...query,
       status: PUBLIC_ARTWORK_STATUS,
-    });
+    }, { publicOnly: true });
   }
 
   @Post("get")
   async getArtwork(@Body() dto: GetArtworkDto) {
-    return this.artworksService.getArtwork(dto);
+    return this.artworksService.getArtwork(dto, { publicOnly: true });
   }
 
   @Post("create")

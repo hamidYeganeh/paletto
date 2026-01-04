@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 import {
   ARTWORK_STATUSES,
-  type ArtworkStatus,
+  ArtworkStatus,
 } from "src/artworks/enums/artwork-status.enum";
 
 export type ArtworkDocument = HydratedDocument<Artwork>;
@@ -47,10 +47,19 @@ export class Artwork {
   })
   categories?: Types.ObjectId[];
 
+  @Prop({ type: [String], default: [], index: true })
+  tags?: string[];
+
+  @Prop({ type: Boolean, default: false })
+  isScheduled?: boolean;
+
+  @Prop({ type: Date })
+  publishAt?: Date;
+
   @Prop({
     trim: true,
     enum: ARTWORK_STATUSES,
-    default: "active",
+    default: ArtworkStatus.DRAFT,
   })
   status?: ArtworkStatus;
 

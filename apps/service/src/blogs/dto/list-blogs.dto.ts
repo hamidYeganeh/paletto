@@ -1,5 +1,7 @@
 import { Transform, Type } from "class-transformer";
 import {
+  ArrayMaxSize,
+  IsArray,
   IsIn,
   IsInt,
   IsOptional,
@@ -13,6 +15,8 @@ import {
   MIN_LIST_PAGE,
 } from "src/constants/default-list-params";
 import { BLOG_STATUSES } from "../enums/blogs-status.enum";
+import { toStringArray } from "src/common/transformers/to-string-array";
+import { MAX_TAG_LENGTH, MAX_TAGS } from "src/common/tags";
 
 const BLOG_SORT_FIELDS = ["createdAt", "updatedAt", "title", "slug"] as const;
 const SORT_ORDERS = ["asc", "desc"] as const;
@@ -50,6 +54,14 @@ export class ListBlogsQueryDto {
   @IsIn(BLOG_STATUSES)
   status?: string;
 
+  @Transform(toStringArray)
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMaxSize(MAX_TAGS)
+  @MaxLength(MAX_TAG_LENGTH, { each: true })
+  @IsOptional()
+  tags?: string[];
+
   @Transform(({ value }) =>
     typeof value === "string" && value.trim() === "" ? undefined : value
   )
@@ -72,6 +84,9 @@ export interface BlogListItemDto {
   slug: string;
   status: string;
   cover: string;
+  tags?: string[];
+  isScheduled?: boolean;
+  publishAt?: Date;
   authorId: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;

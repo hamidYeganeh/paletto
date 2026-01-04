@@ -4,11 +4,12 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model, QueryFilter, Types } from "mongoose";
 import { Artist } from "src/users/schemas/artists-profile.schema";
 import { GetArtworkDto } from "../dto/get-artwork.dto";
 import type { ArtworkListItemDto } from "../dto/list-artworks.dto";
 import { Artwork, ArtworkDocument } from "../schemas/artwork.schema";
+import { ArtworkStatus } from "../enums/artwork-status.enum";
 import {
   ARTIST_PROFILE_SELECT,
   mapArtworkListItem,
@@ -26,14 +27,19 @@ export class GetArtworkService {
     private readonly artworkModel: Model<ArtworkDocument>
   ) {}
 
-  async execute(dto: GetArtworkDto): Promise<ArtworkListItemDto> {
+  async execute(
+    dto: GetArtworkDto,
+    options: { publicOnly?: boolean } = {}
+  ): Promise<ArtworkListItemDto> {
     const artworkObjectId = this.toObjectId(
       dto.artworkId,
       "Invalid artwork id"
     );
 
+    const filters = this.buildFilters(artworkObjectId, options);
+
     const artwork = await this.artworkModel
-      .findOne({ _id: artworkObjectId })
+      .findOne(filters)
       .select(PUBLIC_ARTWORKS_LIST_SELECT)
       .populate({
         path: "artistId",
@@ -63,6 +69,27 @@ export class GetArtworkService {
     }
 
     return mapArtworkListItem(artwork);
+  }
+
+  private buildFilters(
+    artworkId: Types.ObjectId,
+    options: { publicOnly?: boolean }
+  ): QueryFilter<ArtworkDocument> {
+    const filters: QueryFilter<ArtworkDocument> = { _id: artworkId };
+
+    if (options.publicOnly) {
+      filters.status = ArtworkStatus.ACTIVE;
+      filters.$and = [
+        {
+          $or: [
+            { isScheduled: { $ne: true } },
+            { publishAt: { $lte: new Date() } },
+          ],
+        },
+      ];
+    }
+
+    return filters;
   }
 
   private toObjectId(value: string, errorMessage: string): Types.ObjectId {

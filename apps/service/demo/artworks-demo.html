@@ -169,6 +169,27 @@
             >Categories (comma separated ObjectIds)
             <input name="categories" placeholder="65f1...,65f2..." />
           </label>
+          <label
+            >Tags (comma separated, max 15)
+            <input name="tags" placeholder="abstract,modern" />
+          </label>
+          <label
+            >Status (optional)
+            <select name="status">
+              <option value="">default (draft)</option>
+              <option value="draft">draft</option>
+              <option value="active">active</option>
+              <option value="deactive">deactive</option>
+            </select>
+          </label>
+          <label
+            >Schedule publish?
+            <input name="isScheduled" type="checkbox" />
+          </label>
+          <label
+            >Publish At (required if scheduled)
+            <input name="publishAt" type="datetime-local" />
+          </label>
           <button type="submit">Create</button>
         </form>
         <div id="createArtworkResult"></div>
@@ -205,6 +226,22 @@
             >Categories (comma separated ObjectIds)
             <input name="categories" placeholder="65f1...,65f2..." />
           </label>
+          <label
+            >Tags (comma separated, max 15)
+            <input name="tags" placeholder="abstract,modern" />
+          </label>
+          <label
+            >Schedule action
+            <select name="scheduleAction">
+              <option value="">unchanged</option>
+              <option value="schedule">schedule</option>
+              <option value="unschedule">unschedule</option>
+            </select>
+          </label>
+          <label
+            >Publish At (required when scheduling)
+            <input name="publishAt" type="datetime-local" />
+          </label>
           <button type="submit">Update</button>
         </form>
         <div id="updateArtworkResult"></div>
@@ -212,7 +249,9 @@
 
       <div class="card">
         <h3>List Artworks</h3>
-        <p class="hint">Public list is always filtered to active.</p>
+        <p class="hint">
+          Public list is always filtered to active and published items.
+        </p>
         <form id="listArtworksForm">
           <label
             >Search
@@ -229,6 +268,10 @@
           <label
             >Categories (comma separated ObjectIds)
             <input name="categories" placeholder="65f1...,65f2..." />
+          </label>
+          <label
+            >Tags (comma separated)
+            <input name="tags" placeholder="abstract,modern" />
           </label>
           <label
             >Sort By
@@ -265,10 +308,6 @@
             >Artwork Id
             <input name="artworkId" placeholder="artwork ObjectId" />
           </label>
-          <label
-            >Artist Id
-            <input name="artistId" placeholder="artist ObjectId" />
-          </label>
           <button type="submit">Get</button>
         </form>
         <div id="getArtworkResult"></div>
@@ -295,9 +334,14 @@
             <input name="categories" placeholder="65f1...,65f2..." />
           </label>
           <label
+            >Tags (comma separated)
+            <input name="tags" placeholder="abstract,modern" />
+          </label>
+          <label
             >Status
             <select name="status">
               <option value="">all</option>
+              <option value="draft">draft</option>
               <option value="active">active</option>
               <option value="deactive">deactive</option>
             </select>
@@ -341,6 +385,7 @@
           <label
             >Status
             <select name="status" required>
+              <option value="draft">draft</option>
               <option value="active">active</option>
               <option value="deactive">deactive</option>
             </select>
@@ -375,6 +420,10 @@
           const techniques = parseList(form.get("techniques"));
           const styles = parseList(form.get("styles"));
           const categories = parseList(form.get("categories"));
+          const tags = parseList(form.get("tags"));
+          const status = form.get("status");
+          const isScheduled = form.get("isScheduled") === "on";
+          const publishAt = form.get("publishAt");
           const payload = {
             title: form.get("title"),
             description: form.get("description") || undefined,
@@ -383,6 +432,14 @@
           if (techniques.length) payload.techniques = techniques;
           if (styles.length) payload.styles = styles;
           if (categories.length) payload.categories = categories;
+          if (tags.length) payload.tags = tags;
+          if (status) payload.status = status;
+          if (isScheduled) {
+            payload.isScheduled = true;
+            if (publishAt) {
+              payload.publishAt = new Date(publishAt).toISOString();
+            }
+          }
           const resEl = document.getElementById("createArtworkResult");
           resEl.textContent = "Creating...";
           try {
@@ -416,6 +473,9 @@
           const techniques = parseList(form.get("techniques"));
           const styles = parseList(form.get("styles"));
           const categories = parseList(form.get("categories"));
+          const tags = parseList(form.get("tags"));
+          const scheduleAction = form.get("scheduleAction");
+          const publishAt = form.get("publishAt");
 
           if (title) payload.title = title;
           if (description) payload.description = description;
@@ -423,6 +483,16 @@
           if (techniques.length) payload.techniques = techniques;
           if (styles.length) payload.styles = styles;
           if (categories.length) payload.categories = categories;
+          if (tags.length) payload.tags = tags;
+          if (scheduleAction === "schedule") {
+            payload.isScheduled = true;
+            if (publishAt) {
+              payload.publishAt = new Date(publishAt).toISOString();
+            }
+          }
+          if (scheduleAction === "unschedule") {
+            payload.isScheduled = false;
+          }
 
           const resEl = document.getElementById("updateArtworkResult");
           resEl.textContent = "Updating...";
@@ -503,10 +573,7 @@
         .addEventListener("submit", async (e) => {
           e.preventDefault();
           const form = new FormData(e.target);
-          const payload = {
-            artworkId: form.get("artworkId"),
-            artistId: form.get("artistId"),
-          };
+          const payload = { artworkId: form.get("artworkId") };
           const resEl = document.getElementById("getArtworkResult");
           resEl.textContent = "Loading...";
           try {

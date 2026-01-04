@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { AppController } from "./controllers/app.controller";
+import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UsersModule } from "./users/users.module";
 import configs from "./config";
@@ -12,7 +12,8 @@ import { MediaModule } from "./media/media.module";
 import { StylesModule } from "./styles/styles.module";
 import { CategoriesModule } from "./categories/categories.module";
 import { TechniquesModule } from "./techniques/techniques.module";
-import { BlogsModule } from './blogs/blogs.module';
+import { BlogsModule } from "./blogs/blogs.module";
+import { CommentsModule } from "./comments/comments.module";
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { BlogsModule } from './blogs/blogs.module';
     CategoriesModule,
     TechniquesModule,
     BlogsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
