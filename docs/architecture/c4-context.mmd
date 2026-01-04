@@ -1,0 +1,20 @@
+%% C4 Context diagram (Mermaid)
+%% Update as the system evolves.
+
+C4Context
+  title System Context - Paletto
+
+  Person(user, "User", "Interacts with Paletto apps")
+  System_Boundary(paletto, "Paletto") {
+    System(panel, "Panel", "Admin/internal app")
+    System(service, "Service", "Service app")
+    System(web, "Web", "Public-facing app")
+  }
+
+  System_Ext(api, "Backend API", "External or internal backend")
+
+  Rel(user, panel, "Uses")
+  Rel(user, web, "Uses")
+  Rel(panel, api, "Reads/Writes")
+  Rel(service, api, "Reads/Writes")
+  Rel(web, api, "Reads")
