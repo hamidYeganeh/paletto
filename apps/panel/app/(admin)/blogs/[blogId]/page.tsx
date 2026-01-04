@@ -1,9 +1,13 @@
 import { BlogEditor } from "../components/BlogEditor";
 
-export default function BlogDetailPage({
+type PageParams = { blogId: string };
+
+export default async function BlogDetailPage({
   params,
 }: {
-  params: { blogId: string };
+  params: Promise<PageParams> | PageParams;
 }) {
-  return <BlogEditor id={params.blogId} />;
+  const { blogId } = await params;
+
+  return <BlogEditor id={blogId} />;
 }

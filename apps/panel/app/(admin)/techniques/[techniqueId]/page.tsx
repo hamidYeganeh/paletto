@@ -1,9 +1,13 @@
 import { TechniqueEditor } from "../components/TechniqueEditor";
 
-export default function TechniqueDetailPage({
+type PageParams = { techniqueId: string };
+
+export default async function TechniqueDetailPage({
   params,
 }: {
-  params: { techniqueId: string };
+  params: Promise<PageParams> | PageParams;
 }) {
-  return <TechniqueEditor id={params.techniqueId} />;
+  const { techniqueId } = await params;
+
+  return <TechniqueEditor id={techniqueId} />;
 }

@@ -1,9 +1,13 @@
 import { CategoryEditor } from "../components/CategoryEditor";
 
-export default function CategoryDetailPage({
+type PageParams = { categoryId: string };
+
+export default async function CategoryDetailPage({
   params,
 }: {
-  params: { categoryId: string };
+  params: Promise<PageParams> | PageParams;
 }) {
-  return <CategoryEditor id={params.categoryId} />;
+  const { categoryId } = await params;
+
+  return <CategoryEditor id={categoryId} />;
 }

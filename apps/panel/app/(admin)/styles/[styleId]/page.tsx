@@ -1,9 +1,13 @@
 import { StyleEditor } from "../components/StyleEditor";
 
-export default function StyleDetailPage({
+type PageParams = { styleId: string };
+
+export default async function StyleDetailPage({
   params,
 }: {
-  params: { styleId: string };
+  params: Promise<PageParams> | PageParams;
 }) {
-  return <StyleEditor id={params.styleId} />;
+  const { styleId } = await params;
+
+  return <StyleEditor id={styleId} />;
 }
