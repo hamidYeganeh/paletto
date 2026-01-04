@@ -7,7 +7,7 @@ import { FC } from "react";
 import { ProgressProps } from "./ProgressTypes";
 import { ProgressStyles } from "./ProgressStyles";
 
-const MotionIndicator = motion(ProgressPrimitive.Indicator);
+const MotionIndicator = motion.create(ProgressPrimitive.Indicator);
 const defaultIndicatorTransition: Transition = {
   type: "spring",
   stiffness: 100,
