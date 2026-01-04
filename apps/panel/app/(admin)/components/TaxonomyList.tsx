@@ -7,41 +7,17 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@repo/ui/DataTable";
 import { Button } from "@repo/ui/Button";
 import { cn } from "@repo/utils";
-import {
-  useTaxonomies,
-  type TaxonomyItem,
-  type TaxonomyListParams,
-  type TaxonomyType,
-} from "@repo/api";
+import { useLocale, useTranslations } from "@repo/i18n/client";
 import { taxonomyMeta } from "./taxonomyMeta";
+import { taxonomyHooks } from "./taxonomyHooks";
+import type {
+  TaxonomyItem,
+  TaxonomyListParams,
+  TaxonomyType,
+} from "./taxonomyTypes";
 import { getApiErrorMessage } from "../../lib/apiErrors";
 
-const STATUS_OPTIONS = [
-  { value: "", label: "All statuses" },
-  { value: "active", label: "Active" },
-  { value: "deactive", label: "Deactive" },
-] as const;
-
-const SORT_FIELDS = [
-  { value: "createdAt", label: "Created" },
-  { value: "updatedAt", label: "Updated" },
-  { value: "title", label: "Title" },
-  { value: "slug", label: "Slug" },
-] as const;
-
-const SORT_ORDERS = [
-  { value: "desc", label: "Newest" },
-  { value: "asc", label: "Oldest" },
-] as const;
-
 const LIMIT_OPTIONS = [10, 20, 30, 50];
-
-const formatDate = (value: string) =>
-  new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
 
 const parseNumber = (value: string | null, fallback: number) => {
   if (!value) return fallback;
@@ -96,6 +72,8 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchKey = searchParams.toString();
+  const t = useTranslations("Panel");
+  const locale = useLocale();
   const activeFilters = useMemo(
     () => parseFilters(searchParams),
     [searchKey]
@@ -104,10 +82,8 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
     ...activeFilters,
     status: activeFilters.status ?? "",
   });
-  const { data, isLoading, isFetching, error } = useTaxonomies(
-    type,
-    activeFilters
-  );
+  const hooks = taxonomyHooks[type];
+  const { data, isLoading, isFetching, error } = hooks.useList(activeFilters);
 
   useEffect(() => {
     setDraft({
@@ -118,12 +94,27 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
 
   const items = data?.items ?? [];
   const totalCount = data?.count ?? 0;
+  const statusLabel = (status: "active" | "deactive") =>
+    status === "active" ? t("status.active") : t("status.deactive");
+  const formatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+    [locale]
+  );
+  const formatDate = (value: string) => formatter.format(new Date(value));
+  const label = t(meta.labelKey);
+  const plural = t(meta.pluralKey);
+  const description = t(meta.descriptionKey);
 
   const columns = useMemo<ColumnDef<TaxonomyItem>[]>(
     () => [
       {
         accessorKey: "title",
-        header: "Title",
+        header: t("table.columns.title"),
         cell: ({ row }) => (
           <div className="grid gap-1">
             <span className="text-sm font-semibold text-panel-ink">
@@ -139,7 +130,7 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
       },
       {
         accessorKey: "slug",
-        header: "Slug",
+        header: t("table.columns.slug"),
         cell: ({ row }) => (
           <span className="rounded-full border border-black/10 bg-white/70 px-3 py-1 text-xs font-semibold text-panel-muted">
             {row.original.slug}
@@ -148,7 +139,7 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
       },
       {
         accessorKey: "status",
-        header: "Status",
+        header: t("table.columns.status"),
         cell: ({ row }) => (
           <span
             className={cn(
@@ -158,13 +149,13 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
                 : "bg-amber-100 text-amber-700"
             )}
           >
-            {row.original.status}
+            {statusLabel(row.original.status)}
           </span>
         ),
       },
       {
         accessorKey: "updatedAt",
-        header: "Updated",
+        header: t("table.columns.updated"),
         cell: ({ row }) => (
           <span className="text-xs text-panel-muted">
             {formatDate(row.original.updatedAt)}
@@ -179,12 +170,12 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
             href={`/${type}/${row.original._id}`}
             className="text-xs font-semibold text-panel-accent hover:text-panel-accent-strong"
           >
-            Edit
+            {t("actions.edit")}
           </Link>
         ),
       },
     ],
-    [type]
+    [formatDate, statusLabel, t, type]
   );
 
   const totalPages = Math.max(1, Math.ceil(totalCount / activeFilters.limit));
@@ -206,15 +197,17 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-panel-muted">
-            {meta.plural}
+            {plural}
           </p>
           <h2 className="mt-2 font-serif text-3xl text-panel-ink">
-            {meta.plural}
+            {plural}
           </h2>
-          <p className="mt-2 text-sm text-panel-muted">{meta.description}</p>
+          <p className="mt-2 text-sm text-panel-muted">{description}</p>
         </div>
         <Button asChild size="sm" color="primary">
-          <Link href={`/${type}/new`}>Create {meta.label}</Link>
+          <Link href={`/${type}/new`}>
+            {t("actions.createLabel", { label })}
+          </Link>
         </Button>
       </div>
 
@@ -231,18 +224,20 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
       >
         <div className="grid gap-4 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr]">
           <label className="grid gap-2 text-xs font-semibold uppercase tracking-wide text-panel-muted">
-            Search
+            {t("filters.search")}
             <input
               value={draft.search}
               onChange={(event) =>
                 setDraft((prev) => ({ ...prev, search: event.target.value }))
               }
-              placeholder={`Search ${meta.plural.toLowerCase()}`}
+              placeholder={t("filters.searchPlaceholder", {
+                resource: plural,
+              })}
               className="h-11 rounded-2xl border border-black/10 bg-white/90 px-3 text-sm text-panel-ink focus:border-panel-accent focus:outline-none"
             />
           </label>
           <label className="grid gap-2 text-xs font-semibold uppercase tracking-wide text-panel-muted">
-            Status
+            {t("filters.status")}
             <select
               value={draft.status ?? ""}
               onChange={(event) =>
@@ -253,15 +248,13 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
               }
               className="h-11 rounded-2xl border border-black/10 bg-white/90 px-3 text-sm text-panel-ink focus:border-panel-accent focus:outline-none"
             >
-              {STATUS_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
+              <option value="">{t("status.all")}</option>
+              <option value="active">{t("status.active")}</option>
+              <option value="deactive">{t("status.deactive")}</option>
             </select>
           </label>
           <label className="grid gap-2 text-xs font-semibold uppercase tracking-wide text-panel-muted">
-            Sort by
+            {t("filters.sortBy")}
             <select
               value={draft.sortBy}
               onChange={(event) =>
@@ -276,15 +269,14 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
               }
               className="h-11 rounded-2xl border border-black/10 bg-white/90 px-3 text-sm text-panel-ink focus:border-panel-accent focus:outline-none"
             >
-              {SORT_FIELDS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
+              <option value="createdAt">{t("sort.created")}</option>
+              <option value="updatedAt">{t("sort.updated")}</option>
+              <option value="title">{t("sort.title")}</option>
+              <option value="slug">{t("sort.slug")}</option>
             </select>
           </label>
           <label className="grid gap-2 text-xs font-semibold uppercase tracking-wide text-panel-muted">
-            Order
+            {t("filters.order")}
             <select
               value={draft.sortOrder}
               onChange={(event) =>
@@ -295,15 +287,12 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
               }
               className="h-11 rounded-2xl border border-black/10 bg-white/90 px-3 text-sm text-panel-ink focus:border-panel-accent focus:outline-none"
             >
-              {SORT_ORDERS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
+              <option value="desc">{t("sort.newest")}</option>
+              <option value="asc">{t("sort.oldest")}</option>
             </select>
           </label>
           <label className="grid gap-2 text-xs font-semibold uppercase tracking-wide text-panel-muted">
-            Per page
+            {t("filters.perPage")}
             <select
               value={draft.limit}
               onChange={(event) =>
@@ -325,7 +314,7 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
 
         <div className="flex flex-wrap items-center gap-3">
           <Button type="submit" size="sm" color="primary">
-            Apply filters
+            {t("filters.apply")}
           </Button>
           <Button
             type="button"
@@ -342,10 +331,13 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
               router.push(`/${type}`);
             }}
           >
-            Reset
+            {t("filters.reset")}
           </Button>
           <span className="text-xs text-panel-muted">
-            Showing {items.length} of {totalCount} entries
+            {t("filters.showing", {
+              shown: items.length,
+              total: totalCount,
+            })}
           </span>
         </div>
       </form>
@@ -353,21 +345,26 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
       <div className="rounded-3xl border border-black/10 bg-white/80 p-4">
         {error ? (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            {getApiErrorMessage(error, "Unable to load data.")}
+            {getApiErrorMessage(error, t("errors.loadData"))}
           </div>
         ) : null}
         <DataTable
           data={items}
           columns={columns}
           emptyMessage={
-            isLoading || isFetching ? "Loading catalog..." : "No results found."
+            isLoading || isFetching
+              ? t("messages.loadingCatalog")
+              : t("table.empty")
           }
         />
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-black/10 bg-white/80 px-5 py-4 text-xs text-panel-muted">
         <span>
-          Page {activeFilters.page} of {totalPages}
+          {t("pagination.pageOf", {
+            page: activeFilters.page,
+            total: totalPages,
+          })}
         </span>
         <div className="flex items-center gap-2">
           <Button
@@ -380,7 +377,7 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
               })
             }
           >
-            Previous
+            {t("pagination.previous")}
           </Button>
           <Button
             size="sm"
@@ -392,7 +389,7 @@ export function TaxonomyList({ type }: { type: TaxonomyType }) {
               })
             }
           >
-            Next
+            {t("pagination.next")}
           </Button>
         </div>
       </div>

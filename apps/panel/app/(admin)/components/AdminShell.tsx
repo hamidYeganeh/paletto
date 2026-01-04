@@ -6,29 +6,36 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@repo/ui/Button";
 import { cn } from "@repo/utils";
 import { getAuthToken, setAuthToken } from "@repo/api";
-
-const navItems = [
-  {
-    label: "Techniques",
-    href: "/techniques",
-    helper: "Brushwork, tools, methods",
-  },
-  {
-    label: "Styles",
-    href: "/styles",
-    helper: "Aesthetics & movements",
-  },
-  {
-    label: "Categories",
-    href: "/categories",
-    helper: "Catalog taxonomy",
-  },
-];
+import { useTranslations } from "@repo/i18n/client";
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [ready, setReady] = useState(false);
+  const t = useTranslations("Panel");
+
+  const navItems = [
+    {
+      label: t("nav.techniques.label"),
+      href: "/techniques",
+      helper: t("nav.techniques.helper"),
+    },
+    {
+      label: t("nav.styles.label"),
+      href: "/styles",
+      helper: t("nav.styles.helper"),
+    },
+    {
+      label: t("nav.categories.label"),
+      href: "/categories",
+      helper: t("nav.categories.helper"),
+    },
+    {
+      label: t("nav.blogs.label"),
+      href: "/blogs",
+      helper: t("nav.blogs.helper"),
+    },
+  ];
 
   useEffect(() => {
     const token = getAuthToken();
@@ -46,13 +53,13 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <div className="mx-auto flex min-h-screen w-full max-w-4xl items-center justify-center px-6">
             <div className="glass-surface w-full rounded-3xl border border-black/10 px-8 py-12 text-center">
               <p className="text-xs uppercase tracking-[0.2em] text-panel-muted">
-                Paletto Admin
+                {t("admin.loading.eyebrow")}
               </p>
               <h1 className="mt-4 font-serif text-3xl text-panel-ink">
-                Preparing your studio
+                {t("admin.loading.title")}
               </h1>
               <p className="mt-3 text-sm text-panel-muted">
-                Authenticating and loading workspace data.
+                {t("admin.loading.description")}
               </p>
             </div>
           </div>
@@ -70,14 +77,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-[0.2em] text-panel-muted">
-                    Paletto
+                    {t("admin.sidebar.brand")}
                   </p>
                   <h2 className="font-serif text-2xl text-panel-ink">
-                    Admin Studio
+                    {t("admin.sidebar.title")}
                   </h2>
                 </div>
                 <span className="rounded-full border border-black/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-panel-muted">
-                  v1
+                  {t("admin.sidebar.version")}
                 </span>
               </div>
               <nav className="mt-8 flex flex-col gap-2">
@@ -99,7 +106,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
                           {item.label}
                         </span>
                         <span className="text-[11px] text-panel-muted">
-                          {isActive ? "Active" : "Open"}
+                          {isActive
+                            ? t("admin.navStatus.active")
+                            : t("admin.navStatus.open")}
                         </span>
                       </div>
                       <p className="mt-1 text-xs text-panel-muted">
@@ -110,8 +119,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 })}
               </nav>
               <div className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-4 text-xs text-panel-muted">
-                Keep taxonomy consistent for artists and curators. Updates are
-                live in the app catalog.
+                {t("admin.sidebar.note")}
               </div>
             </aside>
 
@@ -120,18 +128,18 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 <header className="flex flex-col gap-4 border-b border-black/10 pb-6 md:flex-row md:items-center md:justify-between">
                   <div>
                     <p className="text-xs uppercase tracking-[0.2em] text-panel-muted">
-                      Dashboard
+                      {t("admin.header.eyebrow")}
                     </p>
                     <h1 className="font-serif text-3xl text-panel-ink">
-                      Catalog Studio
+                      {t("admin.header.title")}
                     </h1>
                     <p className="mt-1 text-sm text-panel-muted">
-                      Curate techniques, styles, and categories in one place.
+                      {t("admin.header.description")}
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-3">
                     <div className="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs text-panel-muted">
-                      Signed in as Admin
+                      {t("admin.header.signedInAs")}
                     </div>
                     <Button
                       size="sm"
@@ -141,7 +149,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                         router.replace("/login");
                       }}
                     >
-                      Log out
+                      {t("actions.logout")}
                     </Button>
                   </div>
                 </header>

@@ -3,20 +3,15 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@repo/ui/Button";
-import {
-  useCreateTaxonomy,
-  useUpdateTaxonomy,
-  type TaxonomyItem,
-  type TaxonomyPayload,
-  type TaxonomyType,
-} from "@repo/api";
+import { useTranslations } from "@repo/i18n/client";
 import { taxonomyMeta } from "./taxonomyMeta";
+import { taxonomyHooks } from "./taxonomyHooks";
+import type {
+  TaxonomyItem,
+  TaxonomyPayload,
+  TaxonomyType,
+} from "./taxonomyTypes";
 import { getApiErrorMessage } from "../../lib/apiErrors";
-
-const STATUS_OPTIONS = [
-  { value: "active", label: "Active" },
-  { value: "deactive", label: "Deactive" },
-] as const;
 
 const toSlug = (value: string) =>
   value
@@ -36,7 +31,10 @@ export function TaxonomyForm({
   initialData?: TaxonomyItem | null;
 }) {
   const router = useRouter();
+  const t = useTranslations("Panel");
   const meta = taxonomyMeta[type];
+  const label = t(meta.labelKey);
+  const formHint = t(meta.formHintKey);
   const defaultValues = useMemo<TaxonomyPayload>(
     () => ({
       title: initialData?.title ?? "",
@@ -50,8 +48,9 @@ export function TaxonomyForm({
   const [formState, setFormState] = useState(defaultValues);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const createMutation = useCreateTaxonomy(type);
-  const updateMutation = useUpdateTaxonomy(type);
+  const hooks = taxonomyHooks[type];
+  const createMutation = hooks.useCreate();
+  const updateMutation = hooks.useUpdate();
   const isSaving = createMutation.isPending || updateMutation.isPending;
 
   useEffect(() => {
@@ -66,13 +65,13 @@ export function TaxonomyForm({
     try {
       if (mode === "create") {
         await createMutation.mutateAsync(formState);
-        setSuccess(`${meta.label} created successfully.`);
+        setSuccess(t("messages.createdSuccess", { label }));
         router.push(`/${type}`);
         return;
       }
 
       if (!initialData) {
-        setError("Unable to update without initial data.");
+        setError(t("errors.missingInitial"));
         return;
       }
 
@@ -80,10 +79,10 @@ export function TaxonomyForm({
         id: initialData._id,
         payload: formState,
       });
-      setSuccess(`${meta.label} updated successfully.`);
+      setSuccess(t("messages.updatedSuccess", { label }));
       router.push(`/${type}`);
     } catch (err) {
-      setError(getApiErrorMessage(err, "Unable to save. Please try again."));
+      setError(getApiErrorMessage(err, t("errors.save")));
     }
   };
 
@@ -94,29 +93,31 @@ export function TaxonomyForm({
     >
       <div>
         <p className="text-xs uppercase tracking-[0.3em] text-panel-muted">
-          {meta.label}
+          {label}
         </p>
         <h2 className="mt-2 font-serif text-2xl text-panel-ink">
-          {mode === "create" ? `Create ${meta.label}` : `Edit ${meta.label}`}
+          {mode === "create"
+            ? t("actions.createLabel", { label })
+            : t("actions.editLabel", { label })}
         </h2>
-        <p className="mt-2 text-sm text-panel-muted">{meta.formHint}</p>
+        <p className="mt-2 text-sm text-panel-muted">{formHint}</p>
       </div>
 
       <label className="grid gap-2 text-xs font-semibold uppercase tracking-wide text-panel-muted">
-        Title
+        {t("form.title")}
         <input
           required
           value={formState.title}
           onChange={(event) =>
             setFormState((prev) => ({ ...prev, title: event.target.value }))
           }
-          placeholder={`Enter ${meta.label.toLowerCase()} title`}
+          placeholder={t("form.placeholders.title", { resource: label })}
           className="h-12 rounded-2xl border border-black/10 bg-white/90 px-4 text-sm text-panel-ink focus:border-panel-accent focus:outline-none"
         />
       </label>
 
       <label className="grid gap-2 text-xs font-semibold uppercase tracking-wide text-panel-muted">
-        Description
+        {t("form.description")}
         <textarea
           value={formState.description}
           onChange={(event) =>
@@ -125,14 +126,14 @@ export function TaxonomyForm({
               description: event.target.value,
             }))
           }
-          placeholder="Optional description"
+          placeholder={t("form.placeholders.description")}
           rows={4}
           className="rounded-2xl border border-black/10 bg-white/90 px-4 py-3 text-sm text-panel-ink focus:border-panel-accent focus:outline-none"
         />
       </label>
 
       <label className="grid gap-2 text-xs font-semibold uppercase tracking-wide text-panel-muted">
-        Slug
+        {t("form.slug")}
         <div className="flex flex-col gap-3 md:flex-row md:items-center">
           <input
             required
@@ -140,7 +141,7 @@ export function TaxonomyForm({
             onChange={(event) =>
               setFormState((prev) => ({ ...prev, slug: event.target.value }))
             }
-            placeholder="e.g. abstract-expressionism"
+            placeholder={t("form.placeholders.slug")}
             className="h-12 w-full rounded-2xl border border-black/10 bg-white/90 px-4 text-sm text-panel-ink focus:border-panel-accent focus:outline-none"
           />
           <Button
@@ -153,13 +154,13 @@ export function TaxonomyForm({
               }))
             }
           >
-            Generate
+            {t("actions.generate")}
           </Button>
         </div>
       </label>
 
       <label className="grid gap-2 text-xs font-semibold uppercase tracking-wide text-panel-muted">
-        Status
+        {t("form.status")}
         <select
           value={formState.status}
           onChange={(event) =>
@@ -170,11 +171,8 @@ export function TaxonomyForm({
           }
           className="h-12 rounded-2xl border border-black/10 bg-white/90 px-4 text-sm text-panel-ink focus:border-panel-accent focus:outline-none"
         >
-          {STATUS_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
+          <option value="active">{t("status.active")}</option>
+          <option value="deactive">{t("status.deactive")}</option>
         </select>
       </label>
 
@@ -193,17 +191,17 @@ export function TaxonomyForm({
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" size="sm" color="primary" disabled={isSaving}>
           {isSaving
-            ? "Saving..."
+            ? t("messages.saving")
             : mode === "create"
-            ? `Create ${meta.label}`
-            : `Save ${meta.label}`}
+            ? t("actions.createLabel", { label })
+            : t("actions.saveLabel", { label })}
         </Button>
         <Button
           type="button"
           size="sm"
           onClick={() => router.push(`/${type}`)}
         >
-          Cancel
+          {t("actions.cancel")}
         </Button>
       </div>
     </form>

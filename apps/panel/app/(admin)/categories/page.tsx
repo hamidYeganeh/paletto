@@ -1,5 +1,5 @@
-import { TaxonomyList } from "../components/TaxonomyList";
+import { CategoryList } from "./components/CategoryList";
 
 export default function CategoriesPage() {
-  return <TaxonomyList type="categories" />;
+  return <CategoryList />;
 }

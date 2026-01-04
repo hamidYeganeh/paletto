@@ -1,9 +1,9 @@
-import { TaxonomyEditor } from "../../components/TaxonomyEditor";
+import { TechniqueEditor } from "../components/TechniqueEditor";
 
 export default function TechniqueDetailPage({
   params,
 }: {
   params: { techniqueId: string };
 }) {
-  return <TaxonomyEditor type="techniques" id={params.techniqueId} />;
+  return <TechniqueEditor id={params.techniqueId} />;
 }

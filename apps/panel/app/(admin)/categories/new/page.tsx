@@ -1,5 +1,5 @@
-import { TaxonomyForm } from "../../components/TaxonomyForm";
+import { CategoryForm } from "../components/CategoryForm";
 
 export default function NewCategoryPage() {
-  return <TaxonomyForm type="categories" mode="create" />;
+  return <CategoryForm mode="create" />;
 }

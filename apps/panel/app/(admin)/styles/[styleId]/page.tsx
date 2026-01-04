@@ -1,9 +1,9 @@
-import { TaxonomyEditor } from "../../components/TaxonomyEditor";
+import { StyleEditor } from "../components/StyleEditor";
 
 export default function StyleDetailPage({
   params,
 }: {
   params: { styleId: string };
 }) {
-  return <TaxonomyEditor type="styles" id={params.styleId} />;
+  return <StyleEditor id={params.styleId} />;
 }

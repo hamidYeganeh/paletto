@@ -1,5 +1,5 @@
-import { TaxonomyList } from "../components/TaxonomyList";
+import { StyleList } from "./components/StyleList";
 
 export default function StylesPage() {
-  return <TaxonomyList type="styles" />;
+  return <StyleList />;
 }

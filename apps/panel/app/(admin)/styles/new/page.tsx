@@ -1,5 +1,5 @@
-import { TaxonomyForm } from "../../components/TaxonomyForm";
+import { StyleForm } from "../components/StyleForm";
 
 export default function NewStylePage() {
-  return <TaxonomyForm type="styles" mode="create" />;
+  return <StyleForm mode="create" />;
 }

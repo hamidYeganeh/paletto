@@ -4,3 +4,4 @@
 
 export { useTranslations } from "./useTranslations";
 export { NextIntlClientProvider } from "next-intl";
+export { useLocale } from "next-intl";

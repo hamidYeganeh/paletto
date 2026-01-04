@@ -1,5 +1,5 @@
-import { TaxonomyForm } from "../../components/TaxonomyForm";
+import { TechniqueForm } from "../components/TechniqueForm";
 
 export default function NewTechniquePage() {
-  return <TaxonomyForm type="techniques" mode="create" />;
+  return <TechniqueForm mode="create" />;
 }

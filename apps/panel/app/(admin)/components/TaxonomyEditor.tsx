@@ -1,8 +1,10 @@
 "use client";
 
-import { useTaxonomy, type TaxonomyType } from "@repo/api";
+import { useTranslations } from "@repo/i18n/client";
 import { getApiErrorMessage } from "../../lib/apiErrors";
 import { TaxonomyForm } from "./TaxonomyForm";
+import { taxonomyHooks } from "./taxonomyHooks";
+import type { TaxonomyType } from "./taxonomyTypes";
 
 export function TaxonomyEditor({
   type,
@@ -11,12 +13,16 @@ export function TaxonomyEditor({
   type: TaxonomyType;
   id: string;
 }) {
-  const { data, isLoading, error } = useTaxonomy(type, id);
+  const hooks = taxonomyHooks[type];
+  const { data, isLoading, error } = hooks.useItem(id);
+  const t = useTranslations("Panel");
 
   if (isLoading) {
     return (
       <div className="rounded-3xl border border-black/10 bg-white/80 p-6">
-        <p className="text-sm text-panel-muted">Loading details...</p>
+        <p className="text-sm text-panel-muted">
+          {t("messages.loadingDetails")}
+        </p>
       </div>
     );
   }
@@ -24,7 +30,7 @@ export function TaxonomyEditor({
   if (error) {
     return (
       <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
-        {getApiErrorMessage(error, "Unable to load item.")}
+        {getApiErrorMessage(error, t("errors.loadItem"))}
       </div>
     );
   }
@@ -32,7 +38,7 @@ export function TaxonomyEditor({
   if (!data) {
     return (
       <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
-        Unable to load item.
+        {t("errors.loadItem")}
       </div>
     );
   }

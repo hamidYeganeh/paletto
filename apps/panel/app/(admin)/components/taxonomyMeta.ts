@@ -1,36 +1,30 @@
-import type { TaxonomyType } from "@repo/api";
+import type { TaxonomyType } from "./taxonomyTypes";
 
 export const taxonomyMeta: Record<
   TaxonomyType,
   {
-    label: string;
-    plural: string;
-    description: string;
-    formHint: string;
+    labelKey: string;
+    pluralKey: string;
+    descriptionKey: string;
+    formHintKey: string;
   }
 > = {
   techniques: {
-    label: "Technique",
-    plural: "Techniques",
-    description:
-      "Maintain the toolset and methods artists can tag on their artworks.",
-    formHint:
-      "Use clear titles and action-driven slugs so artists can find them quickly.",
+    labelKey: "taxonomies.techniques.label",
+    pluralKey: "taxonomies.techniques.plural",
+    descriptionKey: "taxonomies.techniques.description",
+    formHintKey: "taxonomies.techniques.formHint",
   },
   styles: {
-    label: "Style",
-    plural: "Styles",
-    description:
-      "Define the aesthetic movements and stylistic groupings for the catalog.",
-    formHint:
-      "Keep style titles concise and link to a distinct aesthetic signature.",
+    labelKey: "taxonomies.styles.label",
+    pluralKey: "taxonomies.styles.plural",
+    descriptionKey: "taxonomies.styles.description",
+    formHintKey: "taxonomies.styles.formHint",
   },
   categories: {
-    label: "Category",
-    plural: "Categories",
-    description:
-      "Organize artwork themes and subject matter across the catalog.",
-    formHint:
-      "Categories should read like clear browsing filters for collectors.",
+    labelKey: "taxonomies.categories.label",
+    pluralKey: "taxonomies.categories.plural",
+    descriptionKey: "taxonomies.categories.description",
+    formHintKey: "taxonomies.categories.formHint",
   },
 };

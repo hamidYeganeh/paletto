@@ -1,5 +1,5 @@
-import { TaxonomyList } from "../components/TaxonomyList";
+import { TechniqueList } from "./components/TechniqueList";
 
 export default function TechniquesPage() {
-  return <TaxonomyList type="techniques" />;
+  return <TechniqueList />;
 }

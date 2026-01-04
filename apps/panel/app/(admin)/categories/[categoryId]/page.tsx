@@ -1,9 +1,9 @@
-import { TaxonomyEditor } from "../../components/TaxonomyEditor";
+import { CategoryEditor } from "../components/CategoryEditor";
 
 export default function CategoryDetailPage({
   params,
 }: {
   params: { categoryId: string };
 }) {
-  return <TaxonomyEditor type="categories" id={params.categoryId} />;
+  return <CategoryEditor id={params.categoryId} />;
 }

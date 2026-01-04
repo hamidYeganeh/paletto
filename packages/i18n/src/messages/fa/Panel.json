@@ -1,0 +1,174 @@
+{
+  "brand": {
+    "name": "Paletto",
+    "admin": "پنل پالِتو",
+    "studio": "استودیوی مدیریت"
+  },
+  "admin": {
+    "loading": {
+      "eyebrow": "پنل پالِتو",
+      "title": "در حال آماده\u200cسازی استودیو",
+      "description": "در حال احراز هویت و بارگذاری داده\u200cهای فضای کاری."
+    },
+    "sidebar": {
+      "brand": "Paletto",
+      "title": "استودیوی مدیریت",
+      "version": "v1",
+      "note": "یکپارچگی واژگان کاتالوگ را برای هنرمندان و کیوریتورها حفظ کنید. به\u200cروزرسانی\u200cها فوراً در اپلیکیشن نمایش داده می\u200cشوند."
+    },
+    "header": {
+      "eyebrow": "داشبورد",
+      "title": "استودیوی کاتالوگ",
+      "description": "تکنیک\u200cها، سبک\u200cها، دسته\u200cها و وبلاگ\u200cها را در یک مکان مدیریت کنید.",
+      "signedInAs": "ورود به عنوان مدیر"
+    },
+    "navStatus": {
+      "active": "فعال",
+      "open": "باز"
+    }
+  },
+  "nav": {
+    "techniques": {
+      "label": "تکنیک\u200cها",
+      "helper": "ابزارها و شیوه\u200cهای اجرا"
+    },
+    "styles": {
+      "label": "سبک\u200cها",
+      "helper": "زیباشناسی و جریان\u200cها"
+    },
+    "categories": {
+      "label": "دسته\u200cبندی\u200cها",
+      "helper": "طبقه\u200cبندی کاتالوگ"
+    },
+    "blogs": {
+      "label": "وبلاگ",
+      "helper": "مدیریت مقالات و انتشار"
+    }
+  },
+  "auth": {
+    "login": {
+      "brand": "پنل پالِتو",
+      "heroTitle": "کاتالوگ هنر را با دقت مدیریت کنید.",
+      "heroDescription": "تکنیک\u200cها، سبک\u200cها، دسته\u200cها و وبلاگ\u200cها را در فضای کاری متمرکز مدیریت کنید. هر تغییر، تجربه عمومی را به\u200cروز می\u200cکند.",
+      "workflowLabel": "جریان کار",
+      "workflowDescription": "لیست\u200cها را ایجاد، ویرایش و فیلتر کنید.",
+      "guardrailsLabel": "چارچوب\u200cها",
+      "guardrailsDescription": "با وضعیت\u200cها و اسلاگ\u200cهای استاندارد هم\u200cمسیر بمانید.",
+      "accessLabel": "دسترسی مدیریت",
+      "title": "برای ادامه وارد شوید",
+      "description": "با حساب مدیر وارد استودیوی کاتالوگ شوید.",
+      "emailLabel": "ایمیل",
+      "emailPlaceholder": "admin@paletto.gallery",
+      "passwordLabel": "رمز عبور",
+      "passwordPlaceholder": "رمز عبور خود را وارد کنید",
+      "submit": "ورود به استودیو",
+      "submitting": "در حال ورود..."
+    }
+  },
+  "taxonomies": {
+    "techniques": {
+      "label": "تکنیک",
+      "plural": "تکنیک\u200cها",
+      "description": "ابزارها و روش\u200cهایی را مدیریت کنید که هنرمندان به آثار خود نسبت می\u200cدهند.",
+      "formHint": "عنوان\u200cهای شفاف و اسلاگ\u200cهای کاربردی انتخاب کنید."
+    },
+    "styles": {
+      "label": "سبک",
+      "plural": "سبک\u200cها",
+      "description": "جنبش\u200cها و دسته\u200cبندی\u200cهای زیبایی\u200cشناختی کاتالوگ را تعریف کنید.",
+      "formHint": "عنوان\u200cهای کوتاه و متمایز برای هر سبک انتخاب کنید."
+    },
+    "categories": {
+      "label": "دسته\u200cبندی",
+      "plural": "دسته\u200cبندی\u200cها",
+      "description": "تم\u200cها و موضوعات آثار را در کاتالوگ سامان\u200cدهی کنید.",
+      "formHint": "دسته\u200cها باید مثل فیلترهای واضح برای مخاطب عمل کنند."
+    }
+  },
+  "blogs": {
+    "label": "وبلاگ",
+    "plural": "وبلاگ\u200cها",
+    "description": "مقالات و محتوای وبلاگ را مدیریت کنید و وضعیت انتشار را کنترل کنید.",
+    "formHint": "عنوان، اسلاگ و کاور را دقیق ثبت کنید تا نمایش عمومی هماهنگ باشد."
+  },
+  "status": {
+    "all": "همه وضعیت\u200cها",
+    "active": "فعال",
+    "deactive": "غیرفعال",
+    "draft": "پیش\u200cنویس"
+  },
+  "filters": {
+    "search": "جستجو",
+    "status": "وضعیت",
+    "sortBy": "مرتب\u200cسازی",
+    "order": "ترتیب",
+    "perPage": "در هر صفحه",
+    "apply": "اعمال فیلترها",
+    "reset": "بازنشانی",
+    "showing": "نمایش {shown} از {total} مورد",
+    "searchPlaceholder": "جستجو در {resource}"
+  },
+  "sort": {
+    "created": "تاریخ ایجاد",
+    "updated": "آخرین تغییر",
+    "title": "عنوان",
+    "slug": "اسلاگ",
+    "newest": "جدیدترین",
+    "oldest": "قدیمی\u200cترین"
+  },
+  "table": {
+    "columns": {
+      "title": "عنوان",
+      "slug": "اسلاگ",
+      "status": "وضعیت",
+      "updated": "به\u200cروزرسانی"
+    },
+    "loading": "در حال بارگذاری...",
+    "empty": "هیچ نتیجه\u200cای یافت نشد."
+  },
+  "pagination": {
+    "pageOf": "صفحه {page} از {total}",
+    "previous": "قبلی",
+    "next": "بعدی"
+  },
+  "form": {
+    "title": "عنوان",
+    "description": "توضیحات",
+    "content": "محتوا",
+    "slug": "اسلاگ",
+    "cover": "کاور",
+    "status": "وضعیت",
+    "placeholders": {
+      "title": "عنوان {resource}",
+      "description": "توضیحات را وارد کنید",
+      "slug": "مثلاً abstract-expressionism",
+      "cover": "آدرس یا هش تصویر"
+    }
+  },
+  "actions": {
+    "edit": "ویرایش",
+    "create": "ایجاد",
+    "save": "ذخیره",
+    "cancel": "لغو",
+    "generate": "تولید",
+    "logout": "خروج",
+    "createLabel": "ایجاد {label}",
+    "saveLabel": "ذخیره {label}",
+    "editLabel": "ویرایش {label}"
+  },
+  "messages": {
+    "loadingCatalog": "در حال بارگذاری کاتالوگ...",
+    "noResults": "هیچ نتیجه\u200cای یافت نشد.",
+    "saving": "در حال ذخیره...",
+    "createdSuccess": "{label} با موفقیت ایجاد شد.",
+    "updatedSuccess": "{label} با موفقیت به\u200cروزرسانی شد.",
+    "loadingDetails": "در حال دریافت جزئیات..."
+  },
+  "errors": {
+    "loadData": "امکان دریافت داده\u200cها وجود ندارد.",
+    "loadItem": "امکان دریافت آیتم وجود ندارد.",
+    "save": "ذخیره\u200cسازی انجام نشد. دوباره تلاش کنید.",
+    "missingInitial": "برای ویرایش، داده اولیه در دسترس نیست.",
+    "login": "ورود ناموفق بود. لطفاً اطلاعات ورود را بررسی کنید."
+  }
+}

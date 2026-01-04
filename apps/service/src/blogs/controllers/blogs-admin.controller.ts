@@ -1,4 +1,13 @@
-import { Body, Controller, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import { BlogsService } from "../blogs.service";
 import { JwtAuthGuard } from "src/auth/guards/jwt.guard";
 import { RolesGuard } from "src/auth/guards/roles.guard";
@@ -9,12 +18,24 @@ import { type AuthenticatedRequest } from "src/auth/types/authenticated-request"
 import { UpdateBlogDto } from "../dto/update-blog.dto";
 import { BlogDocument } from "../schemas/blog.schema";
 import { UpdateBlogStatusDto } from "../dto/update-blog-status.dto";
+import { ListBlogsQueryDto } from "../dto/list-blogs.dto";
+import { GetBlogDto } from "../dto/get-blog.dto";
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(IUserRoles.ADMIN)
 @Controller("admin/blogs")
 export class BlogsAdminController {
   constructor(private readonly blogsService: BlogsService) {}
+
+  @Get("list")
+  async listBlogs(@Query() query: ListBlogsQueryDto) {
+    return this.blogsService.listBlogs(query);
+  }
+
+  @Post("get")
+  async getBlog(@Body() dto: GetBlogDto): Promise<BlogDocument> {
+    return this.blogsService.getBlog(dto);
+  }
 
   @Post("create")
   async createBlog(
