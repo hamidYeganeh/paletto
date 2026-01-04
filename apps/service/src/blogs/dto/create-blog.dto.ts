@@ -1,15 +1,5 @@
-import {
-  IsEnum,
-  IsIn,
-  IsMongoId,
-  isMongoId,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MaxLength,
-} from "class-validator";
+import { IsEnum, IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { IBlogsStatus } from "../enums/blogs-status.enum";
-import { Types } from "mongoose";
 
 export class CreateBlogDto {
   @IsString()
@@ -38,8 +28,4 @@ export class CreateBlogDto {
   @IsString()
   @IsNotEmpty()
   cover: string;
-
-  @IsString()
-  @IsMongoId()
-  authorId: Types.ObjectId;
 }

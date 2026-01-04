@@ -19,6 +19,13 @@ export class UserProfile {
 
   @Prop()
   bio?: string;
+
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: "Blogs" }],
+    default: [],
+    index: true,
+  })
+  blogs?: Types.ObjectId[];
 }
 
 export const UserProfileSchema = SchemaFactory.createForClass(UserProfile);
