@@ -34,6 +34,7 @@ const STEPS = [
 
 export default function Home() {
   const [activeStep, setActiveStep] = useState(0);
+  const activeStepData = STEPS[activeStep] ?? STEPS[0];
   const listVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -123,7 +124,7 @@ export default function Home() {
                 animate="visible"
                 exit="exit"
               >
-                {STEPS[activeStep].items.map((item) => (
+                {activeStepData.items.map((item) => (
                   <motion.li
                     key={item}
                     className="flex items-start gap-3 text-sm text-primary-700"

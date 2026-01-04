@@ -1,6 +1,24 @@
-import type { Transition } from "framer-motion";
+type FadeMotion = {
+  transition: {
+    stiffness: number;
+    damping: number;
+    delay?: number;
+  };
+  initial: {
+    y: number;
+    opacity: number;
+  };
+  animate: {
+    y: number;
+    opacity: number;
+  };
+  exit: {
+    y: number;
+    opacity: number;
+  };
+};
 
-const springyFade: Transition = {
+const springyFade: FadeMotion["transition"] = {
   stiffness: 240,
   damping: 26,
 };
@@ -20,14 +38,14 @@ export const slideVariants = {
   }),
 };
 
-export const fadeInUp = {
+export const fadeInUp: FadeMotion = {
   transition: { ...springyFade, delay: 0.2 },
   initial: { y: -16, opacity: 0 },
   animate: { y: 0, opacity: 1 },
   exit: { y: 16, opacity: 0 },
 };
 
-export const fadeInDown = {
+export const fadeInDown: FadeMotion = {
   transition: { ...springyFade, delay: 0.2 },
   initial: { y: 16, opacity: 0 },
   animate: { y: 0, opacity: 1 },
