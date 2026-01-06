@@ -50,12 +50,6 @@ export class Artwork {
   @Prop({ type: [String], default: [], index: true })
   tags?: string[];
 
-  @Prop({ type: Boolean, default: false })
-  isScheduled?: boolean;
-
-  @Prop({ type: Date })
-  publishAt?: Date;
-
   @Prop({
     trim: true,
     enum: ARTWORK_STATUSES,

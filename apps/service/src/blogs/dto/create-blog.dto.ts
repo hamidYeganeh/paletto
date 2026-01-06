@@ -1,14 +1,11 @@
 import {
   ArrayMaxSize,
   IsArray,
-  IsBoolean,
-  IsDateString,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
-  ValidateIf,
 } from "class-validator";
 import { MAX_TAG_LENGTH, MAX_TAGS } from "src/common/tags";
 import { IBlogsStatus } from "../enums/blogs-status.enum";
@@ -47,13 +44,4 @@ export class CreateBlogDto {
   @MaxLength(MAX_TAG_LENGTH, { each: true })
   @IsOptional()
   tags?: string[];
-
-  @IsBoolean()
-  @IsOptional()
-  isScheduled?: boolean;
-
-  @ValidateIf((dto) => dto.isScheduled === true)
-  @IsDateString()
-  @IsNotEmpty()
-  publishAt?: string;
 }

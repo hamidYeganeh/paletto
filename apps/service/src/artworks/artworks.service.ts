@@ -14,7 +14,6 @@ import { GetArtworkDto } from "./dto/get-artwork.dto";
 import type { ArtworkListItemDto } from "./dto/list-artworks.dto";
 import { UpdateArtworkStatusDto } from "./dto/update-artwork-status.dto";
 import { UpdateArtworkStatusService } from "./services/update-artwork-status.service";
-import { type ListArtworksOptions } from "./services/list-artworks.service";
 
 @Injectable()
 export class ArtworksService {
@@ -27,10 +26,9 @@ export class ArtworksService {
   ) {}
 
   async listArtworks(
-    dto: ListArtworksQueryDto,
-    options?: ListArtworksOptions
+    dto: ListArtworksQueryDto
   ): Promise<ListArtworksResponseDto> {
-    return this.listArtworksService.execute(dto, options);
+    return this.listArtworksService.execute(dto);
   }
 
   async createForArtist(

@@ -41,14 +41,6 @@ export class GetBlogService {
 
     if (options.publicOnly) {
       filters.status = IBlogsStatus.ACTIVE;
-      filters.$and = [
-        {
-          $or: [
-            { isScheduled: { $ne: true } },
-            { publishAt: { $lte: new Date() } },
-          ],
-        },
-      ];
     }
 
     return filters;

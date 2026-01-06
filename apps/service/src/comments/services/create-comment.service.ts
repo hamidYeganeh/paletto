@@ -80,7 +80,6 @@ export class CreateCommentService {
       const exists = await this.artworkModel.exists({
         _id: targetId,
         status: ArtworkStatus.ACTIVE,
-        ...this.buildScheduleFilter(),
       });
 
       if (!exists) {
@@ -93,21 +92,11 @@ export class CreateCommentService {
     const exists = await this.blogModel.exists({
       _id: targetId,
       status: IBlogsStatus.ACTIVE,
-      ...this.buildScheduleFilter(),
     });
 
     if (!exists) {
       throw new NotFoundException("Blog not found");
     }
-  }
-
-  private buildScheduleFilter() {
-    return {
-      $or: [
-        { isScheduled: { $ne: true } },
-        { publishAt: { $lte: new Date() } },
-      ],
-    };
   }
 
   private toObjectId(value: string, errorMessage: string): Types.ObjectId {

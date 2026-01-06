@@ -115,8 +115,6 @@ export interface ArtworkListItemDto {
   description?: string;
   images?: string[];
   tags?: string[];
-  isScheduled?: boolean;
-  publishAt?: Date;
   status?: string;
   techniques?: TaxonomyListItemDto[];
   styles?: TaxonomyListItemDto[];

@@ -13,7 +13,6 @@ import { GetBlogDto } from "./dto/get-blog.dto";
 import { GetBlogService } from "./services/get-blog.service";
 import { UpdateBlogStatusDto } from "./dto/update-blog-status.dto";
 import { UpdateBlogStatusService } from "./services/update-blog-status.service";
-import { type ListBlogsOptions } from "./services/list-blogs.service";
 
 @Injectable()
 export class BlogsService {
@@ -26,10 +25,9 @@ export class BlogsService {
   ) {}
 
   async listBlogs(
-    dto: ListBlogsQueryDto,
-    options?: ListBlogsOptions
+    dto: ListBlogsQueryDto
   ): Promise<ListBlogsResponseDto> {
-    return this.listBlogsService.execute(dto, options);
+    return this.listBlogsService.execute(dto);
   }
 
   async getBlog(

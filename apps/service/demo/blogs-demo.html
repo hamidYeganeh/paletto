@@ -179,14 +179,6 @@
             >Tags (comma separated, max 15)
             <input name="tags" placeholder="studio,update" />
           </label>
-          <label
-            >Schedule publish?
-            <input name="isScheduled" type="checkbox" />
-          </label>
-          <label
-            >Publish At (required if scheduled)
-            <input name="publishAt" type="datetime-local" />
-          </label>
           <button type="submit">Create</button>
         </form>
         <div id="createBlogResult"></div>
@@ -233,18 +225,6 @@
             >Tags (comma separated, max 15)
             <input name="tags" placeholder="studio,update" />
           </label>
-          <label
-            >Schedule action
-            <select name="scheduleAction">
-              <option value="">unchanged</option>
-              <option value="schedule">schedule</option>
-              <option value="unschedule">unschedule</option>
-            </select>
-          </label>
-          <label
-            >Publish At (required when scheduling)
-            <input name="publishAt" type="datetime-local" />
-          </label>
           <button type="submit">Update</button>
         </form>
         <div id="updateBlogResult"></div>
@@ -265,7 +245,7 @@
       <div class="card">
         <h3>List Blogs</h3>
         <p class="hint">
-          Public list is always filtered to active and published items.
+          Public list is filtered to active items.
         </p>
         <form id="listBlogsForm">
           <label
@@ -366,16 +346,8 @@
           };
           const status = readString(form, "status");
           const tags = parseList(readString(form, "tags"));
-          const isScheduled = form.get("isScheduled") === "on";
-          const publishAt = readString(form, "publishAt");
           if (status) payload.status = status;
           if (tags.length) payload.tags = tags;
-          if (isScheduled) {
-            payload.isScheduled = true;
-            if (publishAt) {
-              payload.publishAt = new Date(publishAt).toISOString();
-            }
-          }
           const resEl = document.getElementById("createBlogResult");
           resEl.textContent = "Creating...";
           try {
@@ -408,8 +380,6 @@
           const cover = readString(form, "cover");
           const status = readString(form, "status");
           const tags = parseList(readString(form, "tags"));
-          const scheduleAction = readString(form, "scheduleAction");
-          const publishAt = readString(form, "publishAt");
 
           if (title) payload.title = title;
           if (description) payload.description = description;
@@ -418,15 +388,6 @@
           if (cover) payload.cover = cover;
           if (status) payload.status = status;
           if (tags.length) payload.tags = tags;
-          if (scheduleAction === "schedule") {
-            payload.isScheduled = true;
-            if (publishAt) {
-              payload.publishAt = new Date(publishAt).toISOString();
-            }
-          }
-          if (scheduleAction === "unschedule") {
-            payload.isScheduled = false;
-          }
 
           const resEl = document.getElementById("updateBlogResult");
           resEl.textContent = "Updating...";

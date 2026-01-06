@@ -1,14 +1,11 @@
 import {
   ArrayMaxSize,
   IsArray,
-  IsBoolean,
-  IsDateString,
   IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
-  ValidateIf,
 } from "class-validator";
 import { Transform } from "class-transformer";
 import { Types } from "mongoose";
@@ -54,15 +51,6 @@ export class UpdateArtworkDto {
   @MaxLength(MAX_TAG_LENGTH, { each: true })
   @IsOptional()
   tags?: string[];
-
-  @IsBoolean()
-  @IsOptional()
-  isScheduled?: boolean;
-
-  @ValidateIf((dto) => dto.isScheduled === true)
-  @IsDateString()
-  @IsNotEmpty()
-  publishAt?: string;
 
   @Transform(({ value }) =>
     typeof value === "string" ? value.trim() : value

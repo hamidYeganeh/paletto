@@ -30,7 +30,7 @@ export class BlogsController {
     return this.blogsService.listBlogs({
       ...query,
       status: PUBLIC_BLOG_STATUS,
-    }, { publicOnly: true });
+    });
   }
 
   @Post("get")

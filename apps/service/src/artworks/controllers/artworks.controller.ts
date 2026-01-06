@@ -30,7 +30,7 @@ export class ArtworksController {
     return this.artworksService.listArtworks({
       ...query,
       status: PUBLIC_ARTWORK_STATUS,
-    }, { publicOnly: true });
+    });
   }
 
   @Post("get")

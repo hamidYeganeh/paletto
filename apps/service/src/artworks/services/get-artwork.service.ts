@@ -79,14 +79,6 @@ export class GetArtworkService {
 
     if (options.publicOnly) {
       filters.status = ArtworkStatus.ACTIVE;
-      filters.$and = [
-        {
-          $or: [
-            { isScheduled: { $ne: true } },
-            { publishAt: { $lte: new Date() } },
-          ],
-        },
-      ];
     }
 
     return filters;

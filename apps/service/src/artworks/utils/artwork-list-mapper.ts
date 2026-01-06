@@ -6,7 +6,7 @@ import type {
 } from "../dto/list-artworks.dto";
 
 export const PUBLIC_ARTWORKS_LIST_SELECT =
-  "_id artistId title description images tags isScheduled publishAt status techniques styles categories createdAt updatedAt";
+  "_id artistId title description images tags status techniques styles categories createdAt updatedAt";
 export const ARTIST_PROFILE_SELECT = "_id userId displayName techniques styles";
 export const TAXONOMY_LIST_SELECT = "_id title slug status";
 
@@ -22,8 +22,6 @@ export type ArtworkListLean = {
   description?: string;
   images?: string[];
   tags?: string[];
-  isScheduled?: boolean;
-  publishAt?: Date;
   status?: string;
   createdAt: Date;
   updatedAt: Date;

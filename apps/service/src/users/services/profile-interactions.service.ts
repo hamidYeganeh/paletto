@@ -27,7 +27,7 @@ import type { ListArtworksResponseDto } from "src/artworks/dto/list-artworks.dto
 import type { ListBlogsResponseDto } from "src/blogs/dto/list-blogs.dto";
 
 const BLOG_LIST_SELECT =
-  "_id title description slug status cover tags isScheduled publishAt authorId createdAt updatedAt";
+  "_id title description slug status cover tags authorId createdAt updatedAt";
 
 type ArtworkProfileField = "savedArtworks" | "likedArtworks";
 type BlogProfileField = "savedBlogs" | "likedBlogs";
@@ -131,7 +131,6 @@ export class ProfileInteractionsService {
     const filters = {
       _id: { $in: ids },
       status: ArtworkStatus.ACTIVE,
-      ...this.buildScheduleFilter(),
     };
 
     const artworks = await this.artworkModel
@@ -185,7 +184,6 @@ export class ProfileInteractionsService {
     const filters = {
       _id: { $in: ids },
       status: IBlogsStatus.ACTIVE,
-      ...this.buildScheduleFilter(),
     };
 
     const blogs = await this.blogModel
@@ -254,7 +252,6 @@ export class ProfileInteractionsService {
     const exists = await this.artworkModel.exists({
       _id: artworkId,
       status: ArtworkStatus.ACTIVE,
-      ...this.buildScheduleFilter(),
     });
 
     if (!exists) {
@@ -266,21 +263,11 @@ export class ProfileInteractionsService {
     const exists = await this.blogModel.exists({
       _id: blogId,
       status: IBlogsStatus.ACTIVE,
-      ...this.buildScheduleFilter(),
     });
 
     if (!exists) {
       throw new NotFoundException("Blog not found");
     }
-  }
-
-  private buildScheduleFilter() {
-    return {
-      $or: [
-        { isScheduled: { $ne: true } },
-        { publishAt: { $lte: new Date() } },
-      ],
-    };
   }
 
   private toObjectId(value: string, errorMessage: string): Types.ObjectId {

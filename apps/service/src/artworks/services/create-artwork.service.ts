@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { CreateArtworkDto } from "../dto/create-artwork.dto";
@@ -48,7 +44,6 @@ export class CreateArtworkService {
     const categories = dto.categories ?? [];
     const tags = normalizeTags(dto.tags);
     const status = dto.status ?? ArtworkStatus.DRAFT;
-    const schedule = this.resolveSchedule(dto.isScheduled, dto.publishAt);
 
     const artwork = await this.artworkModel.create({
       artistId: artist._id,
@@ -60,7 +55,6 @@ export class CreateArtworkService {
       categories,
       tags,
       status,
-      ...schedule,
     });
 
     await this.artistModel
@@ -70,40 +64,5 @@ export class CreateArtworkService {
       .exec();
 
     return artwork;
-  }
-
-  private resolveSchedule(
-    isScheduled?: boolean,
-    publishAt?: string
-  ): { isScheduled: boolean; publishAt?: Date } {
-    const shouldSchedule = isScheduled ?? false;
-
-    if (shouldSchedule && !publishAt) {
-      throw new BadRequestException(
-        "publishAt is required when isScheduled is true"
-      );
-    }
-
-    if (!shouldSchedule && publishAt) {
-      throw new BadRequestException(
-        "publishAt requires isScheduled to be true"
-      );
-    }
-
-    if (!shouldSchedule) {
-      return { isScheduled: false, publishAt: undefined };
-    }
-
-    if (!publishAt) {
-      throw new BadRequestException("publishAt is required");
-    }
-
-    const publishAtDate = new Date(publishAt);
-
-    if (Number.isNaN(publishAtDate.getTime())) {
-      throw new BadRequestException("Invalid publishAt value");
-    }
-
-    return { isScheduled: true, publishAt: publishAtDate };
   }
 }

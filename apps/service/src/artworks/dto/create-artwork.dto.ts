@@ -2,14 +2,11 @@ import { Transform } from "class-transformer";
 import {
   ArrayMaxSize,
   IsArray,
-  IsBoolean,
-  IsDateString,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
-  ValidateIf,
 } from "class-validator";
 import { Types } from "mongoose";
 import { IsMongoIdArray } from "src/common/is-mongo-id-array";
@@ -59,13 +56,4 @@ export class CreateArtworkDto {
   @IsEnum(ArtworkStatus)
   @IsOptional()
   status?: ArtworkStatus;
-
-  @IsBoolean()
-  @IsOptional()
-  isScheduled?: boolean;
-
-  @ValidateIf((dto) => dto.isScheduled === true)
-  @IsDateString()
-  @IsNotEmpty()
-  publishAt?: string;
 }

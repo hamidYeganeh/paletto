@@ -22,10 +22,6 @@ import { Technique } from "src/techniques/schemas/technique.schema";
 import { Style } from "src/styles/schemas/style.schema";
 import { Category } from "src/categories/schemas/category.schema";
 
-export interface ListArtworksOptions {
-  publicOnly?: boolean;
-}
-
 @Injectable()
 export class ListArtworksService {
   constructor(
@@ -34,12 +30,11 @@ export class ListArtworksService {
   ) {}
 
   async execute(
-    query: ListArtworksQueryDto,
-    options: ListArtworksOptions = {}
+    query: ListArtworksQueryDto
   ): Promise<ListArtworksResponseDto> {
     const page = query.page ?? DEFAULT_LIST_PAGE;
     const limit = query.limit ?? DEFAULT_LIST_LIMIT;
-    const filters = this.buildFilters(query, options);
+    const filters = this.buildFilters(query);
     const sort = this.buildSort(query);
     const skip = Math.max(0, page - 1) * limit;
 
@@ -82,8 +77,7 @@ export class ListArtworksService {
   }
 
   private buildFilters(
-    query: ListArtworksQueryDto,
-    options: ListArtworksOptions
+    query: ListArtworksQueryDto
   ): QueryFilter<ArtworkDocument> {
     const filters: QueryFilter<ArtworkDocument> = {};
 
@@ -112,13 +106,6 @@ export class ListArtworksService {
       filters.tags = { $in: query.tags };
     }
 
-    if (options.publicOnly) {
-      const scheduleFilter = this.buildScheduleFilter();
-      filters.$and = filters.$and
-        ? [...filters.$and, scheduleFilter]
-        : [scheduleFilter];
-    }
-
     return filters;
   }
 
@@ -133,15 +120,5 @@ export class ListArtworksService {
 
   private escapeRegExp(value: string): string {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  private buildScheduleFilter() {
-    const now = new Date();
-    return {
-      $or: [
-        { isScheduled: { $ne: true } },
-        { publishAt: { $lte: now } },
-      ],
-    };
   }
 }

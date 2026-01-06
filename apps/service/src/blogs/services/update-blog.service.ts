@@ -39,7 +39,6 @@ export class UpdateBlogService {
     }
 
     const updatePayload: UpdateQuery<Blog> = {};
-    const unsetPayload: Record<string, "" | 1> = {};
 
     if (dto.title !== undefined) {
       updatePayload.title = dto.title.trim();
@@ -69,21 +68,9 @@ export class UpdateBlogService {
       updatePayload.tags = normalizeTags(dto.tags);
     }
 
-    if (dto.isScheduled !== undefined || dto.publishAt !== undefined) {
-      const scheduleUpdate = this.resolveScheduleUpdate(
-        dto.isScheduled,
-        dto.publishAt
-      );
-      Object.assign(updatePayload, scheduleUpdate.set);
-      Object.assign(unsetPayload, scheduleUpdate.unset);
-    }
-
     const blogObjectId = new Types.ObjectId(blogId);
 
     const updateQuery: UpdateQuery<Blog> = { $set: updatePayload };
-    if (Object.keys(unsetPayload).length) {
-      updateQuery.$unset = unsetPayload;
-    }
 
     const blog = await this.blogModel
       .findOneAndUpdate(
@@ -101,46 +88,5 @@ export class UpdateBlogService {
     }
 
     return blog;
-  }
-
-  private resolveScheduleUpdate(
-    isScheduled?: boolean,
-    publishAt?: string
-  ): { set: UpdateQuery<Blog>; unset: Record<string, "" | 1> } {
-    const set: UpdateQuery<Blog> = {};
-    const unset: Record<string, "" | 1> = {};
-    const hasPublishAt = publishAt !== undefined;
-
-    if (isScheduled === true && !publishAt) {
-      throw new BadRequestException(
-        "publishAt is required when isScheduled is true"
-      );
-    }
-
-    if (isScheduled === false && hasPublishAt) {
-      throw new BadRequestException(
-        "publishAt requires isScheduled to be true"
-      );
-    }
-
-    if (hasPublishAt) {
-      const publishAtDate = new Date(publishAt);
-      if (Number.isNaN(publishAtDate.getTime())) {
-        throw new BadRequestException("Invalid publishAt value");
-      }
-      set.publishAt = publishAtDate;
-      if (isScheduled === undefined) {
-        set.isScheduled = true;
-      }
-    }
-
-    if (isScheduled !== undefined) {
-      set.isScheduled = isScheduled;
-      if (!isScheduled) {
-        unset.publishAt = "";
-      }
-    }
-
-    return { set, unset };
   }
 }

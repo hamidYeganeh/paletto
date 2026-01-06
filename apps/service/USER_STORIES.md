@@ -34,7 +34,7 @@ User stories based on the current NestJS service modules and controllers.
 - As an artist, I want to update my artwork so that I can correct details.
 - As an admin, I want to list all artworks so that I can review submissions.
 - As an admin, I want to update artwork status so that I can approve or hide items.
-- Details & considerations: list supports `page`, `limit`, `search`, `status`, `sortBy`, `sortOrder`, tags, and taxonomy filters (`techniques`, `styles`, `categories`); create/update accepts `title`, `description`, `images`, tags, scheduling (`isScheduled`, `publishAt`), and taxonomy ids; update requires `artworkId`; new artworks default to `draft`; public list/get hides scheduled items with a future `publishAt`.
+- Details & considerations: list supports `page`, `limit`, `search`, `status`, `sortBy`, `sortOrder`, tags, and taxonomy filters (`techniques`, `styles`, `categories`); create/update accepts `title`, `description`, `images`, tags, and taxonomy ids; update requires `artworkId`; new artworks default to `draft`; public list/get is filtered to active artworks.
 
 ## Blogs
 - As a visitor, I want to browse active blogs so that I can read updates.
@@ -43,7 +43,7 @@ User stories based on the current NestJS service modules and controllers.
 - As an artist, I want to update my blog post so that I can revise content.
 - As an admin, I want to list all blogs so that I can moderate content.
 - As an admin, I want to update blog status so that I can publish or unpublish posts.
-- Details & considerations: create requires `title`, `description`, `content`, `slug`, and `cover` with max lengths; status defaults to `draft`; update is partial and requires `blogId`; list supports `page`, `limit`, `search`, `status`, `sortBy`, `sortOrder`, and tags; create/update supports tags and scheduling (`isScheduled`, `publishAt`); public list/get hides scheduled items with a future `publishAt`.
+- Details & considerations: create requires `title`, `description`, `content`, `slug`, and `cover` with max lengths; status defaults to `draft`; update is partial and requires `blogId`; list supports `page`, `limit`, `search`, `status`, `sortBy`, `sortOrder`, and tags; create/update supports tags; public list/get is filtered to active blogs.
 
 ## Comments
 - As a signed-in user, I want to comment on artworks and blogs so that I can share feedback.

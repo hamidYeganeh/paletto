@@ -85,8 +85,6 @@ export interface BlogListItemDto {
   status: string;
   cover: string;
   tags?: string[];
-  isScheduled?: boolean;
-  publishAt?: Date;
   authorId: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;

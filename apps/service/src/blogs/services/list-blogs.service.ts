@@ -2,18 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, QueryFilter } from "mongoose";
 import { Blog, BlogDocument } from "../schemas/blog.schema";
-import {
-  ListBlogsQueryDto,
-  ListBlogsResponseDto,
-} from "../dto/list-blogs.dto";
+import { ListBlogsQueryDto, ListBlogsResponseDto } from "../dto/list-blogs.dto";
 import {
   DEFAULT_LIST_LIMIT,
   DEFAULT_LIST_PAGE,
 } from "src/constants/default-list-params";
-
-export interface ListBlogsOptions {
-  publicOnly?: boolean;
-}
 
 @Injectable()
 export class ListBlogsService {
@@ -23,12 +16,11 @@ export class ListBlogsService {
   ) {}
 
   async execute(
-    query: ListBlogsQueryDto,
-    options: ListBlogsOptions = {}
+    query: ListBlogsQueryDto
   ): Promise<ListBlogsResponseDto> {
     const page = query.page ?? DEFAULT_LIST_PAGE;
     const limit = query.limit ?? DEFAULT_LIST_LIMIT;
-    const filters = this.buildFilters(query, options);
+    const filters = this.buildFilters(query);
     const sort = this.buildSort(query);
     const skip = Math.max(0, page - 1) * limit;
 
@@ -37,7 +29,7 @@ export class ListBlogsService {
       this.blogModel
         .find(filters)
         .select(
-          "_id title description slug status cover tags isScheduled publishAt authorId createdAt updatedAt"
+          "_id title description slug status cover tags authorId createdAt updatedAt"
         )
         .sort(sort)
         .skip(skip)
@@ -50,8 +42,7 @@ export class ListBlogsService {
   }
 
   private buildFilters(
-    query: ListBlogsQueryDto,
-    options: ListBlogsOptions
+    query: ListBlogsQueryDto
   ): QueryFilter<BlogDocument> {
     const filters: QueryFilter<BlogDocument> = {};
 
@@ -71,13 +62,6 @@ export class ListBlogsService {
       filters.tags = { $in: query.tags };
     }
 
-    if (options.publicOnly) {
-      const scheduleFilter = this.buildScheduleFilter();
-      filters.$and = filters.$and
-        ? [...filters.$and, scheduleFilter]
-        : [scheduleFilter];
-    }
-
     return filters;
   }
 
@@ -90,15 +74,5 @@ export class ListBlogsService {
 
   private escapeRegExp(value: string): string {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  private buildScheduleFilter() {
-    const now = new Date();
-    return {
-      $or: [
-        { isScheduled: { $ne: true } },
-        { publishAt: { $lte: now } },
-      ],
-    };
   }
 }
