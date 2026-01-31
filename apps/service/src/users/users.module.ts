@@ -14,9 +14,6 @@ import { UpdateArtistService } from "./services/update-artist.service";
 import { ArtistsController } from "./controllers/artists.controller";
 import { ArtistAccessService } from "./services/artist-access.service";
 import { UpdateUserStatusService } from "./services/update-user-status.service";
-import { ProfileInteractionsService } from "./services/profile-interactions.service";
-import { Artwork, ArtworkSchema } from "src/artworks/schemas/artwork.schema";
-import { Blog, BlogSchema } from "src/blogs/schemas/blog.schema";
 
 @Module({
   imports: [
@@ -24,8 +21,6 @@ import { Blog, BlogSchema } from "src/blogs/schemas/blog.schema";
       { name: User.name, schema: UserSchema },
       { name: UserProfile.name, schema: UserProfileSchema },
       { name: Artist.name, schema: ArtistSchema },
-      { name: Artwork.name, schema: ArtworkSchema },
-      { name: Blog.name, schema: BlogSchema },
     ]),
   ],
   controllers: [UsersController, UsersAdminController, ArtistsController],
@@ -38,7 +33,6 @@ import { Blog, BlogSchema } from "src/blogs/schemas/blog.schema";
     UpdateArtistService,
     ArtistAccessService,
     UpdateUserStatusService,
-    ProfileInteractionsService,
   ],
   exports: [MongooseModule, UsersService, ArtistAccessService],
 })

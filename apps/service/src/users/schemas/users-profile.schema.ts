@@ -19,55 +19,6 @@ export class UserProfile {
 
   @Prop()
   bio?: string;
-
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: "Blogs" }],
-    default: [],
-    index: true,
-  })
-  blogs?: Types.ObjectId[];
-
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: "Artworks" }],
-    default: [],
-    index: true,
-  })
-  savedArtworks?: Types.ObjectId[];
-
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: "Blogs" }],
-    default: [],
-    index: true,
-  })
-  savedBlogs?: Types.ObjectId[];
-
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: "Artworks" }],
-    default: [],
-    index: true,
-  })
-  likedArtworks?: Types.ObjectId[];
-
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: "Blogs" }],
-    default: [],
-    index: true,
-  })
-  likedBlogs?: Types.ObjectId[];
-
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: "Artworks" }],
-    default: [],
-    index: true,
-  })
-  commentedArtworks?: Types.ObjectId[];
-
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: "Blogs" }],
-    default: [],
-    index: true,
-  })
-  commentedBlogs?: Types.ObjectId[];
 }
 
 export const UserProfileSchema = SchemaFactory.createForClass(UserProfile);

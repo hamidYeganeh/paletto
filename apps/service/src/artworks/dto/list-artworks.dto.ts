@@ -101,7 +101,7 @@ export interface ArtistProfileDto {
   styles: Types.ObjectId[];
 }
 
-export interface TaxonomyListItemDto {
+export interface ArtworkLookupItemDto {
   _id: Types.ObjectId;
   title: string;
   slug: string;
@@ -116,9 +116,9 @@ export interface ArtworkListItemDto {
   images?: string[];
   tags?: string[];
   status?: string;
-  techniques?: TaxonomyListItemDto[];
-  styles?: TaxonomyListItemDto[];
-  categories?: TaxonomyListItemDto[];
+  techniques?: ArtworkLookupItemDto[];
+  styles?: ArtworkLookupItemDto[];
+  categories?: ArtworkLookupItemDto[];
   createdAt: Date;
   updatedAt: Date;
 }

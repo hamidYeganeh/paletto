@@ -2,22 +2,22 @@ import { Types } from "mongoose";
 import type {
   ArtistProfileDto,
   ArtworkListItemDto,
-  TaxonomyListItemDto,
+  ArtworkLookupItemDto,
 } from "../dto/list-artworks.dto";
 
 export const PUBLIC_ARTWORKS_LIST_SELECT =
   "_id artistId title description images tags status techniques styles categories createdAt updatedAt";
 export const ARTIST_PROFILE_SELECT = "_id userId displayName techniques styles";
-export const TAXONOMY_LIST_SELECT = "_id title slug status";
+export const ARTWORK_LOOKUP_SELECT = "_id title slug status";
 
-type TaxonomyListLean = Types.ObjectId | TaxonomyListItemDto;
+type ArtworkLookupLean = Types.ObjectId | ArtworkLookupItemDto;
 
 export type ArtworkListLean = {
   _id: Types.ObjectId;
   artistId?: Types.ObjectId | ArtistProfileDto;
-  techniques?: TaxonomyListLean[];
-  styles?: TaxonomyListLean[];
-  categories?: TaxonomyListLean[];
+  techniques?: ArtworkLookupLean[];
+  styles?: ArtworkLookupLean[];
+  categories?: ArtworkLookupLean[];
   title: string;
   description?: string;
   images?: string[];
@@ -32,16 +32,16 @@ const isArtistProfile = (
 ): value is ArtistProfileDto =>
   typeof value === "object" && value !== null && "_id" in value;
 
-const isTaxonomyListItem = (
-  value: TaxonomyListLean
-): value is TaxonomyListItemDto =>
+const isArtworkLookupItem = (
+  value: ArtworkLookupLean
+): value is ArtworkLookupItemDto =>
   typeof value === "object" && value !== null && "_id" in value;
 
-const mapTaxonomyList = (
-  items?: TaxonomyListLean[]
-): TaxonomyListItemDto[] => {
+const mapLookupList = (
+  items?: ArtworkLookupLean[]
+): ArtworkLookupItemDto[] => {
   if (!Array.isArray(items)) return [];
-  return items.filter(isTaxonomyListItem);
+  return items.filter(isArtworkLookupItem);
 };
 
 export const mapArtworkListItem = (
@@ -52,8 +52,8 @@ export const mapArtworkListItem = (
   return {
     ...rest,
     artist: isArtistProfile(artistId) ? artistId : undefined,
-    techniques: mapTaxonomyList(techniques),
-    styles: mapTaxonomyList(styles),
-    categories: mapTaxonomyList(categories),
+    techniques: mapLookupList(techniques),
+    styles: mapLookupList(styles),
+    categories: mapLookupList(categories),
   };
 };

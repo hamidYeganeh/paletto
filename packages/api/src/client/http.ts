@@ -61,14 +61,16 @@ async function request<TResponse, TBody = unknown>({
     cache,
   });
 
-  const isJson = response.headers.get("content-type")?.includes("application/json");
+  const isJson = response.headers
+    .get("content-type")
+    ?.includes("application/json");
   const payload = isJson ? await response.json() : await response.text();
 
   if (!response.ok) {
     throw new ApiError(
       `Request failed with status ${response.status}`,
       response.status,
-      payload
+      payload,
     );
   }
 
@@ -76,7 +78,10 @@ async function request<TResponse, TBody = unknown>({
 }
 
 export const http = {
-  get: <TResponse>(path: string, config?: Omit<RequestConfig, "path" | "method">) =>
+  get: <TResponse>(
+    path: string,
+    config?: Omit<RequestConfig, "path" | "method">,
+  ) =>
     request<TResponse>({
       path,
       method: "GET",
@@ -85,7 +90,7 @@ export const http = {
   post: <TResponse, TBody = unknown>(
     path: string,
     body?: TBody,
-    config?: Omit<RequestConfig<TBody>, "path" | "method" | "body">
+    config?: Omit<RequestConfig<TBody>, "path" | "method" | "body">,
   ) =>
     request<TResponse, TBody>({
       path,
@@ -96,7 +101,7 @@ export const http = {
   put: <TResponse, TBody = unknown>(
     path: string,
     body?: TBody,
-    config?: Omit<RequestConfig<TBody>, "path" | "method" | "body">
+    config?: Omit<RequestConfig<TBody>, "path" | "method" | "body">,
   ) =>
     request<TResponse, TBody>({
       path,
@@ -107,7 +112,7 @@ export const http = {
   patch: <TResponse, TBody = unknown>(
     path: string,
     body?: TBody,
-    config?: Omit<RequestConfig<TBody>, "path" | "method" | "body">
+    config?: Omit<RequestConfig<TBody>, "path" | "method" | "body">,
   ) =>
     request<TResponse, TBody>({
       path,
@@ -115,7 +120,10 @@ export const http = {
       body,
       ...config,
     }),
-  delete: <TResponse>(path: string, config?: Omit<RequestConfig, "path" | "method">) =>
+  delete: <TResponse>(
+    path: string,
+    config?: Omit<RequestConfig, "path" | "method">,
+  ) =>
     request<TResponse>({
       path,
       method: "DELETE",

@@ -12,8 +12,6 @@ import { MediaModule } from "./media/media.module";
 import { StylesModule } from "./styles/styles.module";
 import { CategoriesModule } from "./categories/categories.module";
 import { TechniquesModule } from "./techniques/techniques.module";
-import { BlogsModule } from "./blogs/blogs.module";
-import { CommentsModule } from "./comments/comments.module";
 
 @Module({
   imports: [
@@ -41,8 +39,6 @@ import { CommentsModule } from "./comments/comments.module";
     StylesModule,
     CategoriesModule,
     TechniquesModule,
-    BlogsModule,
-    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
