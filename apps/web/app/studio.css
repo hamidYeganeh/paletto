@@ -1,0 +1,337 @@
+/* Bold Editorial Studio — Paletto */
+
+.studio-page {
+  --studio-bg: #ffffff;
+  --studio-fg: #000000;
+  --studio-muted: #525252;
+  --studio-meta: #737373;
+  --studio-border: rgb(0 0 0 / 0.1);
+  --studio-footer: #0a0a0a;
+  --studio-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  background: var(--studio-bg);
+  color: var(--studio-fg);
+  font-family: var(--font-iransans-x), ui-sans-serif, system-ui, sans-serif;
+  font-variation-settings: "dots" 7;
+  font-feature-settings: "ss02"; /* English digits → Persian */
+  cursor: none;
+  overflow-x: clip;
+}
+
+/* Persian: never apply letter-spacing to connected scripts */
+[dir="rtl"] .studio-headline,
+[dir="rtl"] .studio-body {
+  letter-spacing: normal;
+}
+
+[dir="rtl"] .studio-mono {
+  text-transform: none;
+  letter-spacing: 0.08em;
+}
+
+.studio-page *,
+.studio-page *::before,
+.studio-page *::after {
+  cursor: none;
+}
+
+.studio-page a,
+.studio-page button {
+  cursor: none;
+}
+
+/* Custom difference cursor */
+.studio-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  margin-left: -16px;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 300ms var(--studio-ease);
+}
+
+.studio-cursor.is-visible {
+  opacity: 1;
+}
+
+.studio-cursor-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  border: 1px solid #000;
+  background: #fff;
+  mix-blend-mode: difference;
+  transform: scale(1);
+  transition: transform 500ms var(--studio-ease);
+}
+
+.studio-cursor.is-hover .studio-cursor-inner {
+  transform: scale(2.5);
+}
+
+/* Typography */
+.studio-headline {
+  font-family: var(--font-iransans-x), ui-sans-serif, system-ui, sans-serif;
+  font-variation-settings: "dots" 7;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+
+.studio-hero-title {
+  font-weight: 900;
+  line-height: 0.95;
+}
+
+.studio-hero-title .studio-reveal-line {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.studio-body {
+  font-family: var(--font-iransans-x), ui-sans-serif, system-ui, sans-serif;
+  font-variation-settings: "dots" 7;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.5;
+}
+
+.studio-mono {
+  font-family: var(--font-space-grotesk), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.45;
+}
+
+/* Image hover: grayscale → color + scale */
+.studio-img {
+  filter: grayscale(100%);
+  transform: scale(1);
+  transition:
+    filter 700ms var(--studio-ease),
+    transform 700ms var(--studio-ease);
+}
+
+.group:hover .studio-img,
+.studio-img-wrap:hover .studio-img {
+  filter: grayscale(0%);
+  transform: scale(1.05);
+}
+
+/* Line / letter reveal */
+.studio-reveal-line {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.studio-reveal-inner {
+  display: inline-block;
+  transform: translateY(100%);
+  animation: studio-reveal-up 1s var(--studio-ease) forwards;
+}
+
+@keyframes studio-reveal-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}
+
+/* Marquee */
+.studio-marquee {
+  overflow: hidden;
+  width: 100%;
+}
+
+.studio-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1.5rem;
+  direction: ltr;
+  animation: studio-marquee-scroll 30s linear infinite;
+}
+
+.studio-marquee:hover .studio-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes studio-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Parallax tilt grid */
+.studio-parallax-grid {
+  direction: ltr;
+  perspective: 1200px;
+}
+
+.studio-parallax-col {
+  will-change: transform;
+}
+
+.studio-tilt-card {
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Sticky content switch — force LTR layout: left sticky copy, right images */
+.studio-sticky-layout {
+  direction: ltr;
+}
+
+.studio-sticky-layout .studio-headline,
+.studio-sticky-layout .studio-body,
+.studio-sticky-layout .studio-mono {
+  direction: rtl;
+  text-align: start;
+}
+
+/* Journey line — page-spanning scroll draw */
+.studio-journey-track {
+  isolation: isolate;
+}
+
+.studio-journey-line {
+  direction: ltr;
+}
+
+.studio-journey-svg {
+  opacity: 0.9;
+}
+
+.studio-journey-stop {
+  opacity: 0.28;
+  transition:
+    opacity 500ms var(--studio-ease),
+    transform 500ms var(--studio-ease);
+}
+
+.studio-journey-stop.is-active {
+  opacity: 1;
+}
+
+.studio-journey-node {
+  opacity: 0.25;
+  transition: opacity 500ms var(--studio-ease);
+}
+
+.studio-journey-node.is-active {
+  opacity: 1;
+}
+
+.studio-journey-node__ring {
+  transition: transform 500ms var(--studio-ease);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.studio-journey-node.is-active .studio-journey-node__ring {
+  transform: scale(1.35);
+}
+
+/* Horizontal sticky gallery */
+.studio-horizontal-track {
+  direction: ltr;
+  will-change: transform;
+}
+
+.studio-horizontal-track .studio-headline,
+.studio-horizontal-track .studio-body,
+.studio-horizontal-track .studio-mono {
+  direction: rtl;
+}
+
+/* Asymmetrical marquee cards */
+.studio-marquee-card--a {
+  border-top-left-radius: 100px;
+}
+
+.studio-marquee-card--b {
+  border-top-right-radius: 100px;
+  border-bottom-left-radius: 40px;
+}
+
+.studio-marquee-card--c {
+  border-radius: 40px;
+}
+
+/* Project grid overlay */
+.studio-project-overlay {
+  background: rgb(0 0 0 / 0.1);
+  opacity: 0;
+  transition: opacity 500ms var(--studio-ease);
+}
+
+.group:hover .studio-project-overlay {
+  opacity: 1;
+}
+
+.studio-project-arrow {
+  opacity: 0;
+  transform: translate(4px, 4px);
+  transition:
+    opacity 500ms var(--studio-ease),
+    transform 500ms var(--studio-ease);
+}
+
+.group:hover .studio-project-arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-reveal-inner {
+    animation: none;
+    transform: none;
+  }
+
+  .studio-marquee-track {
+    animation: none;
+  }
+
+  .studio-cursor {
+    display: none;
+  }
+
+  .studio-page,
+  .studio-page *,
+  .studio-page *::before,
+  .studio-page *::after {
+    cursor: auto;
+  }
+
+  .studio-img {
+    transition: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .studio-cursor {
+    display: none;
+  }
+
+  .studio-page,
+  .studio-page *,
+  .studio-page *::before,
+  .studio-page *::after {
+    cursor: auto;
+  }
+}
