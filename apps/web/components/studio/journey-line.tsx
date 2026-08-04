@@ -43,7 +43,6 @@ export function JourneyLine() {
   const rootRef = useRef<HTMLDivElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
   const guideRef = useRef<SVGPathElement>(null)
-  const progressRef = useRef<HTMLSpanElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
 
   useEffect(() => {
@@ -106,14 +105,10 @@ export function JourneyLine() {
       path.style.strokeDashoffset = "0"
       nodes().forEach((el) => el.classList.add("is-active"))
       chapterStops().forEach((el) => el.classList.add("is-active"))
-      if (progressRef.current) progressRef.current.textContent = "۱۰۰٪"
       return
     }
 
     const syncMarkers = (p: number) => {
-      if (progressRef.current) {
-        progressRef.current.textContent = `${Math.round(p * 100)}٪`
-      }
       nodes().forEach((el, i) => {
         const threshold = Number(el.dataset.progress ?? thresholds[i] ?? 1)
         el.classList.toggle("is-active", p >= threshold - 0.02)
@@ -173,13 +168,6 @@ export function JourneyLine() {
       className="studio-journey-line pointer-events-none absolute inset-x-0 top-0 z-[1] h-full w-full"
       aria-hidden="true"
     >
-      <div className="studio-journey-progress pointer-events-none fixed top-1/2 end-5 z-[2] hidden -translate-y-1/2 md:block lg:end-8">
-        <p className="studio-mono text-sm text-[#737373]">
-          <span className="sr-only">{t("ariaLabel")}</span>
-          <span ref={progressRef}>0٪</span>
-        </p>
-      </div>
-
       <svg
         ref={svgRef}
         className="studio-journey-svg absolute inset-0 h-full w-full overflow-visible"

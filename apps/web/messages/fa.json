@@ -14,12 +14,28 @@
     "openMenu": "باز کردن منو",
     "closeMenu": "بستن منو"
   },
+  "ScrollIsland": {
+    "label": "فهرست",
+    "topics": {
+      "top": "آغاز",
+      "intro": "درباره",
+      "journey": "مسیر بازدید",
+      "collections": "مجموعه‌ها",
+      "parallax": "عمق",
+      "horizontal": "گالری افقی",
+      "works": "آثار",
+      "contact": "تماس"
+    }
+  },
   "Hero": {
     "line1": "نگارخانه",
     "line2": "پالتو",
     "subtitle": "مجموعه‌ای گزیده از شاهکارهای نقاشی جهان، با نگاهی معاصر به تاریخ هنر.",
     "cta": "ورود به مجموعه",
-    "sectionLabel": "مجموعه ۰۰۴"
+    "sectionLabel": "مجموعه ۰۰۴",
+    "location": "تهران، ایران",
+    "handLeftAlt": "دست در حال رسیدن",
+    "handRightAlt": "دست در حال پذیرش"
   },
   "Fab": {
     "label": "بازدید",

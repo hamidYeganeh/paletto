@@ -94,6 +94,61 @@
   margin-bottom: -0.08em;
 }
 
+/* Atmospheric hero — dark full-bleed plane */
+.studio-hero {
+  --studio-hero-bg: #050505;
+  --studio-hero-accent: #ff4500;
+  background: var(--studio-hero-bg);
+  color: #fff;
+}
+
+.studio-hero ::selection {
+  background: var(--studio-hero-accent);
+  color: #fff;
+}
+
+.studio-hero-fade {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 45%,
+    var(--studio-bg) 100%
+  );
+}
+
+.studio-hero-cta-glow {
+  background: color-mix(in srgb, var(--studio-hero-accent) 20%, transparent);
+  filter: blur(24px);
+}
+
+@keyframes studio-float-hand-left {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+}
+
+@keyframes studio-float-hand-right {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(20px) rotate(-2deg);
+  }
+}
+
+.studio-hero-float-left {
+  animation: studio-float-hand-left 12s ease-in-out infinite;
+}
+
+.studio-hero-float-right {
+  animation: studio-float-hand-right 14s ease-in-out infinite;
+}
+
 .studio-body {
   font-family: var(--font-iransans-x), ui-sans-serif, system-ui, sans-serif;
   font-variation-settings: "dots" 7;
@@ -297,10 +352,44 @@
   transform: translate(0, 0);
 }
 
+/* Scroll island — section flash + dropdown scrollbar */
+@keyframes scroll-island-flash {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgb(0 0 0 / 0.04);
+  }
+}
+
+.scroll-island-flash {
+  animation: scroll-island-flash 0.6s ease-in-out 3;
+  border-radius: 1rem;
+}
+
+.scroll-island-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.scroll-island-scrollbar::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 10px;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .scroll-island-flash {
+    animation: none;
+  }
+
   .studio-reveal-inner {
     animation: none;
     transform: none;
+  }
+
+  .studio-hero-float-left,
+  .studio-hero-float-right {
+    animation: none;
   }
 
   .studio-marquee-track {

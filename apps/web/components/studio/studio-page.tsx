@@ -9,12 +9,14 @@ import { ProjectMarquee } from "./project-marquee"
 import { SiteFooter } from "./site-footer"
 import { SiteHeader } from "./site-header"
 import { StickyContentSwitch } from "./sticky-content-switch"
+import { StudioScrollIsland } from "./studio-scroll-island"
 
 export function StudioPage() {
   return (
     <div className="studio-page min-h-screen">
       <CustomCursor />
       <SiteHeader />
+      <StudioScrollIsland />
       <main>
         <Hero />
         <div className="studio-journey-track relative">
