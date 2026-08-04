@@ -94,12 +94,23 @@
   margin-bottom: -0.08em;
 }
 
-/* Atmospheric hero — dark full-bleed plane */
+/* Atmospheric hero — infinite image tunnel (Delphi-inspired) */
 .studio-hero {
   --studio-hero-bg: #050505;
   --studio-hero-accent: #ff4500;
   background: var(--studio-hero-bg);
   color: #fff;
+}
+
+.studio-hero-tunnel {
+  /* Scroll runway: travel through the tunnel before the rest of the page */
+  height: 400vh;
+}
+
+.studio-hero-sticky {
+  background: var(--studio-hero-bg);
+  /* Isolate paint; tunnel canvas shouldn't dirty the rest of the page */
+  contain: paint;
 }
 
 .studio-hero ::selection {
@@ -111,7 +122,8 @@
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    transparent 45%,
+    transparent 55%,
+    color-mix(in srgb, var(--studio-hero-bg) 70%, transparent) 78%,
     var(--studio-bg) 100%
   );
 }
@@ -121,32 +133,10 @@
   filter: blur(24px);
 }
 
-@keyframes studio-float-hand-left {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
+@media (prefers-reduced-motion: reduce) {
+  .studio-hero-tunnel {
+    height: 100svh;
   }
-  50% {
-    transform: translateY(-20px) rotate(2deg);
-  }
-}
-
-@keyframes studio-float-hand-right {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(20px) rotate(-2deg);
-  }
-}
-
-.studio-hero-float-left {
-  animation: studio-float-hand-left 12s ease-in-out infinite;
-}
-
-.studio-hero-float-right {
-  animation: studio-float-hand-right 14s ease-in-out infinite;
 }
 
 .studio-body {

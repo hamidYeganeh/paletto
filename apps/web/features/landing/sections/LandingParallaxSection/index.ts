@@ -1,0 +1,1 @@
+export { LandingParallaxSection } from "./LandingParallaxSection"

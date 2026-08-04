@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import { GalleryWalkthrough } from "@/components/gallery/gallery-walkthrough"
+import { GalleryDemoScreen } from "@/features/gallery"
 import "@/app/gallery-demo.css"
 
 export const metadata: Metadata = {
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 }
 
 export default function GalleryDemoPage() {
-  return <GalleryWalkthrough />
+  return <GalleryDemoScreen />
 }

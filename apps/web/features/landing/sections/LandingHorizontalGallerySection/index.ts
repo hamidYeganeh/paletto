@@ -1,0 +1,1 @@
+export { LandingHorizontalGallerySection } from "./LandingHorizontalGallerySection"

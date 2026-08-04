@@ -1,5 +1,5 @@
-import { StudioPage } from "@/components/studio/studio-page"
+import { LandingScreen } from "@/features/landing"
 
 export default function Page() {
-  return <StudioPage />
+  return <LandingScreen />
 }
