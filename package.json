@@ -7,7 +7,11 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "turbo format",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "prepare:shared": "npm run build --workspace=@workspace/shared",
+    "start:api": "npm run start --workspace=@workspace/api",
+    "dev:web": "npm run dev --workspace=web",
+    "seed": "npm run seed --workspace=@workspace/api"
   },
   "devDependencies": {
     "@workspace/eslint-config": "*",
