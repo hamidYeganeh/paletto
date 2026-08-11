@@ -1,0 +1,24 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: paletto-mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - paletto_mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: paletto
+
+  redis:
+    image: redis:7-alpine
+    container_name: paletto-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - paletto_redis_data:/data
+
+volumes:
+  paletto_mongo_data:
+  paletto_redis_data:

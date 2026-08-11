@@ -21,7 +21,8 @@
   display: block;
   width: 100%;
   height: 100%;
-  touch-action: none;
+  /* Allow vertical page scroll on touch; yaw still via pointermove */
+  touch-action: pan-y;
 }
 
 .gallery-demo-track {
