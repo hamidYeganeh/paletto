@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import Link from "next/link"
 import { useTranslations } from "next-intl"
 
 import { galleryArtworks } from "@/features/gallery"
@@ -207,6 +208,23 @@ export function LandingHeroSection() {
               <RevealLine delay={120}>{t("line2")}</RevealLine>
             </span>
           </h1>
+          <p className="mx-auto mt-6 max-w-xl text-base text-white/80 md:text-lg">
+            {t("subtitle")}
+          </p>
+          <div className="pointer-events-auto mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/artworks"
+              className="rounded-md bg-white px-5 py-2.5 text-sm font-medium text-black"
+            >
+              {t("cta")}
+            </Link>
+            <Link
+              href="/gallery/demo?exhibition=opening-hall"
+              className="rounded-md border border-white/50 px-5 py-2.5 text-sm text-white"
+            >
+              {t("ctaSecondary")}
+            </Link>
+          </div>
         </div>
       </div>
     </section>

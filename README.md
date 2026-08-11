@@ -1,21 +1,42 @@
-# shadcn/ui monorepo template
+# پَلِتو (Paletto)
 
-This is a Next.js monorepo template with shadcn/ui.
+پلتفرم نمایش، فروش، نمایشگاه مجازی ۳بعدی و کمیسیون اثر هنری.
 
-## Adding components
+## Stack
 
-To add components to your app, run the following command at the root of your `web` app:
+- `apps/web` — Next.js 16 + next-intl + Three.js
+- `apps/api` — NestJS + MongoDB + Redis (optional)
+- `packages/shared` — enums & DTOs
+- `packages/ui` — shadcn UI
+
+## Quick start
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+npm install
+npm run prepare:shared
+npm run build --workspace=@workspace/api
+cp apps/api/.env.example apps/api/.env   # MONGO_MEMORY=1 by default
+npm run start:api                        # terminal 1
+npm run dev:web                          # terminal 2 → http://127.0.0.1:3000
 ```
 
-This will place the ui components in the `packages/ui/src/components` directory.
+Demo OTP: `123456`  
+Artist: `09120000001` · Admin: `09000000000`
 
-## Using components
+## Product routes
 
-To use the components in your app, import them from the `ui` package.
+| Path | Purpose |
+|------|---------|
+| `/` | Landing (product CTAs) |
+| `/artworks` | Marketplace |
+| `/artists` | Artist directory |
+| `/exhibitions` | 3D exhibition catalog |
+| `/gallery/demo?exhibition=opening-hall` | Three.js viewer |
+| `/commissions` | Commission requests |
+| `/auth/login` | Mobile OTP |
+| `/dashboard` | Buyer/artist console |
+| `/admin` | Admin metrics |
 
-```tsx
-import { Button } from "@workspace/ui/components/button";
-```
+## Docs
+
+See `prd/` and `docs/` for product and architecture notes.

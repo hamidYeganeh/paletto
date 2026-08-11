@@ -31,41 +31,41 @@ export class SeedService implements OnApplicationBootstrap {
 
     this.logger.log('Database is empty. Seeding initial data...');
 
-    const admin = await this.usersService.createUser('09000000000', UserRole.ADMIN, 'Paletto Admin');
-    const artist = await this.usersService.createUser('09120000001', UserRole.ARTIST, 'Sample Artist');
+    const admin = await this.usersService.createUser('09000000000', UserRole.ADMIN, 'مدیر پالتو');
+    const artist = await this.usersService.createUser('09120000001', UserRole.ARTIST, 'نگار جلالی');
 
     await this.artistProfilesService.upsert(artist._id.toString(), {
-      displayName: 'Sample Artist',
-      bio: 'A featured artist on Paletto showcasing original works.',
-      location: 'Tehran, Iran',
+      displayName: 'نگار جلالی',
+      bio: 'نقاش معاصر تهرانی؛ آثار رنگ روغن و ترکیب‌مواد.',
+      location: 'تهران، ایران',
     });
 
     const artworkSeeds: CreateArtworkDto[] = [
       {
-        title: 'Sunset over the Hills',
-        description: 'An oil painting capturing a golden sunset over rolling hills.',
+        title: 'غروب روی تپه‌ها',
+        description: 'رنگ روغن روی بوم؛ لحظه طلایی غروب بر تپه‌های خشک.',
         medium: ArtworkMedium.PAINTING,
-        price: 4500000,
+        price: 45000000,
         currency: 'IRR',
-        images: ['https://picsum.photos/seed/paletto-1/800/600'],
+        images: ['https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=1200'],
         year: 2023,
       },
       {
-        title: 'Urban Reflections',
-        description: 'A mixed media piece exploring reflections in city glass.',
+        title: 'بازتاب شهری',
+        description: 'ترکیب مواد؛ بازتاب شهر در شیشه و فلز.',
         medium: ArtworkMedium.MIXED_MEDIA,
-        price: 3200000,
+        price: 32000000,
         currency: 'IRR',
-        images: ['https://picsum.photos/seed/paletto-2/800/600'],
+        images: ['https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=1200'],
         year: 2024,
       },
       {
-        title: 'Silent Portrait',
-        description: 'A charcoal illustration portrait study.',
+        title: 'پرتره خاموش',
+        description: 'مطالعه پرتره با زغال روی کاغذ.',
         medium: ArtworkMedium.ILLUSTRATION,
-        price: 1800000,
+        price: 18000000,
         currency: 'IRR',
-        images: ['https://picsum.photos/seed/paletto-3/800/600'],
+        images: ['https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=1200'],
         year: 2024,
       },
     ];
@@ -77,9 +77,9 @@ export class SeedService implements OnApplicationBootstrap {
     }
 
     await this.exhibitionsService.create({
-      title: 'Opening Hall',
+      title: 'سالن افتتاحیه',
       slug: 'opening-hall',
-      description: 'The inaugural exhibition featuring hand-picked works from our founding artists.',
+      description: 'اولین نمایشگاه مجازی پالتو با آثار منتخب هنرمندان بنیان‌گذار.',
       artworkIds: createdArtworks.map((artwork) => artwork._id.toString()),
       status: ExhibitionStatus.OPEN,
       startDate: new Date().toISOString(),

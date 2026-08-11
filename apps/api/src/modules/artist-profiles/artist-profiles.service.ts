@@ -81,6 +81,7 @@ export class ArtistProfilesService {
       id: profile._id.toString(),
       userId: profile.userId.toString(),
       displayName: profile.displayName,
+      slug: profile.slug,
       bio: profile.bio,
       coverImageUrl: profile.coverImageUrl,
       location: profile.location,

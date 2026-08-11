@@ -2,6 +2,7 @@ export interface ArtistProfileDto {
   id: string;
   userId: string;
   displayName: string;
+  slug: string;
   bio?: string;
   coverImageUrl?: string;
   location?: string;

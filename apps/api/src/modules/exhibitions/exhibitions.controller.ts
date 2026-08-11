@@ -16,7 +16,7 @@ export class ExhibitionsController {
     return this.exhibitionsService.findAll(page, limit);
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ARTIST, UserRole.ADMIN)
   @Post()
   async create(@Body() dto: CreateExhibitionDto) {
     const exhibition = await this.exhibitionsService.create(dto);
@@ -30,7 +30,7 @@ export class ExhibitionsController {
     return this.exhibitionsService.toDto(exhibition);
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ARTIST, UserRole.ADMIN)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateExhibitionDto) {
     const exhibition = await this.exhibitionsService.update(id, dto);

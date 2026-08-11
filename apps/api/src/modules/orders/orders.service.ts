@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { OrderDto, OrderStatus, PaymentStatus } from '@workspace/shared';
+import { ArtworkStatus, OrderDto, OrderStatus, PaymentStatus } from '@workspace/shared';
 import { parsePagination } from '../../common/utils/pagination.util';
 import { ArtworksService } from '../artworks/artworks.service';
 import { Order, OrderDocument, OrderItem } from './schemas/order.schema';
@@ -22,6 +22,12 @@ export class OrdersService {
 
     for (const inputItem of dto.items) {
       const artwork = await this.artworksService.findByIdOrThrow(inputItem.artworkId);
+      if (artwork.artistId.toString() === buyerId) {
+        throw new BadRequestException('Cannot purchase your own artwork');
+      }
+      if (artwork.status !== ArtworkStatus.PUBLISHED) {
+        throw new BadRequestException(`Artwork "${artwork.title}" is not available for purchase`);
+      }
       const item: OrderItem = {
         artworkId: artwork._id,
         title: artwork.title,
@@ -84,6 +90,14 @@ export class OrdersService {
     if (payment.status === PaymentStatus.SUCCEEDED) {
       order.status = OrderStatus.PAID;
       await order.save();
+      for (const item of order.items) {
+        await this.artworksService.update(
+          item.artworkId.toString(),
+          requesterId,
+          true,
+          { status: ArtworkStatus.SOLD },
+        );
+      }
     }
 
     return { order: this.toDto(order), payment: this.paymentsService.toDto(payment) };

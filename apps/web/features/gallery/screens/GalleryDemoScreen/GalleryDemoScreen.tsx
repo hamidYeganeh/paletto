@@ -31,6 +31,7 @@ export function GalleryDemoScreen({
   const handleRef = useRef<GallerySceneHandle | null>(null)
   const [ready, setReady] = useState(false)
   const [loadPct, setLoadPct] = useState(0)
+  const [initError, setInitError] = useState<string | null>(null)
   const artworksRef = useRef(artworks)
 
   artworksRef.current = artworks
@@ -91,13 +92,23 @@ export function GalleryDemoScreen({
     }
 
     ;(async () => {
-      handle = await createGalleryScene(
-        canvas,
-        artworksRef.current,
-        (loaded, total) => {
-          if (!cancelled) setLoadPct(Math.round((loaded / total) * 100))
+      try {
+        handle = await createGalleryScene(
+          canvas,
+          artworksRef.current,
+          (loaded, total) => {
+            if (!cancelled) setLoadPct(Math.round((loaded / total) * 100))
+          }
+        )
+      } catch {
+        if (!cancelled) {
+          setInitError(
+            "مرورگر از گرافیک سه‌بعدی پشتیبانی نمی‌کند یا WebGL در دسترس نیست."
+          )
         }
-      )
+        return
+      }
+
       if (cancelled) {
         handle.dispose()
         return
@@ -185,7 +196,7 @@ export function GalleryDemoScreen({
           <div className="gallery-demo-footer">
             <div>
               <p className="gallery-demo-mono gallery-demo-hint">
-                اسکرول برای حرکت · ماوس برای نگاه
+                اسکرول برای حرکت · حرکت انگشت/ماوس برای نگاه
               </p>
               <p ref={labelRef} className="gallery-demo-caption">
                 {first ? `${first.title} — ${first.artist}` : ""}
@@ -209,7 +220,25 @@ export function GalleryDemoScreen({
           </div>
         </div>
 
-        {!ready && (
+        {initError ? (
+          <div className="gallery-demo-fallback" role="alert">
+            <div className="gallery-demo-loader-inner px-6 text-center">
+              <p className="gallery-demo-mono mb-4">{initError}</p>
+              <ul className="mx-auto grid max-w-lg gap-3 text-start">
+                {artworks.slice(0, 4).map((a) => (
+                  <li key={a.id} className="text-sm opacity-80">
+                    {a.title} — {a.artist}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/artworks" className="gallery-demo-brand mt-6 inline-block">
+                بازگشت به بازار آثار
+              </Link>
+            </div>
+          </div>
+        ) : null}
+
+        {!ready && !initError && (
           <div className="gallery-demo-loader" aria-live="polite">
             <div className="gallery-demo-loader-inner">
               <div className="gallery-demo-loader-ring" aria-hidden="true" />
