@@ -16,7 +16,7 @@ export const studioProjects: StudioProject[] = [
     categoryKey: "mona-lisa",
     year: "۱۵۰۳",
     image: PLACEHOLDER_IMAGE,
-    alt: "Classical portrait painting",
+    alt: "نقاشی پرتره کلاسیک",
   },
   {
     id: "starry-night",
@@ -24,7 +24,7 @@ export const studioProjects: StudioProject[] = [
     categoryKey: "starry-night",
     year: "۱۸۸۹",
     image: PLACEHOLDER_IMAGE,
-    alt: "Expressive oil painting",
+    alt: "نقاشی رنگ‌روغن اکسپرسیو",
   },
   {
     id: "pearl-earring",
@@ -32,7 +32,7 @@ export const studioProjects: StudioProject[] = [
     categoryKey: "pearl-earring",
     year: "۱۶۶۵",
     image: PLACEHOLDER_IMAGE,
-    alt: "Gallery portrait",
+    alt: "پرتره در نگارخانه",
   },
   {
     id: "the-kiss",
@@ -40,7 +40,7 @@ export const studioProjects: StudioProject[] = [
     categoryKey: "the-kiss",
     year: "۱۹۰۸",
     image: PLACEHOLDER_IMAGE,
-    alt: "Ornate painting detail",
+    alt: "جزئیات تزیینی نقاشی",
   },
   {
     id: "great-wave",
@@ -48,7 +48,7 @@ export const studioProjects: StudioProject[] = [
     categoryKey: "great-wave",
     year: "۱۸۳۱",
     image: PLACEHOLDER_IMAGE,
-    alt: "Wave print artwork",
+    alt: "چاپ هنری موج بزرگ",
   },
   {
     id: "birth-of-venus",
@@ -56,7 +56,7 @@ export const studioProjects: StudioProject[] = [
     categoryKey: "birth-of-venus",
     year: "۱۴۸۶",
     image: PLACEHOLDER_IMAGE,
-    alt: "Renaissance painting",
+    alt: "نقاشی دوره رنسانس",
   },
 ]
 

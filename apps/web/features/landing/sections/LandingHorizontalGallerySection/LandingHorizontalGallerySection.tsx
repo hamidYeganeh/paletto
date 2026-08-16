@@ -13,6 +13,7 @@ gsap.registerPlugin(ScrollTrigger)
 const INIT_DELAY_MS = 120
 const WIDTH_RETRY_MS = 60
 const MAX_WIDTH_RETRIES = 20
+const persianNumber = new Intl.NumberFormat("fa-IR", { useGrouping: false })
 
 export function LandingHorizontalGallerySection() {
   const t = useTranslations("Horizontal")
@@ -31,7 +32,9 @@ export function LandingHorizontalGallerySection() {
     const track = trackRef.current
     if (!section || !pin || !track) return
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
     if (reduced) {
       setReady(true)
       return
@@ -68,7 +71,7 @@ export function LandingHorizontalGallerySection() {
 
       ctx = gsap.context(() => {
         gsap.to(track, {
-          x: () => -getScrollDistance(),
+          x: () => getScrollDistance(),
           ease: "none",
           scrollTrigger: {
             trigger: section,
@@ -80,7 +83,7 @@ export function LandingHorizontalGallerySection() {
             invalidateOnRefresh: true,
             onUpdate: (self) => {
               if (progressRef.current) {
-                progressRef.current.textContent = `${Math.round(self.progress * 100)}٪`
+                progressRef.current.textContent = `${persianNumber.format(Math.round(self.progress * 100))}٪`
               }
             },
           },
@@ -143,7 +146,7 @@ export function LandingHorizontalGallerySection() {
             </h2>
           </div>
           <p className="studio-mono text-[#737373]">
-            <span ref={progressRef}>0٪</span>
+            <span ref={progressRef}>۰٪</span>
           </p>
         </div>
 
@@ -170,8 +173,8 @@ export function LandingHorizontalGallerySection() {
                 <div className="mt-4 flex items-start justify-between gap-4 border-t border-black/10 pt-4">
                   <div>
                     <p className="studio-mono mb-1 text-[#737373]">
-                      {String(index + 1).padStart(2, "0")} /{" "}
-                      {String(studioProjects.length).padStart(2, "0")}
+                      {persianNumber.format(index + 1)} /{" "}
+                      {persianNumber.format(studioProjects.length)}
                     </p>
                     <h3 className="studio-headline text-xl tracking-tighter md:text-2xl">
                       {tArt(project.titleKey)}

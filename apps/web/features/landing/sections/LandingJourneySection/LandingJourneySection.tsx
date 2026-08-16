@@ -4,6 +4,11 @@ import { useTranslations } from "next-intl"
 
 import { JOURNEY_SECTIONS } from "../../components/JourneyLine/journey-sections"
 
+const persianNumber = new Intl.NumberFormat("fa-IR", {
+  minimumIntegerDigits: 2,
+  useGrouping: false,
+})
+
 /** Editorial journey chapter — sits in page flow; line draws across the whole track. */
 export function LandingJourneySection() {
   const t = useTranslations("Journey")
@@ -31,7 +36,7 @@ export function LandingJourneySection() {
             className={`studio-journey-stop ${index % 2 === 1 ? "md:mt-16" : ""}`}
           >
             <p className="studio-mono mb-2 text-[#737373]">
-              {String(index + 1).padStart(2, "0")}
+              {persianNumber.format(index + 1)}
             </p>
             <h3 className="studio-headline text-2xl tracking-tighter md:text-3xl">
               {t(`stops.${section.stop}.title`)}

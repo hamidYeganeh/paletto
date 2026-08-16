@@ -23,55 +23,55 @@ const TILT_ITEMS: TiltItem[] = [
   {
     id: "tilt-1",
     image: PLACEHOLDER_IMAGE,
-    alt: "Classical portrait",
+    alt: "پرتره کلاسیک",
     aspect: "aspect-[3/4]",
   },
   {
     id: "tilt-2",
     image: PLACEHOLDER_IMAGE,
-    alt: "Abstract expression",
+    alt: "بیان انتزاعی",
     aspect: "aspect-[4/5]",
   },
   {
     id: "tilt-3",
     image: PLACEHOLDER_IMAGE,
-    alt: "Gallery portrait",
+    alt: "پرتره نگارخانه",
     aspect: "aspect-[3/4]",
   },
   {
     id: "tilt-4",
     image: PLACEHOLDER_IMAGE,
-    alt: "Ornate detail",
+    alt: "جزئیات تزیینی",
     aspect: "aspect-[4/5]",
   },
   {
     id: "tilt-5",
     image: PLACEHOLDER_IMAGE,
-    alt: "Wave artwork",
+    alt: "اثر هنری موج",
     aspect: "aspect-[3/4]",
   },
   {
     id: "tilt-6",
     image: PLACEHOLDER_IMAGE,
-    alt: "Renaissance scene",
+    alt: "صحنه‌ای از رنسانس",
     aspect: "aspect-[4/5]",
   },
   {
     id: "tilt-7",
     image: PLACEHOLDER_IMAGE,
-    alt: "Sculpture study",
+    alt: "مطالعه مجسمه",
     aspect: "aspect-[3/4]",
   },
   {
     id: "tilt-8",
     image: PLACEHOLDER_IMAGE,
-    alt: "Ink wash",
+    alt: "نقاشی مرکب",
     aspect: "aspect-[4/5]",
   },
   {
     id: "tilt-9",
     image: PLACEHOLDER_IMAGE,
-    alt: "Studio still life",
+    alt: "طبیعت بی‌جان استودیو",
     aspect: "aspect-[3/4]",
   },
 ]
@@ -94,14 +94,19 @@ export function LandingParallaxSection() {
     const section = sectionRef.current
     if (!section) return
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
     if (reduced) return
 
     const mm = gsap.matchMedia()
 
     mm.add("(min-width: 768px)", () => {
       const ctx = gsap.context(() => {
-        const colEls = gsap.utils.toArray<HTMLElement>("[data-parallax-col]", section)
+        const colEls = gsap.utils.toArray<HTMLElement>(
+          "[data-parallax-col]",
+          section
+        )
 
         colEls.forEach((col) => {
           const speed = Number(col.dataset.speed ?? 1)
@@ -119,7 +124,10 @@ export function LandingParallaxSection() {
           })
         })
 
-        const cards = gsap.utils.toArray<HTMLElement>("[data-tilt-card]", section)
+        const cards = gsap.utils.toArray<HTMLElement>(
+          "[data-tilt-card]",
+          section
+        )
 
         cards.forEach((card) => {
           gsap.fromTo(

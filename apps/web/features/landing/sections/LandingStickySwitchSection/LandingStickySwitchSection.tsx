@@ -10,26 +10,31 @@ import { PLACEHOLDER_IMAGE } from "../../components/projects"
 
 gsap.registerPlugin(ScrollTrigger)
 
+const persianNumber = new Intl.NumberFormat("fa-IR", {
+  minimumIntegerDigits: 2,
+  useGrouping: false,
+})
+
 const CHAPTERS = [
   {
     id: "renaissance",
     image: PLACEHOLDER_IMAGE,
-    alt: "Renaissance painting",
+    alt: "نقاشی دوره رنسانس",
   },
   {
     id: "impressionism",
     image: PLACEHOLDER_IMAGE,
-    alt: "Impressionist painting",
+    alt: "نقاشی امپرسیونیستی",
   },
   {
     id: "symbolism",
     image: PLACEHOLDER_IMAGE,
-    alt: "Symbolist portrait",
+    alt: "پرتره نمادگرا",
   },
   {
     id: "modern",
     image: PLACEHOLDER_IMAGE,
-    alt: "Modern artwork",
+    alt: "اثر هنری مدرن",
   },
 ] as const
 
@@ -44,9 +49,14 @@ export function LandingStickySwitchSection() {
     const section = sectionRef.current
     if (!section) return
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
     const ctx = gsap.context(() => {
-      const panels = gsap.utils.toArray<HTMLElement>("[data-sticky-panel]", section)
+      const panels = gsap.utils.toArray<HTMLElement>(
+        "[data-sticky-panel]",
+        section
+      )
 
       panels.forEach((panel, index) => {
         ScrollTrigger.create({
@@ -108,7 +118,7 @@ export function LandingStickySwitchSection() {
       </div>
 
       <div className="studio-sticky-layout grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16 lg:gap-24">
-        {/* Left: sticky heading */}
+        {/* متن چسبان در سمت راست */}
         <div className="md:sticky md:top-[30vh] md:self-start">
           <div ref={copyRef} className="max-w-md">
             <p className="studio-mono mb-4 text-[#737373]">
@@ -131,7 +141,7 @@ export function LandingStickySwitchSection() {
                     index === active ? "opacity-100" : "opacity-30"
                   }`}
                 >
-                  {String(index + 1).padStart(2, "0")} —{" "}
+                  {persianNumber.format(index + 1)} /{" "}
                   {t(`chapters.${chapter.id}.title`)}
                 </li>
               ))}
@@ -139,7 +149,7 @@ export function LandingStickySwitchSection() {
           </div>
         </div>
 
-        {/* Right: scrolling images */}
+        {/* تصاویر پیمایشی در سمت چپ */}
         <div className="flex flex-col gap-8 md:gap-16">
           {CHAPTERS.map((chapter, index) => (
             <article

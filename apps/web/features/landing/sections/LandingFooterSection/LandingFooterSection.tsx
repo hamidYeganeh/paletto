@@ -4,7 +4,9 @@ import { useTranslations } from "next-intl"
 
 export function LandingFooterSection() {
   const t = useTranslations("Footer")
-  const year = new Date().getFullYear()
+  const year = new Intl.NumberFormat("fa-IR", { useGrouping: false }).format(
+    new Date().getFullYear()
+  )
 
   return (
     <footer id="contact" className="bg-[#0A0A0A] text-white">

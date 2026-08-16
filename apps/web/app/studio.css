@@ -148,7 +148,8 @@
 }
 
 .studio-mono {
-  font-family: var(--font-space-grotesk), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family:
+    var(--font-space-grotesk), ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 14px;
   font-weight: 500;
   text-transform: uppercase;
@@ -197,13 +198,14 @@
 .studio-marquee {
   overflow: hidden;
   width: 100%;
+  direction: rtl;
 }
 
 .studio-marquee-track {
   display: flex;
   width: max-content;
   gap: 1.5rem;
-  direction: ltr;
+  direction: rtl;
   animation: studio-marquee-scroll 30s linear infinite;
 }
 
@@ -216,13 +218,13 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translateX(50%);
   }
 }
 
 /* Parallax tilt grid */
 .studio-parallax-grid {
-  direction: ltr;
+  direction: rtl;
   perspective: 1200px;
 }
 
@@ -237,9 +239,9 @@
   backface-visibility: hidden;
 }
 
-/* Sticky content switch — force LTR layout: left sticky copy, right images */
+/* Sticky content switch: RTL copy leads, images follow on the left. */
 .studio-sticky-layout {
-  direction: ltr;
+  direction: rtl;
 }
 
 .studio-sticky-layout .studio-headline,
@@ -294,7 +296,7 @@
 
 /* Horizontal sticky gallery */
 .studio-horizontal-track {
-  direction: ltr;
+  direction: rtl;
   will-change: transform;
 }
 

@@ -19,15 +19,22 @@ export function CustomCursor() {
     if (reduced || coarse) return
 
     function onMove(e: MouseEvent) {
+      const targetElement = e.target
+      const isInsideStudio =
+        targetElement instanceof Element &&
+        Boolean(targetElement.closest(".studio-page"))
+
+      cursor?.classList.toggle("is-visible", isInsideStudio)
+      if (!isInsideStudio) return
+
       target.current.x = e.clientX
       target.current.y = e.clientY
-      cursor?.classList.add("is-visible")
     }
 
     function onOver(e: MouseEvent) {
       const el = e.target
       if (!(el instanceof Element)) return
-      const interactive = el.closest("a, button")
+      const interactive = el.closest(".studio-page a, .studio-page button")
       cursor?.classList.toggle("is-hover", Boolean(interactive))
     }
 
